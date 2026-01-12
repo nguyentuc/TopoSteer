@@ -47,8 +47,8 @@ huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/
 
 - Current runing HOLE to select layer based on the TSS score (combination score) with:
 + Cosine Metric(Done)
-+ Euclidean Metric (Runinng)
-+ Mahalanobis (Next)
++ Euclidean Metric (DONE - H100_2): Performance not so good compated with using Cosine metric
++ Mahalanobis (Running on the H100_2)
 + Geodesic Distance (Next, need to be implement)
 
 - Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
