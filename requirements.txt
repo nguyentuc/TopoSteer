@@ -1,0 +1,8 @@
+accelerate==0.29.2
+datasets==2.20.0
+huggingface-hub==0.22.2
+numpy==1.22.4
+safetensors==0.4.2
+tokenizers==0.19.1
+torch
+transformers==4.40.0
