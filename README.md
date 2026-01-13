@@ -7,7 +7,6 @@ pip install huggingface_hub
 pip install gudhi
 pip install scipy
 pip install scikit-learn
-pip install jmespath
 ```
 
 ## Quick Start
@@ -20,7 +19,7 @@ You can run everything with just **two steps**:
 
 2. **Download the model:**
 ```
-huggingface-cli login (notice token permission)
+huggingface-cli login
 huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/volume/h100_instance2/cache/Llama-3-8B-Instruct \
                   --local-dir-use-symlinks False
 ```
@@ -54,3 +53,9 @@ huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/
 
 - Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
 + Next: Need to based on one of them only rather than the combination between them.
+
+
+---
+## Next improvement
+- Propose metrics in hyperbolic space for measuring the persistent homology
+- The compositions of both inner metric (persistent homology) and outer metrics (layernavigation) in choosing layer to steer.
