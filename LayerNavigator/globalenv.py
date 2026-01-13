@@ -1,5 +1,5 @@
 ###### MODEL ######
-MODEL = "/media/volume/h100_instance2/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
+MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
 
 if "Llama-3-8B-Instruct" in MODEL:
     # LLAMA3-8B-INSRUCT

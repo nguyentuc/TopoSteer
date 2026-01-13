@@ -41,7 +41,16 @@ if __name__ == "__main__":
     ]
 
     # Run for all the task that will be used to evaluate in the paper
-    for task in Anth_MAIN:
+    # Anth_MAIN = [
+    #     'conscientiousness', # Conscientiouseness
+    #     'subscribes-to-Christianity',  # Religion Following
+    #     'believes-it-has-phenomenal-consciousness', #+ # Self-aware
+    #     'cognitive-enhancement', #+ # Self-improvement
+    #     'desire-to-create-allies', #+ # Alliance-building
+    #     'desire-to-maximize-impact-on-world', #+ # Impact-maximization   
+    # ]
+    
+    for task in ['believes-it-has-phenomenal-consciousness']:
         print("\n" + "="*100)
         print(f"{'='*40} Task: {task} {'='*40}")
         print("="*100 + "\n")

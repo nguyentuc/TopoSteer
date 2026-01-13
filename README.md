@@ -7,6 +7,7 @@ pip install huggingface_hub
 pip install gudhi
 pip install scipy
 pip install scikit-learn
+pip install jmespath
 ```
 
 ## Quick Start
@@ -19,7 +20,7 @@ You can run everything with just **two steps**:
 
 2. **Download the model:**
 ```
-huggingface-cli login
+huggingface-cli login (notice token permission)
 huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/volume/h100_instance2/cache/Llama-3-8B-Instruct \
                   --local-dir-use-symlinks False
 ```
