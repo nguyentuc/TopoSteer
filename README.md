@@ -52,10 +52,11 @@ huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/
 + Geodesic Distance (Next, need to be implement)
 
 - Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
-+ Next: Need to based on one of them only rather than the combination between them.
 
+- Ablation Study on different metric.
 
 ---
 ## Next improvement
+- Make slides for next Thursday meeting.
 - Propose metrics in hyperbolic space for measuring the persistent homology
 - The compositions of both inner metric (persistent homology) and outer metrics (layernavigation) in choosing layer to steer.
