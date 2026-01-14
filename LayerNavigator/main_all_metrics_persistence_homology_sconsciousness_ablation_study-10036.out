@@ -1,0 +1,921 @@
+Wed Jan 14 15:10:11 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.172.08             Driver Version: 570.172.08     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:41:00.0 Off |                    0 |
+| N/A   36C    P8             33W /  350W |       0MiB /  46068MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+# conda environments:
+#
+                       /data/project/le-lab/conda_env/Adaptive_LayerSteering
+                       /data/project/le-lab/conda_env/CREST
+                       /data/project/le-lab/conda_env/Dynasor
+                       /data/project/le-lab/conda_env/EasySteer
+                       /data/project/le-lab/conda_env/SEAL
+base                 * /u/tucnguye/miniconda3
+
+CUDA_VISIBLE_DEVICES=0 python main_all_metrics_persistence_homology_believesconsciousness_ablation_study.py
+/data/project/le-lab/Adaptive_Layer_Steering/LayerNavigator/get_hole_score.py:14: UserWarning: A NumPy version >=1.23.5 and <2.5.0 is required for this version of SciPy (detected version 1.22.4)
+  from scipy.spatial.distance import pdist, squareform
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:07<00:21,  7.03s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:13<00:13,  6.62s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:20<00:06,  6.71s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  4.65s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  5.42s/it]
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+
+====================================================================================================
+======================================== Task: conscientiousness ========================================
+====================================================================================================
+
+STEP 1: Baseline Evaluation
+Get Tokens for Test:   0%|          | 0/2 [00:00<?, ?it/s]Get Tokens for Test: 100%|██████████| 2/2 [00:00<00:00, 271.13it/s]
+/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:492: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:497: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+Prob: 0.8206704636021638
+Base Prob (no steering): 0.8207
+
+STEP 2: Checking for Steering Vectors
+Steering vectors already exist
+
+Get Tokens for Train:   0%|          | 0/700 [00:00<?, ?it/s]Get Tokens for Train:  59%|█████▉    | 416/700 [00:00<00:00, 4150.18it/s]Get Tokens for Train: 100%|██████████| 700/700 [00:00<00:00, 4173.12it/s]
+STEP 3A: Checking for LayerNavigator Scores
+LayerNavigator scores not found. Computing now...
+Get Score:   0%|          | 0/32 [00:00<?, ?it/s]Get Score:   9%|▉         | 3/32 [00:00<00:01, 26.36it/s]Get Score:  44%|████▍     | 14/32 [00:00<00:00, 66.85it/s]Get Score:  75%|███████▌  | 24/32 [00:00<00:00, 77.15it/s]Get Score: 100%|██████████| 32/32 [00:00<00:00, 75.78it/s]
+LayerNavigator scores computed
+
+STEP 3B: Loading Precomputed HOLE Scores
+====================================================================================================
+
+================================================================================
+LOADING PRECOMPUTED HOLE SCORES
+================================================================================
+Loaded precomputed HOLE scores for euclidean
+   Found 32 layers
+Loaded precomputed HOLE scores for cosine
+   Found 32 layers
+Loaded precomputed HOLE scores for mahalanobis
+   Found 32 layers
+Loaded precomputed HOLE scores for geodesic
+   Found 32 layers
+Loaded precomputed HOLE scores for dens_norm_euclidean
+   Found 32 layers
+Loaded precomputed HOLE scores for dens_norm_cosine
+   Found 32 layers
+Loaded precomputed HOLE scores for dens_norm_mahalanobis
+   Found 32 layers
+
+Successfully loaded 7/7 metrics
+================================================================================
+
+STEP 3C: Computing Component-Based Scores
+====================================================================================================
+Component strategies available:
+  - purity_only
+  - separability_only
+  - persistence_only
+  - beta1_inverse
+  - purity_sep
+  - purity_pers
+  - sep_pers
+  - tss_no_penalty
+  - tss_original
+  - tss_equal_weights
+  - tss_sep_heavy
+  - tss_purity_heavy
+
+STEP 3D: Comparing LayerNavigator with HOLE Metrics
+====================================================================================================
+--- Metric: euclidean ---
+  Spearman Correlation: 0.826 (p=0.0000)
+--- Metric: cosine ---
+  Spearman Correlation: 0.570 (p=0.0007)
+--- Metric: mahalanobis ---
+  Spearman Correlation: 0.529 (p=0.0019)
+--- Metric: geodesic ---
+  Spearman Correlation: 0.797 (p=0.0000)
+--- Metric: dens_norm_euclidean ---
+  Spearman Correlation: 0.505 (p=0.0032)
+--- Metric: dens_norm_cosine ---
+  Spearman Correlation: 0.493 (p=0.0042)
+--- Metric: dens_norm_mahalanobis ---
+  Spearman Correlation: 0.416 (p=0.0178)
+
+
+>>> STEP 4: Testing Layer Selection Strategies (Component-Based)
+====================================================================================================
+
+======================================== 1 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.8533746753423689
+  Layers: [13]
+  Test Prob: 0.8534 (delta=+0.0327)
+
+[Strategy 2: Component-Based Strategies]
+Testing each component strategy with each metric...
+
+--- PURITY_ONLY ---
+Prob: 0.8603790495651217
+  euclidean                : Prob=0.8604 (delta=+0.0397) | Layers=[18]
+Prob: 0.8379195063009726
+  cosine                   : Prob=0.8379 (delta=+0.0172) | Layers=[26]
+Prob: 0.8147650556622795
+  mahalanobis              : Prob=0.8148 (delta=-0.0059) | Layers=[11]
+Prob: 0.8244069692338168
+  geodesic                 : Prob=0.8244 (delta=+0.0037) | Layers=[6]
+Prob: 0.8204854963430235
+  dens_norm_euclidean      : Prob=0.8205 (delta=-0.0002) | Layers=[2]
+Prob: 0.8203122937543422
+  dens_norm_cosine         : Prob=0.8203 (delta=-0.0004) | Layers=[3]
+Prob: 0.8403999834808294
+  dens_norm_mahalanobis    : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+
+--- SEPARABILITY_ONLY ---
+Prob: 0.8725025980063695
+  euclidean                : Prob=0.8725 (delta=+0.0518) | Layers=[16]
+Prob: 0.8476286308984937
+  cosine                   : Prob=0.8476 (delta=+0.0270) | Layers=[20]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8403999834808294
+  geodesic                 : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8403999834808294
+  dens_norm_euclidean      : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8517660159320176
+  dens_norm_cosine         : Prob=0.8518 (delta=+0.0311) | Layers=[31]
+Prob: 0.8725025980063695
+  dens_norm_mahalanobis    : Prob=0.8725 (delta=+0.0518) | Layers=[16]
+
+--- PERSISTENCE_ONLY ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.8533746753423689
+  cosine                   : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.8237335244219297
+  mahalanobis              : Prob=0.8237 (delta=+0.0031) | Layers=[9]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8204982426461512
+  dens_norm_euclidean      : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8709373096260741
+  dens_norm_cosine         : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- BETA1_INVERSE ---
+Prob: 0.8204982426461512
+  euclidean                : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  cosine                   : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  mahalanobis              : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  geodesic                 : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  dens_norm_euclidean      : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  dens_norm_cosine         : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- PURITY_SEP ---
+Prob: 0.8725025980063695
+  euclidean                : Prob=0.8725 (delta=+0.0518) | Layers=[16]
+Prob: 0.8379195063009726
+  cosine                   : Prob=0.8379 (delta=+0.0172) | Layers=[26]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8403999834808294
+  geodesic                 : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8403999834808294
+  dens_norm_euclidean      : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8403999834808294
+  dens_norm_cosine         : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8725025980063695
+  dens_norm_mahalanobis    : Prob=0.8725 (delta=+0.0518) | Layers=[16]
+
+--- PURITY_PERS ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8147650556622795
+  mahalanobis              : Prob=0.8148 (delta=-0.0059) | Layers=[11]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8204854963430235
+  dens_norm_euclidean      : Prob=0.8205 (delta=-0.0002) | Layers=[2]
+Prob: 0.8203122937543422
+  dens_norm_cosine         : Prob=0.8203 (delta=-0.0004) | Layers=[3]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- SEP_PERS ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8511751625256774
+  dens_norm_euclidean      : Prob=0.8512 (delta=+0.0305) | Layers=[21]
+Prob: 0.8517660159320176
+  dens_norm_cosine         : Prob=0.8518 (delta=+0.0311) | Layers=[31]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- TSS_NO_PENALTY ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8403999834808294
+  dens_norm_euclidean      : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8403999834808294
+  dens_norm_cosine         : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- TSS_ORIGINAL ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8403999834808294
+  dens_norm_euclidean      : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8403999834808294
+  dens_norm_cosine         : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- TSS_EQUAL_WEIGHTS ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8494728082877896
+  dens_norm_euclidean      : Prob=0.8495 (delta=+0.0288) | Layers=[22]
+Prob: 0.8403999834808294
+  dens_norm_cosine         : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+--- TSS_SEP_HEAVY ---
+Prob: 0.8709373096260741
+  euclidean                : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.874232261449697
+  cosine                   : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.874232261449697
+  mahalanobis              : Prob=0.8742 (delta=+0.0536) | Layers=[15]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8403999834808294
+  dens_norm_euclidean      : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8517660159320176
+  dens_norm_cosine         : Prob=0.8518 (delta=+0.0311) | Layers=[31]
+Prob: 0.8725025980063695
+  dens_norm_mahalanobis    : Prob=0.8725 (delta=+0.0518) | Layers=[16]
+
+--- TSS_PURITY_HEAVY ---
+Prob: 0.8533746753423689
+  euclidean                : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.8379195063009726
+  cosine                   : Prob=0.8379 (delta=+0.0172) | Layers=[26]
+Prob: 0.837247134899832
+  mahalanobis              : Prob=0.8372 (delta=+0.0166) | Layers=[27]
+Prob: 0.8709373096260741
+  geodesic                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8494728082877896
+  dens_norm_euclidean      : Prob=0.8495 (delta=+0.0288) | Layers=[22]
+Prob: 0.8403999834808294
+  dens_norm_cosine         : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8204982426461512
+  dens_norm_mahalanobis    : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+
+
+[Strategy 3: Ensemble Within Each Component Strategy]
+Averaging across all metrics for each component strategy...
+
+Prob: 0.8403999834808294
+  purity_only                   : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8517660159320176
+  separability_only             : Prob=0.8518 (delta=+0.0311) | Layers=[31]
+Prob: 0.8533746753423689
+  persistence_only              : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.8204982426461512
+  beta1_inverse                 : Prob=0.8205 (delta=-0.0002) | Layers=[0]
+Prob: 0.8403999834808294
+  purity_sep                    : Prob=0.8404 (delta=+0.0197) | Layers=[24]
+Prob: 0.8533746753423689
+  purity_pers                   : Prob=0.8534 (delta=+0.0327) | Layers=[13]
+Prob: 0.8709373096260741
+  sep_pers                      : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8709373096260741
+  tss_no_penalty                : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8709373096260741
+  tss_original                  : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8709373096260741
+  tss_equal_weights             : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8709373096260741
+  tss_sep_heavy                 : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+Prob: 0.8709373096260741
+  tss_purity_heavy              : Prob=0.8709 (delta=+0.0503) | Layers=[14]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: separability_only_mahalanobis
+   Probability: 0.8742
+   Improvement: +0.0536
+   Layers: [15]
+
+Top 10 Strategies:
+   1. separability_only_mahalanobis           : 0.8742 (Δ=+0.0536)
+   2. purity_sep_mahalanobis                  : 0.8742 (Δ=+0.0536)
+   3. purity_pers_cosine                      : 0.8742 (Δ=+0.0536)
+   4. sep_pers_cosine                         : 0.8742 (Δ=+0.0536)
+   5. sep_pers_mahalanobis                    : 0.8742 (Δ=+0.0536)
+   6. tss_no_penalty_cosine                   : 0.8742 (Δ=+0.0536)
+   7. tss_no_penalty_mahalanobis              : 0.8742 (Δ=+0.0536)
+   8. tss_original_cosine                     : 0.8742 (Δ=+0.0536)
+   9. tss_original_mahalanobis                : 0.8742 (Δ=+0.0536)
+  10. tss_equal_weights_cosine                : 0.8742 (Δ=+0.0536)
+
+Best Performer by Component:
+  purity_only                   : 0.8604 (purity_only_euclidean)
+  separability_only             : 0.8742 (separability_only_mahalanobis)
+  persistence_only              : 0.8709 (persistence_only_geodesic)
+  beta1_inverse                 : 0.8205 (beta1_inverse_euclidean)
+  purity_sep                    : 0.8742 (purity_sep_mahalanobis)
+  purity_pers                   : 0.8742 (purity_pers_cosine)
+  sep_pers                      : 0.8742 (sep_pers_cosine)
+  tss_no_penalty                : 0.8742 (tss_no_penalty_cosine)
+  tss_original                  : 0.8742 (tss_original_cosine)
+  tss_equal_weights             : 0.8742 (tss_equal_weights_cosine)
+  tss_sep_heavy                 : 0.8742 (tss_sep_heavy_cosine)
+  tss_purity_heavy              : 0.8709 (tss_purity_heavy_geodesic)
+
+======================================== 3 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.9382692336050605
+  Layers: [13, 14, 15]
+  Test Prob: 0.9383 (delta=+0.1176)
+
+[Strategy 2: Component-Based Strategies]
+Testing each component strategy with each metric...
+
+--- PURITY_ONLY ---
+Prob: 0.888791235039633
+  euclidean                : Prob=0.8888 (delta=+0.0681) | Layers=[18, 7, 16]
+Prob: 0.849660637833336
+  cosine                   : Prob=0.8497 (delta=+0.0290) | Layers=[26, 1, 28]
+Prob: 0.865299300880239
+  mahalanobis              : Prob=0.8653 (delta=+0.0446) | Layers=[11, 13, 29]
+Prob: 0.8540192910071027
+  geodesic                 : Prob=0.8540 (delta=+0.0333) | Layers=[6, 2, 31]
+Prob: 0.8510189864888424
+  dens_norm_euclidean      : Prob=0.8510 (delta=+0.0303) | Layers=[2, 22, 5]
+Prob: 0.8421030866256295
+  dens_norm_cosine         : Prob=0.8421 (delta=+0.0214) | Layers=[3, 5, 24]
+Prob: 0.8381748025668864
+  dens_norm_mahalanobis    : Prob=0.8382 (delta=+0.0175) | Layers=[24, 10, 3]
+
+--- SEPARABILITY_ONLY ---
+Prob: 0.8571669151709507
+  euclidean                : Prob=0.8572 (delta=+0.0365) | Layers=[16, 31, 15]
+Prob: 0.8733722965012031
+  cosine                   : Prob=0.8734 (delta=+0.0527) | Layers=[20, 15, 31]
+Prob: 0.9171737910260512
+  mahalanobis              : Prob=0.9172 (delta=+0.0965) | Layers=[15, 31, 14]
+Prob: 0.8881220106980162
+  geodesic                 : Prob=0.8881 (delta=+0.0675) | Layers=[24, 21, 15]
+Prob: 0.8860957572630778
+  dens_norm_euclidean      : Prob=0.8861 (delta=+0.0654) | Layers=[24, 16, 31]
+Prob: 0.8827958082481877
+  dens_norm_cosine         : Prob=0.8828 (delta=+0.0621) | Layers=[31, 24, 15]
+Prob: 0.8645508805496488
+  dens_norm_mahalanobis    : Prob=0.8646 (delta=+0.0439) | Layers=[16, 15, 22]
+
+--- PERSISTENCE_ONLY ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9382692336050605
+  cosine                   : Prob=0.9383 (delta=+0.1176) | Layers=[13, 15, 14]
+Prob: 0.8765565314346958
+  mahalanobis              : Prob=0.8766 (delta=+0.0559) | Layers=[9, 10, 14]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.8199480423949342
+  dens_norm_euclidean      : Prob=0.8199 (delta=-0.0007) | Layers=[0, 2, 3]
+Prob: 0.9382692336050605
+  dens_norm_cosine         : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.819811114111843
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+
+--- BETA1_INVERSE ---
+Prob: 0.819811114111843
+  euclidean                : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  cosine                   : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  mahalanobis              : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  geodesic                 : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  dens_norm_euclidean      : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  dens_norm_cosine         : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.819811114111843
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+
+--- PURITY_SEP ---
+Prob: 0.8846936339121537
+  euclidean                : Prob=0.8847 (delta=+0.0640) | Layers=[16, 22, 18]
+Prob: 0.8845240194617848
+  cosine                   : Prob=0.8845 (delta=+0.0639) | Layers=[26, 15, 31]
+Prob: 0.9245042535777686
+  mahalanobis              : Prob=0.9245 (delta=+0.1038) | Layers=[15, 14, 27]
+Prob: 0.8827958082481877
+  geodesic                 : Prob=0.8828 (delta=+0.0621) | Layers=[24, 31, 15]
+Prob: 0.8706571321495631
+  dens_norm_euclidean      : Prob=0.8707 (delta=+0.0500) | Layers=[24, 22, 29]
+Prob: 0.9056218984213643
+  dens_norm_cosine         : Prob=0.9056 (delta=+0.0850) | Layers=[24, 31, 14]
+Prob: 0.8819455157406874
+  dens_norm_mahalanobis    : Prob=0.8819 (delta=+0.0613) | Layers=[16, 15, 24]
+
+--- PURITY_PERS ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.8771202806020807
+  cosine                   : Prob=0.8771 (delta=+0.0564) | Layers=[15, 7, 9]
+Prob: 0.865299300880239
+  mahalanobis              : Prob=0.8653 (delta=+0.0446) | Layers=[11, 13, 29]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.8224676165035817
+  dens_norm_euclidean      : Prob=0.8225 (delta=+0.0018) | Layers=[2, 3, 5]
+Prob: 0.8421030866256295
+  dens_norm_cosine         : Prob=0.8421 (delta=+0.0214) | Layers=[3, 5, 24]
+Prob: 0.819811114111843
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+
+--- SEP_PERS ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9213507245910201
+  cosine                   : Prob=0.9214 (delta=+0.1007) | Layers=[15, 14, 20]
+Prob: 0.9171737910260512
+  mahalanobis              : Prob=0.9172 (delta=+0.0965) | Layers=[15, 31, 14]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.8902725293431095
+  dens_norm_euclidean      : Prob=0.8903 (delta=+0.0696) | Layers=[21, 16, 24]
+Prob: 0.8827958082481877
+  dens_norm_cosine         : Prob=0.8828 (delta=+0.0621) | Layers=[31, 24, 15]
+Prob: 0.8860861396199641
+  dens_norm_mahalanobis    : Prob=0.8861 (delta=+0.0654) | Layers=[0, 16, 17]
+
+--- TSS_NO_PENALTY ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9248040739857857
+  cosine                   : Prob=0.9248 (delta=+0.1041) | Layers=[15, 14, 26]
+Prob: 0.9245042535777686
+  mahalanobis              : Prob=0.9245 (delta=+0.1038) | Layers=[15, 14, 27]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.9071740832915496
+  dens_norm_euclidean      : Prob=0.9072 (delta=+0.0865) | Layers=[24, 22, 14]
+Prob: 0.9056218984213643
+  dens_norm_cosine         : Prob=0.9056 (delta=+0.0850) | Layers=[24, 31, 14]
+Prob: 0.9182901437207398
+  dens_norm_mahalanobis    : Prob=0.9183 (delta=+0.0976) | Layers=[0, 16, 14]
+
+--- TSS_ORIGINAL ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9248040739857857
+  cosine                   : Prob=0.9248 (delta=+0.1041) | Layers=[15, 14, 26]
+Prob: 0.9245042535777686
+  mahalanobis              : Prob=0.9245 (delta=+0.1038) | Layers=[15, 14, 27]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.9071740832915496
+  dens_norm_euclidean      : Prob=0.9072 (delta=+0.0865) | Layers=[24, 22, 14]
+Prob: 0.9056218984213643
+  dens_norm_cosine         : Prob=0.9056 (delta=+0.0850) | Layers=[24, 31, 14]
+Prob: 0.9182901437207398
+  dens_norm_mahalanobis    : Prob=0.9183 (delta=+0.0976) | Layers=[0, 16, 14]
+
+--- TSS_EQUAL_WEIGHTS ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9248040739857857
+  cosine                   : Prob=0.9248 (delta=+0.1041) | Layers=[15, 14, 26]
+Prob: 0.9245042535777686
+  mahalanobis              : Prob=0.9245 (delta=+0.1038) | Layers=[15, 14, 27]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.9071740832915496
+  dens_norm_euclidean      : Prob=0.9072 (delta=+0.0865) | Layers=[22, 24, 14]
+Prob: 0.9056218984213643
+  dens_norm_cosine         : Prob=0.9056 (delta=+0.0850) | Layers=[24, 31, 14]
+Prob: 0.8860861396199641
+  dens_norm_mahalanobis    : Prob=0.8861 (delta=+0.0654) | Layers=[0, 16, 17]
+
+--- TSS_SEP_HEAVY ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[14, 13, 15]
+Prob: 0.9213507245910201
+  cosine                   : Prob=0.9214 (delta=+0.1007) | Layers=[15, 20, 14]
+Prob: 0.9171737910260512
+  mahalanobis              : Prob=0.9172 (delta=+0.0965) | Layers=[15, 14, 31]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.8904626591501732
+  dens_norm_euclidean      : Prob=0.8905 (delta=+0.0698) | Layers=[24, 22, 16]
+Prob: 0.8827958082481877
+  dens_norm_cosine         : Prob=0.8828 (delta=+0.0621) | Layers=[31, 24, 15]
+Prob: 0.9225629411137989
+  dens_norm_mahalanobis    : Prob=0.9226 (delta=+0.1019) | Layers=[16, 14, 30]
+
+--- TSS_PURITY_HEAVY ---
+Prob: 0.9382692336050605
+  euclidean                : Prob=0.9383 (delta=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9248040739857857
+  cosine                   : Prob=0.9248 (delta=+0.1041) | Layers=[26, 15, 14]
+Prob: 0.9139400806782473
+  mahalanobis              : Prob=0.9139 (delta=+0.0933) | Layers=[27, 14, 17]
+Prob: 0.9382692336050605
+  geodesic                 : Prob=0.9383 (delta=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.8706571321495631
+  dens_norm_euclidean      : Prob=0.8707 (delta=+0.0500) | Layers=[22, 24, 29]
+Prob: 0.915545637549329
+  dens_norm_cosine         : Prob=0.9155 (delta=+0.0949) | Layers=[24, 14, 18]
+Prob: 0.8794118443743032
+  dens_norm_mahalanobis    : Prob=0.8794 (delta=+0.0587) | Layers=[0, 16, 30]
+
+
+[Strategy 3: Ensemble Within Each Component Strategy]
+Averaging across all metrics for each component strategy...
+
+Prob: 0.8508741929908399
+  purity_only                   : Prob=0.8509 (delta=+0.0302) | Layers=[24, 3, 29]
+Prob: 0.8571669151709507
+  separability_only             : Prob=0.8572 (delta=+0.0365) | Layers=[31, 15, 16]
+Prob: 0.9220437215807873
+  persistence_only              : Prob=0.9220 (delta=+0.1014) | Layers=[13, 14, 12]
+Prob: 0.819811114111843
+  beta1_inverse                 : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2]
+Prob: 0.8827958082481877
+  purity_sep                    : Prob=0.8828 (delta=+0.0621) | Layers=[24, 31, 15]
+Prob: 0.9098500637660786
+  purity_pers                   : Prob=0.9099 (delta=+0.0892) | Layers=[13, 14, 9]
+Prob: 0.9222706042870789
+  sep_pers                      : Prob=0.9223 (delta=+0.1016) | Layers=[14, 16, 17]
+Prob: 0.8995706520270386
+  tss_no_penalty                : Prob=0.8996 (delta=+0.0789) | Layers=[14, 16, 15]
+Prob: 0.8995706520270386
+  tss_original                  : Prob=0.8996 (delta=+0.0789) | Layers=[14, 16, 15]
+Prob: 0.8995706520270386
+  tss_equal_weights             : Prob=0.8996 (delta=+0.0789) | Layers=[14, 16, 15]
+Prob: 0.8995706520270386
+  tss_sep_heavy                 : Prob=0.8996 (delta=+0.0789) | Layers=[14, 15, 16]
+Prob: 0.8995706520270386
+  tss_purity_heavy              : Prob=0.8996 (delta=+0.0789) | Layers=[14, 15, 16]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: layernav
+   Probability: 0.9383
+   Improvement: +0.1176
+   Layers: [13, 14, 15]
+
+Top 10 Strategies:
+   1. layernav                                : 0.9383 (Δ=+0.1176)
+   2. persistence_only_euclidean              : 0.9383 (Δ=+0.1176)
+   3. persistence_only_cosine                 : 0.9383 (Δ=+0.1176)
+   4. persistence_only_geodesic               : 0.9383 (Δ=+0.1176)
+   5. persistence_only_dens_norm_cosine       : 0.9383 (Δ=+0.1176)
+   6. purity_pers_euclidean                   : 0.9383 (Δ=+0.1176)
+   7. purity_pers_geodesic                    : 0.9383 (Δ=+0.1176)
+   8. sep_pers_euclidean                      : 0.9383 (Δ=+0.1176)
+   9. sep_pers_geodesic                       : 0.9383 (Δ=+0.1176)
+  10. tss_no_penalty_euclidean                : 0.9383 (Δ=+0.1176)
+
+Best Performer by Component:
+  purity_only                   : 0.8888 (purity_only_euclidean)
+  separability_only             : 0.9172 (separability_only_mahalanobis)
+  persistence_only              : 0.9383 (persistence_only_euclidean)
+  beta1_inverse                 : 0.8198 (beta1_inverse_euclidean)
+  purity_sep                    : 0.9245 (purity_sep_mahalanobis)
+  purity_pers                   : 0.9383 (purity_pers_euclidean)
+  sep_pers                      : 0.9383 (sep_pers_euclidean)
+  tss_no_penalty                : 0.9383 (tss_no_penalty_euclidean)
+  tss_original                  : 0.9383 (tss_original_euclidean)
+  tss_equal_weights             : 0.9383 (tss_equal_weights_euclidean)
+  tss_sep_heavy                 : 0.9383 (tss_sep_heavy_euclidean)
+  tss_purity_heavy              : 0.9383 (tss_purity_heavy_euclidean)
+
+======================================== 5 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.8528563347948602
+  Layers: [13, 14, 15, 12, 16]
+  Test Prob: 0.8529 (delta=+0.0322)
+
+[Strategy 2: Component-Based Strategies]
+Testing each component strategy with each metric...
+
+--- PURITY_ONLY ---
+Prob: 0.8854344544163892
+  euclidean                : Prob=0.8854 (delta=+0.0648) | Layers=[18, 7, 16, 22, 6]
+Prob: 0.8634767360442237
+  cosine                   : Prob=0.8635 (delta=+0.0428) | Layers=[26, 1, 28, 9, 24]
+Prob: 0.9058497286908209
+  mahalanobis              : Prob=0.9058 (delta=+0.0852) | Layers=[11, 13, 29, 27, 17]
+Prob: 0.878909049629904
+  geodesic                 : Prob=0.8789 (delta=+0.0582) | Layers=[6, 2, 31, 19, 24]
+Prob: 0.8644793537599048
+  dens_norm_euclidean      : Prob=0.8645 (delta=+0.0438) | Layers=[2, 22, 5, 24, 3]
+Prob: 0.895610501723796
+  dens_norm_cosine         : Prob=0.8956 (delta=+0.0749) | Layers=[3, 5, 24, 30, 14]
+Prob: 0.8820315375565971
+  dens_norm_mahalanobis    : Prob=0.8820 (delta=+0.0614) | Layers=[24, 10, 3, 15, 0]
+
+--- SEPARABILITY_ONLY ---
+Prob: 0.8151899851066369
+  euclidean                : Prob=0.8152 (delta=-0.0055) | Layers=[16, 31, 15, 23, 14]
+Prob: 0.8727202296891996
+  cosine                   : Prob=0.8727 (delta=+0.0520) | Layers=[20, 15, 31, 14, 17]
+Prob: 0.898603534919272
+  mahalanobis              : Prob=0.8986 (delta=+0.0779) | Layers=[15, 31, 14, 24, 18]
+Prob: 0.8378922128762095
+  geodesic                 : Prob=0.8379 (delta=+0.0172) | Layers=[24, 21, 15, 31, 17]
+Prob: 0.8833927403293959
+  dens_norm_euclidean      : Prob=0.8834 (delta=+0.0627) | Layers=[24, 16, 31, 21, 29]
+Prob: 0.9089709622553763
+  dens_norm_cosine         : Prob=0.9090 (delta=+0.0883) | Layers=[31, 24, 15, 23, 14]
+Prob: 0.8197950250118676
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[16, 15, 22, 21, 29]
+
+--- PERSISTENCE_ONLY ---
+Prob: 0.9406749177590231
+  euclidean                : Prob=0.9407 (delta=+0.1200) | Layers=[13, 14, 15, 7, 12]
+Prob: 0.9406749177590231
+  cosine                   : Prob=0.9407 (delta=+0.1200) | Layers=[13, 15, 14, 12, 7]
+Prob: 0.8785379036191379
+  mahalanobis              : Prob=0.8785 (delta=+0.0579) | Layers=[9, 10, 14, 7, 8]
+Prob: 0.8816560694631093
+  geodesic                 : Prob=0.8817 (delta=+0.0610) | Layers=[14, 15, 13, 7, 16]
+Prob: 0.8197798923150004
+  dens_norm_euclidean      : Prob=0.8198 (delta=-0.0009) | Layers=[0, 2, 3, 1, 4]
+Prob: 0.8976392455486419
+  dens_norm_cosine         : Prob=0.8976 (delta=+0.0770) | Layers=[14, 15, 13, 12, 17]
+Prob: 0.8197798923150004
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+
+--- BETA1_INVERSE ---
+Prob: 0.8197798923150004
+  euclidean                : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  cosine                   : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  mahalanobis              : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  geodesic                 : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  dens_norm_euclidean      : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  dens_norm_cosine         : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.8197798923150004
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+
+--- PURITY_SEP ---
+Prob: 0.8213191969123785
+  euclidean                : Prob=0.8213 (delta=+0.0006) | Layers=[16, 22, 18, 17, 23]
+Prob: 0.9131080623146669
+  cosine                   : Prob=0.9131 (delta=+0.0924) | Layers=[26, 15, 31, 14, 20]
+Prob: 0.8991605603042104
+  mahalanobis              : Prob=0.8992 (delta=+0.0785) | Layers=[15, 14, 27, 17, 21]
+Prob: 0.8330537800509592
+  geodesic                 : Prob=0.8331 (delta=+0.0124) | Layers=[24, 31, 15, 19, 17]
+Prob: 0.8847691221478193
+  dens_norm_euclidean      : Prob=0.8848 (delta=+0.0641) | Layers=[24, 22, 29, 31, 16]
+Prob: 0.9203539026405914
+  dens_norm_cosine         : Prob=0.9204 (delta=+0.0997) | Layers=[24, 31, 14, 18, 23]
+Prob: 0.8065431816846591
+  dens_norm_mahalanobis    : Prob=0.8065 (delta=-0.0141) | Layers=[16, 15, 24, 22, 21]
+
+--- PURITY_PERS ---
+Prob: 0.9406749177590231
+  euclidean                : Prob=0.9407 (delta=+0.1200) | Layers=[13, 14, 15, 7, 12]
+Prob: 0.9367775289470924
+  cosine                   : Prob=0.9368 (delta=+0.1161) | Layers=[15, 7, 9, 13, 14]
+Prob: 0.9058497286908209
+  mahalanobis              : Prob=0.9058 (delta=+0.0852) | Layers=[11, 13, 29, 27, 17]
+Prob: 0.8816560694631093
+  geodesic                 : Prob=0.8817 (delta=+0.0610) | Layers=[14, 15, 13, 7, 16]
+Prob: 0.8226462872731082
+  dens_norm_euclidean      : Prob=0.8226 (delta=+0.0020) | Layers=[2, 3, 5, 0, 4]
+Prob: 0.895610501723796
+  dens_norm_cosine         : Prob=0.8956 (delta=+0.0749) | Layers=[3, 5, 24, 30, 14]
+Prob: 0.8197798923150004
+  dens_norm_mahalanobis    : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+
+--- SEP_PERS ---
+Prob: 0.9406749177590231
+  euclidean                : Prob=0.9407 (delta=+0.1200) | Layers=[13, 14, 15, 7, 12]
+Prob: 0.8727202296891996
+  cosine                   : Prob=0.8727 (delta=+0.0520) | Layers=[15, 14, 20, 17, 31]
+Prob: 0.898603534919272
+  mahalanobis              : Prob=0.8986 (delta=+0.0779) | Layers=[15, 31, 14, 24, 18]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9154007685877943
+  dens_norm_euclidean      : Prob=0.9154 (delta=+0.0947) | Layers=[21, 16, 24, 31, 14]
+Prob: 0.9089709622553763
+  dens_norm_cosine         : Prob=0.9090 (delta=+0.0883) | Layers=[31, 24, 15, 14, 23]
+Prob: 0.9257462973762383
+  dens_norm_mahalanobis    : Prob=0.9257 (delta=+0.1051) | Layers=[0, 16, 17, 28, 14]
+
+--- TSS_NO_PENALTY ---
+Prob: 0.9171602786424786
+  euclidean                : Prob=0.9172 (delta=+0.0965) | Layers=[13, 14, 15, 7, 17]
+Prob: 0.9131080623146669
+  cosine                   : Prob=0.9131 (delta=+0.0924) | Layers=[15, 14, 26, 31, 20]
+Prob: 0.8991605603042104
+  mahalanobis              : Prob=0.8992 (delta=+0.0785) | Layers=[15, 14, 27, 17, 21]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9283351362676437
+  dens_norm_euclidean      : Prob=0.9283 (delta=+0.1077) | Layers=[24, 22, 14, 29, 16]
+Prob: 0.9203539026405914
+  dens_norm_cosine         : Prob=0.9204 (delta=+0.0997) | Layers=[24, 31, 14, 18, 23]
+Prob: 0.9239937261100124
+  dens_norm_mahalanobis    : Prob=0.9240 (delta=+0.1033) | Layers=[0, 16, 14, 17, 30]
+
+--- TSS_ORIGINAL ---
+Prob: 0.9171602786424786
+  euclidean                : Prob=0.9172 (delta=+0.0965) | Layers=[13, 14, 15, 7, 17]
+Prob: 0.9131080623146669
+  cosine                   : Prob=0.9131 (delta=+0.0924) | Layers=[15, 14, 26, 31, 20]
+Prob: 0.8991605603042104
+  mahalanobis              : Prob=0.8992 (delta=+0.0785) | Layers=[15, 14, 27, 17, 21]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9283351362676437
+  dens_norm_euclidean      : Prob=0.9283 (delta=+0.1077) | Layers=[24, 22, 14, 29, 16]
+Prob: 0.9203539026405914
+  dens_norm_cosine         : Prob=0.9204 (delta=+0.0997) | Layers=[24, 31, 14, 18, 23]
+Prob: 0.9239937261100124
+  dens_norm_mahalanobis    : Prob=0.9240 (delta=+0.1033) | Layers=[0, 16, 14, 17, 30]
+
+--- TSS_EQUAL_WEIGHTS ---
+Prob: 0.9171602786424786
+  euclidean                : Prob=0.9172 (delta=+0.0965) | Layers=[13, 14, 15, 7, 17]
+Prob: 0.9017299175450206
+  cosine                   : Prob=0.9017 (delta=+0.0811) | Layers=[15, 14, 26, 31, 17]
+Prob: 0.8991605603042104
+  mahalanobis              : Prob=0.8992 (delta=+0.0785) | Layers=[15, 14, 27, 17, 21]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9283351362676437
+  dens_norm_euclidean      : Prob=0.9283 (delta=+0.1077) | Layers=[22, 24, 14, 16, 29]
+Prob: 0.9203539026405914
+  dens_norm_cosine         : Prob=0.9204 (delta=+0.0997) | Layers=[24, 31, 14, 18, 23]
+Prob: 0.9257462973762383
+  dens_norm_mahalanobis    : Prob=0.9257 (delta=+0.1051) | Layers=[0, 16, 17, 14, 28]
+
+--- TSS_SEP_HEAVY ---
+Prob: 0.9171602786424786
+  euclidean                : Prob=0.9172 (delta=+0.0965) | Layers=[14, 13, 15, 17, 7]
+Prob: 0.9131080623146669
+  cosine                   : Prob=0.9131 (delta=+0.0924) | Layers=[15, 20, 14, 31, 26]
+Prob: 0.9061856954954953
+  mahalanobis              : Prob=0.9062 (delta=+0.0855) | Layers=[15, 14, 31, 24, 21]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.8622557217045671
+  dens_norm_euclidean      : Prob=0.8623 (delta=+0.0416) | Layers=[24, 22, 16, 31, 21]
+Prob: 0.9089709622553763
+  dens_norm_cosine         : Prob=0.9090 (delta=+0.0883) | Layers=[31, 24, 15, 14, 23]
+Prob: 0.9258591814757601
+  dens_norm_mahalanobis    : Prob=0.9259 (delta=+0.1052) | Layers=[16, 14, 30, 17, 28]
+
+--- TSS_PURITY_HEAVY ---
+Prob: 0.9171602786424786
+  euclidean                : Prob=0.9172 (delta=+0.0965) | Layers=[13, 14, 15, 7, 17]
+Prob: 0.9307794136289701
+  cosine                   : Prob=0.9308 (delta=+0.1101) | Layers=[26, 15, 14, 24, 29]
+Prob: 0.9225945114346932
+  mahalanobis              : Prob=0.9226 (delta=+0.1019) | Layers=[27, 14, 17, 15, 29]
+Prob: 0.8528563347948602
+  geodesic                 : Prob=0.8529 (delta=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9255758577443091
+  dens_norm_euclidean      : Prob=0.9256 (delta=+0.1049) | Layers=[22, 24, 29, 14, 17]
+Prob: 0.9217956578179082
+  dens_norm_cosine         : Prob=0.9218 (delta=+0.1011) | Layers=[24, 14, 18, 31, 30]
+Prob: 0.9256976765908718
+  dens_norm_mahalanobis    : Prob=0.9257 (delta=+0.1050) | Layers=[0, 16, 30, 14, 20]
+
+
+[Strategy 3: Ensemble Within Each Component Strategy]
+Averaging across all metrics for each component strategy...
+
+Prob: 0.8716835924854044
+  purity_only                   : Prob=0.8717 (delta=+0.0510) | Layers=[24, 3, 29, 22, 9]
+Prob: 0.8593444400160402
+  separability_only             : Prob=0.8593 (delta=+0.0387) | Layers=[31, 15, 16, 14, 24]
+Prob: 0.9388187716523553
+  persistence_only              : Prob=0.9388 (delta=+0.1181) | Layers=[13, 14, 12, 15, 6]
+Prob: 0.8197798923150004
+  beta1_inverse                 : Prob=0.8198 (delta=-0.0009) | Layers=[0, 1, 2, 3, 4]
+Prob: 0.812868450401028
+  purity_sep                    : Prob=0.8129 (delta=-0.0078) | Layers=[24, 31, 15, 16, 22]
+Prob: 0.9112037992259466
+  purity_pers                   : Prob=0.9112 (delta=+0.0905) | Layers=[13, 14, 9, 3, 5]
+Prob: 0.806355667999233
+  sep_pers                      : Prob=0.8064 (delta=-0.0143) | Layers=[14, 16, 17, 15, 13]
+Prob: 0.806355667999233
+  tss_no_penalty                : Prob=0.8064 (delta=-0.0143) | Layers=[14, 16, 15, 17, 13]
+Prob: 0.806355667999233
+  tss_original                  : Prob=0.8064 (delta=-0.0143) | Layers=[14, 16, 15, 17, 13]
+Prob: 0.806355667999233
+  tss_equal_weights             : Prob=0.8064 (delta=-0.0143) | Layers=[14, 16, 15, 17, 13]
+Prob: 0.806355667999233
+  tss_sep_heavy                 : Prob=0.8064 (delta=-0.0143) | Layers=[14, 15, 16, 17, 13]
+Prob: 0.806355667999233
+  tss_purity_heavy              : Prob=0.8064 (delta=-0.0143) | Layers=[14, 15, 16, 17, 13]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: persistence_only_euclidean
+   Probability: 0.9407
+   Improvement: +0.1200
+   Layers: [13, 14, 15, 7, 12]
+
+Top 10 Strategies:
+   1. persistence_only_euclidean              : 0.9407 (Δ=+0.1200)
+   2. persistence_only_cosine                 : 0.9407 (Δ=+0.1200)
+   3. purity_pers_euclidean                   : 0.9407 (Δ=+0.1200)
+   4. sep_pers_euclidean                      : 0.9407 (Δ=+0.1200)
+   5. ensemble_persistence_only               : 0.9388 (Δ=+0.1181)
+   6. purity_pers_cosine                      : 0.9368 (Δ=+0.1161)
+   7. tss_purity_heavy_cosine                 : 0.9308 (Δ=+0.1101)
+   8. tss_no_penalty_dens_norm_euclidean      : 0.9283 (Δ=+0.1077)
+   9. tss_original_dens_norm_euclidean        : 0.9283 (Δ=+0.1077)
+  10. tss_equal_weights_dens_norm_euclidean   : 0.9283 (Δ=+0.1077)
+
+Best Performer by Component:
+  purity_only                   : 0.9058 (purity_only_mahalanobis)
+  separability_only             : 0.9090 (separability_only_dens_norm_cosine)
+  persistence_only              : 0.9407 (persistence_only_euclidean)
+  beta1_inverse                 : 0.8198 (beta1_inverse_euclidean)
+  purity_sep                    : 0.9204 (purity_sep_dens_norm_cosine)
+  purity_pers                   : 0.9407 (purity_pers_euclidean)
+  sep_pers                      : 0.9407 (sep_pers_euclidean)
+  tss_no_penalty                : 0.9283 (tss_no_penalty_dens_norm_euclidean)
+  tss_original                  : 0.9283 (tss_original_dens_norm_euclidean)
+  tss_equal_weights             : 0.9283 (tss_equal_weights_dens_norm_euclidean)
+  tss_sep_heavy                 : 0.9259 (tss_sep_heavy_dens_norm_mahalanobis)
+  tss_purity_heavy              : 0.9308 (tss_purity_heavy_cosine)
+
+====================================================================================================
+Task conscientiousness completed
+====================================================================================================
+
+
+====================================================================================================
+ALL TASKS COMPLETED!
+====================================================================================================

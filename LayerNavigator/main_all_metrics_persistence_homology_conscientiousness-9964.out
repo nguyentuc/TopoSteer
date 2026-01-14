@@ -482,4 +482,312 @@ HOLE scores saved to: ./Score_HOLE-standard-dens_norm_cosine/conscientiousness/c
  Metric: dens_norm_mahalanobis
 --------------------------------------------------------------------------------
 Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [15:57<8:14:46, 957.62s/it]Computing HOLE Scores:   6%|▋         | 2/32 [31:53<7:58:22, 956.75s/it]Computing HOLE Scores:   9%|▉         | 3/32 [47:51<7:42:39, 957.24s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [1:03:46<7:26:20, 956.45s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [1:19:42<7:10:21, 956.34s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [1:35:40<6:54:31, 956.61s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [1:51:36<6:38:30, 956.41s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [2:07:32<6:22:32, 956.36s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [2:23:29<6:06:42, 956.63s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [2:39:25<5:50:42, 956.49s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [2:55:22<5:34:50, 956.71s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [3:11:18<5:18:48, 956.45s/it]
+Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [15:57<8:14:46, 957.62s/it]Computing HOLE Scores:   6%|▋         | 2/32 [31:53<7:58:22, 956.75s/it]Computing HOLE Scores:   9%|▉         | 3/32 [47:51<7:42:39, 957.24s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [1:03:46<7:26:20, 956.45s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [1:19:42<7:10:21, 956.34s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [1:35:40<6:54:31, 956.61s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [1:51:36<6:38:30, 956.41s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [2:07:32<6:22:32, 956.36s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [2:23:29<6:06:42, 956.63s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [2:39:25<5:50:42, 956.49s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [2:55:22<5:34:50, 956.71s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [3:11:18<5:18:48, 956.45s/it]Computing HOLE Scores:  41%|████      | 13/32 [3:27:15<5:02:54, 956.57s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [3:43:12<4:46:57, 956.54s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [3:59:09<4:31:05, 956.77s/it]Computing HOLE Scores:  50%|█████     | 16/32 [4:15:05<4:15:04, 956.53s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [4:31:02<3:59:10, 956.72s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [4:46:59<3:43:16, 956.90s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [5:02:56<3:27:18, 956.83s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [5:18:53<3:11:21, 956.77s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [5:34:49<2:55:24, 956.74s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [5:50:46<2:39:26, 956.61s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [6:06:42<2:23:28, 956.53s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [6:22:39<2:07:32, 956.57s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [6:38:35<1:51:35, 956.53s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [6:54:31<1:35:38, 956.47s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [7:10:28<1:19:43, 956.64s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [7:26:25<1:03:45, 956.46s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [7:42:20<47:48, 956.07s/it]  Computing HOLE Scores:  94%|█████████▍| 30/32 [7:58:15<31:51, 955.80s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [8:14:11<15:55, 955.84s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:30:04<00:00, 955.20s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:30:05<00:00, 956.41s/it]
+/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:492: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:497: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+  Layer 0: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 0: TSS=0.738, Purity=0.530, Sep=0.125, β1=0
+  Layer 1: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 1: TSS=0.615, Purity=0.504, Sep=0.070, β1=0
+  Layer 2: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 2: TSS=0.580, Purity=0.524, Sep=0.101, β1=0
+  Layer 3: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 3: TSS=0.533, Purity=0.534, Sep=0.162, β1=0
+  Layer 4: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 4: TSS=0.516, Purity=0.524, Sep=0.173, β1=0
+  Layer 5: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 5: TSS=0.511, Purity=0.514, Sep=0.211, β1=0
+  Layer 6: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 6: TSS=0.506, Purity=0.516, Sep=0.264, β1=0
+  Layer 7: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 7: TSS=0.580, Purity=0.520, Sep=0.442, β1=0
+  Layer 8: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 8: TSS=0.582, Purity=0.506, Sep=0.594, β1=0
+  Layer 9: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 9: TSS=0.640, Purity=0.518, Sep=0.622, β1=0
+  Layer 10: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 10: TSS=0.628, Purity=0.542, Sep=0.638, β1=0
+  Layer 11: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 11: TSS=0.606, Purity=0.530, Sep=0.569, β1=0
+  Layer 12: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 12: TSS=0.635, Purity=0.524, Sep=0.663, β1=0
+  Layer 13: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 13: TSS=0.643, Purity=0.504, Sep=0.699, β1=0
+  Layer 14: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 14: TSS=0.663, Purity=0.520, Sep=0.752, β1=0
+  Layer 15: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 15: TSS=0.626, Purity=0.532, Sep=0.772, β1=0
+  Layer 16: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 16: TSS=0.689, Purity=0.524, Sep=0.791, β1=0
+  Layer 17: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 17: TSS=0.662, Purity=0.508, Sep=0.745, β1=0
+  Layer 18: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 18: TSS=0.614, Purity=0.520, Sep=0.749, β1=0
+  Layer 19: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 19: TSS=0.654, Purity=0.510, Sep=0.735, β1=0
+  Layer 20: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 20: TSS=0.659, Purity=0.520, Sep=0.731, β1=0
+  Layer 21: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 21: TSS=0.640, Purity=0.530, Sep=0.768, β1=0
+  Layer 22: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 22: TSS=0.636, Purity=0.530, Sep=0.770, β1=0
+  Layer 23: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 23: TSS=0.601, Purity=0.518, Sep=0.748, β1=0
+  Layer 24: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 24: TSS=0.630, Purity=0.550, Sep=0.752, β1=0
+  Layer 25: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 25: TSS=0.612, Purity=0.526, Sep=0.754, β1=0
+  Layer 26: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 26: TSS=0.613, Purity=0.516, Sep=0.730, β1=0
+  Layer 27: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 27: TSS=0.651, Purity=0.524, Sep=0.743, β1=0
+  Layer 28: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 28: TSS=0.660, Purity=0.512, Sep=0.745, β1=0
+  Layer 29: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 29: TSS=0.612, Purity=0.522, Sep=0.762, β1=0
+  Layer 30: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 30: TSS=0.660, Purity=0.526, Sep=0.750, β1=0
+  Layer 31: Computing persistent homology with dens_norm_mahalanobis distance...
+  Layer 31: TSS=0.603, Purity=0.520, Sep=0.760, β1=0
+HOLE scores saved to: ./Score_HOLE-standard-dens_norm_mahalanobis/conscientiousness/conscientiousness+md/
+
+================================================================================
+All metrics saved to: ./Score_HOLE-standard_ALL_METRICS/conscientiousness/conscientiousness+md/
+================================================================================
+All 7 HOLE metrics computed
+
+STEP 3C: Comparing LayerNavigator with All HOLE Metrics
+====================================================================================================
+
+--- Metric: euclidean ---
+  Spearman Correlation: 0.826 (p=0.0000)
+  Top-10 Jaccard Similarity: 0.538
+  Agreement: 7/10 layers
+
+--- Metric: cosine ---
+  Spearman Correlation: 0.570 (p=0.0007)
+  Top-10 Jaccard Similarity: 0.250
+  Agreement: 4/10 layers
+
+--- Metric: mahalanobis ---
+  Spearman Correlation: 0.529 (p=0.0019)
+  Top-10 Jaccard Similarity: 0.250
+  Agreement: 4/10 layers
+
+--- Metric: geodesic ---
+  Spearman Correlation: 0.797 (p=0.0000)
+  Top-10 Jaccard Similarity: 0.429
+  Agreement: 6/10 layers
+
+--- Metric: dens_norm_euclidean ---
+  Spearman Correlation: 0.505 (p=0.0032)
+  Top-10 Jaccard Similarity: 0.333
+  Agreement: 5/10 layers
+
+--- Metric: dens_norm_cosine ---
+  Spearman Correlation: 0.493 (p=0.0042)
+  Top-10 Jaccard Similarity: 0.250
+  Agreement: 4/10 layers
+
+--- Metric: dens_norm_mahalanobis ---
+  Spearman Correlation: 0.416 (p=0.0178)
+  Top-10 Jaccard Similarity: 0.333
+  Agreement: 5/10 layers
+All comparisons saved
+
+STEP 3D: Analyzing Metric Consensus
+====================================================================================================
+
+Layers by Metric Consensus (top-10 appearances):
+------------------------------------------------------------
+  Layer 14: Appears in top-10 of 7/7 metrics
+  Layer 17: Appears in top-10 of 6/7 metrics
+  Layer 15: Appears in top-10 of 5/7 metrics
+  Layer 16: Appears in top-10 of 5/7 metrics
+  Layer 24: Appears in top-10 of 4/7 metrics
+  Layer 31: Appears in top-10 of 4/7 metrics
+  Layer 13: Appears in top-10 of 3/7 metrics
+  Layer 18: Appears in top-10 of 3/7 metrics
+  Layer 19: Appears in top-10 of 3/7 metrics
+  Layer 20: Appears in top-10 of 3/7 metrics
+  Layer 27: Appears in top-10 of 3/7 metrics
+  Layer 30: Appears in top-10 of 3/7 metrics
+  Layer  6: Appears in top-10 of 2/7 metrics
+  Layer  7: Appears in top-10 of 2/7 metrics
+  Layer  8: Appears in top-10 of 2/7 metrics
+
+>>> STEP 4: Testing Layer Selection Strategies
+====================================================================================================
+
+======================================== 1 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.8533748478047554
+  Layers: [13]
+  Test Prob: 0.8534 (Δ=+0.0327)
+
+[Strategy 2: Individual HOLE Metrics]
+Prob: 0.8533748478047554
+  euclidean                : Prob=0.8534 (Δ=+0.0327) | Layers=[13]
+Prob: 0.8742323966859904
+  cosine                   : Prob=0.8742 (Δ=+0.0536) | Layers=[15]
+Prob: 0.8742323966859904
+  mahalanobis              : Prob=0.8742 (Δ=+0.0536) | Layers=[15]
+Prob: 0.8709376542797881
+  geodesic                 : Prob=0.8709 (Δ=+0.0503) | Layers=[14]
+Prob: 0.8403999783911645
+  dens_norm_euclidean      : Prob=0.8404 (Δ=+0.0197) | Layers=[24]
+Prob: 0.8403999783911645
+  dens_norm_cosine         : Prob=0.8404 (Δ=+0.0197) | Layers=[24]
+Prob: 0.8204988557818303
+  dens_norm_mahalanobis    : Prob=0.8205 (Δ=-0.0002) | Layers=[0]
+
+[Strategy 3: Hybrid Strategies]
+  Best HOLE metric: cosine
+Prob: 0.8742323966859904
+  Hybrid α=0.3 (LN+cosine): Prob=0.8742 (Δ=+0.0536) | Layers=[15]
+Prob: 0.8742323966859904
+  Hybrid α=0.5 (LN+cosine): Prob=0.8742 (Δ=+0.0536) | Layers=[15]
+Prob: 0.8709376542797881
+  Hybrid α=0.7 (LN+cosine): Prob=0.8709 (Δ=+0.0503) | Layers=[14]
+
+[Strategy 4: Ensemble Across All Metrics]
+Prob: 0.8709376542797881
+  Ensemble (avg of 7): Prob=0.8709 (Δ=+0.0503) | Layers=[14]
+
+[Strategy 5: Consensus-Based Selection]
+Prob: 0.8709376542797881
+  Consensus: Prob=0.8709 (Δ=+0.0503) | Layers=[14]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: hole_cosine
+   Probability: 0.8742
+   Improvement: +0.0536
+   Layers: [15]
+
+Top 5 Strategies:
+  1. hole_cosine                   : 0.8742 (Δ=+0.0536)
+  2. hole_mahalanobis              : 0.8742 (Δ=+0.0536)
+  3. hybrid_alpha0.3               : 0.8742 (Δ=+0.0536)
+  4. hybrid_alpha0.5               : 0.8742 (Δ=+0.0536)
+  5. hole_geodesic                 : 0.8709 (Δ=+0.0503)
+
+======================================== 3 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.9382691409986589
+  Layers: [13, 14, 15]
+  Test Prob: 0.9383 (Δ=+0.1176)
+
+[Strategy 2: Individual HOLE Metrics]
+Prob: 0.9382691409986589
+  euclidean                : Prob=0.9383 (Δ=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9248040839720986
+  cosine                   : Prob=0.9248 (Δ=+0.1041) | Layers=[15, 14, 26]
+Prob: 0.9245041002830032
+  mahalanobis              : Prob=0.9245 (Δ=+0.1038) | Layers=[15, 14, 27]
+Prob: 0.9382691409986589
+  geodesic                 : Prob=0.9383 (Δ=+0.1176) | Layers=[14, 15, 13]
+Prob: 0.9071742313367204
+  dens_norm_euclidean      : Prob=0.9072 (Δ=+0.0865) | Layers=[24, 22, 14]
+Prob: 0.9056222512160917
+  dens_norm_cosine         : Prob=0.9056 (Δ=+0.0850) | Layers=[24, 31, 14]
+Prob: 0.9182898796131469
+  dens_norm_mahalanobis    : Prob=0.9183 (Δ=+0.0976) | Layers=[0, 16, 14]
+
+[Strategy 3: Hybrid Strategies]
+  Best HOLE metric: euclidean
+Prob: 0.9382691409986589
+  Hybrid α=0.3 (LN+euclidean): Prob=0.9383 (Δ=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9382691409986589
+  Hybrid α=0.5 (LN+euclidean): Prob=0.9383 (Δ=+0.1176) | Layers=[13, 14, 15]
+Prob: 0.9382691409986589
+  Hybrid α=0.7 (LN+euclidean): Prob=0.9383 (Δ=+0.1176) | Layers=[13, 14, 15]
+
+[Strategy 4: Ensemble Across All Metrics]
+Prob: 0.8995704700368592
+  Ensemble (avg of 7): Prob=0.8996 (Δ=+0.0789) | Layers=[14, 16, 15]
+
+[Strategy 5: Consensus-Based Selection]
+Prob: 0.9173766781068992
+  Consensus: Prob=0.9174 (Δ=+0.0967) | Layers=[14, 17, 15]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: layernav
+   Probability: 0.9383
+   Improvement: +0.1176
+   Layers: [13, 14, 15]
+
+Top 5 Strategies:
+  1. layernav                      : 0.9383 (Δ=+0.1176)
+  2. hole_euclidean                : 0.9383 (Δ=+0.1176)
+  3. hole_geodesic                 : 0.9383 (Δ=+0.1176)
+  4. hybrid_alpha0.3               : 0.9383 (Δ=+0.1176)
+  5. hybrid_alpha0.5               : 0.9383 (Δ=+0.1176)
+
+======================================== 5 Layer(s) ========================================
+
+[Strategy 1: LayerNavigator Only]
+Prob: 0.8528556820548442
+  Layers: [13, 14, 15, 12, 16]
+  Test Prob: 0.8529 (Δ=+0.0322)
+
+[Strategy 2: Individual HOLE Metrics]
+Prob: 0.9171597808757984
+  euclidean                : Prob=0.9172 (Δ=+0.0965) | Layers=[13, 14, 15, 7, 17]
+Prob: 0.9131080916937377
+  cosine                   : Prob=0.9131 (Δ=+0.0924) | Layers=[15, 14, 26, 31, 20]
+Prob: 0.8991607335403445
+  mahalanobis              : Prob=0.8992 (Δ=+0.0785) | Layers=[15, 14, 27, 17, 21]
+Prob: 0.8528556820548442
+  geodesic                 : Prob=0.8529 (Δ=+0.0322) | Layers=[14, 15, 13, 16, 12]
+Prob: 0.9283351402853662
+  dens_norm_euclidean      : Prob=0.9283 (Δ=+0.1077) | Layers=[24, 22, 14, 29, 16]
+Prob: 0.9203536724240471
+  dens_norm_cosine         : Prob=0.9204 (Δ=+0.0997) | Layers=[24, 31, 14, 18, 23]
+Prob: 0.9239936877277606
+  dens_norm_mahalanobis    : Prob=0.9240 (Δ=+0.1033) | Layers=[0, 16, 14, 17, 30]
+
+[Strategy 3: Hybrid Strategies]
+  Best HOLE metric: dens_norm_euclidean
+Prob: 0.7805652300472491
+  Hybrid α=0.3 (LN+dens_norm_euclidean): Prob=0.7806 (Δ=-0.0401) | Layers=[14, 16, 17, 22, 15]
+Prob: 0.806355142208212
+  Hybrid α=0.5 (LN+dens_norm_euclidean): Prob=0.8064 (Δ=-0.0143) | Layers=[14, 15, 16, 13, 17]
+Prob: 0.806355142208212
+  Hybrid α=0.7 (LN+dens_norm_euclidean): Prob=0.8064 (Δ=-0.0143) | Layers=[14, 13, 15, 16, 17]
+
+[Strategy 4: Ensemble Across All Metrics]
+Prob: 0.806355142208212
+  Ensemble (avg of 7): Prob=0.8064 (Δ=-0.0143) | Layers=[14, 16, 15, 17, 13]
+
+[Strategy 5: Consensus-Based Selection]
+Prob: 0.8408031682202407
+  Consensus: Prob=0.8408 (Δ=+0.0201) | Layers=[14, 17, 15, 16, 24]
+
+======================================== SUMMARY ========================================
+
+BEST STRATEGY: hole_dens_norm_euclidean
+   Probability: 0.9283
+   Improvement: +0.1077
+   Layers: [24, 22, 14, 29, 16]
+
+Top 5 Strategies:
+  1. hole_dens_norm_euclidean      : 0.9283 (Δ=+0.1077)
+  2. hole_dens_norm_mahalanobis    : 0.9240 (Δ=+0.1033)
+  3. hole_dens_norm_cosine         : 0.9204 (Δ=+0.0997)
+  4. hole_euclidean                : 0.9172 (Δ=+0.0965)
+  5. hole_cosine                   : 0.9131 (Δ=+0.0924)
+
+====================================================================================================
+Task conscientiousness completed
+====================================================================================================
+
+
+====================================================================================================
+ALL TASKS COMPLETED!
+====================================================================================================
