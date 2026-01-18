@@ -20,8 +20,6 @@ def compute_clustering_purity(activations: np.ndarray, labels: np.ndarray) -> fl
     """
     Compute clustering purity using connected components from H0
     
-    HOLE paper: "Clustering purity dropped from 0.87 to 0.62 under speckle noise"
-    
     Args:
         activations: (N, hidden_dim)
         labels: (N,) - class labels
@@ -253,7 +251,7 @@ def get_hole_score(
         
         for i in range(ans_num):
             all_acts.append(torch.stack(acts[i][l]))
-            all_labels.append(torch.ones(all_acts[i].shape[0]) * i)
+            all_labels.append(torch.ones(all_acts[i].shape[0]) * i) # label of correct and incorrect
         
         all_acts = torch.cat(all_acts, dim=0).cpu().numpy()  # Move to CPU for GUDHI
         all_labels = torch.cat(all_labels, dim=0).cpu().numpy()

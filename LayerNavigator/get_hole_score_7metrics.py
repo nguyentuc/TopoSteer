@@ -180,10 +180,11 @@ def compute_persistence_diagram(
     metric: str = 'cosine',
     max_dimension: int = 2,
     max_edge_length: float = np.inf,
-    k_neighbors: int = 10  # For geodesic and density normalization
+    k_neighbors: int = 10,  # For geodesic and density normalization
+    num_filtration_steps: int = 50  # For Betti curves
 ) -> Dict:
     """
-    Compute persistence diagram using GUDHI
+    Compute persistence diagram using GUDHI with enhanced topological metrics
     
     Args:
         activations: (N, hidden_dim)
@@ -198,12 +199,17 @@ def compute_persistence_diagram(
         max_dimension: maximum homology dimension to compute
         max_edge_length: maximum distance for Rips complex
         k_neighbors: k for geodesic (k-NN graph) and density normalization
+        num_filtration_steps: number of steps for Betti curve computation
         
     Returns:
         persistence_data: {
             'diagram': list of (dimension, (birth, death)),
             'betti_numbers': {0: β0, 1: β1, 2: β2},
-            'persistence_stats': {...}
+            'persistence_stats': {...},
+            'persistence_entropy': {0: H0_entropy, 1: H1_entropy, ...},
+            'betti_curves': {0: [(ε, β0), ...], 1: [(ε, β1), ...], ...},
+            'betti_curve_auc': {0: AUC_β0, 1: AUC_β1, ...},
+            'strong_loops_count': int,  # H1 features with persistence > threshold
         }
     """
     # ============================================
@@ -253,6 +259,10 @@ def compute_persistence_diagram(
             f"'dens_norm_euclidean', 'dens_norm_cosine', 'dens_norm_mahalanobis'"
         )
     
+    # ============================================
+    # STEP 2: CREATE RIPS COMPLEX AND COMPUTE PERSISTENCE
+    # ============================================
+    
     # Create Rips complex
     rips_complex = gudhi.RipsComplex(distance_matrix=distances, max_edge_length=max_edge_length)
     simplex_tree = rips_complex.create_simplex_tree(max_dimension=max_dimension)
@@ -271,7 +281,10 @@ def compute_persistence_diagram(
     while len(betti_numbers) <= max_dimension:
         betti_numbers.append(0)
     
-    # Compute persistence statistics
+    # ============================================
+    # STEP 3: COMPUTE BASIC PERSISTENCE STATISTICS
+    # ============================================
+    
     persistence_stats = {}
     for dim in range(max_dimension + 1):
         pairs = persistence_by_dim[dim]
@@ -296,12 +309,230 @@ def compute_persistence_diagram(
             persistence_stats[f'H{dim}_total'] = 0.0
             persistence_stats[f'H{dim}_count'] = 0
     
+    # ============================================
+    # STEP 4: COMPUTE PERSISTENCE ENTROPY (NEW METRIC 1)
+    # ============================================
+    
+    persistence_entropy = {}
+    for dim in range(max_dimension + 1):
+        pairs = persistence_by_dim[dim]
+        finite_pairs = [(b, d) for b, d in pairs if d != np.inf]
+        
+        if len(finite_pairs) > 1:
+            persistences = np.array([d - b for b, d in finite_pairs])
+            total_persistence = np.sum(persistences)
+            
+            if total_persistence > 1e-10:  # Avoid division by zero
+                # Compute normalized probabilities
+                probabilities = persistences / total_persistence
+                # Compute entropy: H = -Σ(p_i * log(p_i))
+                entropy = -np.sum(probabilities * np.log(probabilities + 1e-10))
+                persistence_entropy[dim] = float(entropy)
+            else:
+                persistence_entropy[dim] = 0.0
+        else:
+            persistence_entropy[dim] = 0.0
+    
+    # ============================================
+    # STEP 5: COMPUTE BETTI CURVES (NEW METRIC 3)
+    # ============================================
+    
+    # Determine filtration range
+    max_filtration = simplex_tree.filtration()[-1][1] if len(simplex_tree.get_filtration()) > 0 else 1.0
+    min_filtration = 0.0
+    
+    # Create filtration thresholds
+    filtration_values = np.linspace(min_filtration, max_filtration, num_filtration_steps)
+    
+    betti_curves = {dim: [] for dim in range(max_dimension + 1)}
+    
+    for epsilon in filtration_values:
+        # Count features alive at this epsilon
+        for dim in range(max_dimension + 1):
+            pairs = persistence_by_dim[dim]
+            # Count features where birth <= epsilon < death
+            alive_count = sum(1 for b, d in pairs if b <= epsilon and (d > epsilon or d == np.inf))
+            betti_curves[dim].append((float(epsilon), alive_count))
+    
+    # Compute Area Under Curve (AUC) for each Betti curve
+    betti_curve_auc = {}
+    for dim in range(max_dimension + 1):
+        if len(betti_curves[dim]) > 1:
+            epsilons = np.array([eps for eps, _ in betti_curves[dim]])
+            betti_values = np.array([beta for _, beta in betti_curves[dim]])
+            # Trapezoidal integration
+            auc = np.trapz(betti_values, epsilons)
+            betti_curve_auc[dim] = float(auc)
+        else:
+            betti_curve_auc[dim] = 0.0
+    
+    # ============================================
+    # STEP 6: COMPUTE H₁ ENHANCED STATISTICS (NEW METRIC 4)
+    # ============================================
+    
+    # Count "strong loops" - loops with high persistence
+    h1_pairs = persistence_by_dim[1]
+    finite_h1_pairs = [(b, d) for b, d in h1_pairs if d != np.inf]
+    
+    if finite_h1_pairs:
+        h1_persistences = np.array([d - b for b, d in finite_h1_pairs])
+        
+        # Define "strong loop" threshold (e.g., 50th percentile or absolute threshold)
+        if len(h1_persistences) > 0:
+            # Use median as threshold, or you can use a fixed value like 0.5
+            strong_loop_threshold = np.median(h1_persistences) if len(h1_persistences) > 1 else h1_persistences[0]
+            strong_loops_count = int(np.sum(h1_persistences > strong_loop_threshold))
+        else:
+            strong_loops_count = 0
+    else:
+        strong_loops_count = 0
+    
+    # Compute weighted entanglement score: β₁ weighted by mean H₁ persistence
+    mean_h1_persistence = persistence_stats.get('H1_mean', 0.0)
+    beta1 = betti_numbers[1] if len(betti_numbers) > 1 else 0
+    weighted_entanglement = beta1 * mean_h1_persistence
+    
+    # ============================================
+    # STEP 7: RETURN COMPREHENSIVE RESULTS
+    # ============================================
+    
     return {
+        # Original outputs
         'diagram': persistence,
         'persistence_by_dim': persistence_by_dim,
         'betti_numbers': {i: betti_numbers[i] if i < len(betti_numbers) else 0 
                           for i in range(max_dimension + 1)},
-        'persistence_stats': persistence_stats
+        'persistence_stats': persistence_stats,
+        
+        # NEW METRIC 1: Persistence Entropy
+        'persistence_entropy': persistence_entropy,
+        
+        # NEW METRIC 3: Betti Curves and AUC
+        'betti_curves': betti_curves,
+        'betti_curve_auc': betti_curve_auc,
+        
+        # NEW METRIC 4: H₁ Enhanced Statistics
+        'strong_loops_count': strong_loops_count,
+        'weighted_entanglement': weighted_entanglement,
+    }
+
+
+# ============================================
+# HELPER FUNCTION FOR METRIC 2: WASSERSTEIN DISTANCE
+# ============================================
+
+def compute_wasserstein_distance(diagram1: Dict, diagram2: Dict, 
+                                  dimension: int = 1, order: int = 2) -> float:
+    """
+    Compute Wasserstein distance between two persistence diagrams
+    
+    This is NEW METRIC 2 - used to compare topology between layers
+    
+    Args:
+        diagram1: Output from compute_persistence_diagram for layer i
+        diagram2: Output from compute_persistence_diagram for layer j
+        dimension: Which homology dimension to compare (default: H₁)
+        order: Wasserstein order (1 or 2)
+        
+    Returns:
+        wasserstein_distance: float
+    """
+    try:
+        import gudhi.wasserstein
+        
+        # Extract persistence pairs for the specified dimension
+        pairs1 = diagram1['persistence_by_dim'][dimension]
+        pairs2 = diagram2['persistence_by_dim'][dimension]
+        
+        # Filter out infinite persistence
+        finite_pairs1 = np.array([[b, d] for b, d in pairs1 if d != np.inf])
+        finite_pairs2 = np.array([[b, d] for b, d in pairs2 if d != np.inf])
+        
+        # Handle empty diagrams
+        if len(finite_pairs1) == 0 or len(finite_pairs2) == 0:
+            return 0.0
+        
+        # Compute Wasserstein distance
+        distance = gudhi.wasserstein.wasserstein_distance(
+            finite_pairs1, 
+            finite_pairs2, 
+            order=order
+        )
+        
+        return float(distance)
+        
+    except ImportError:
+        print("Warning: GUDHI Wasserstein module not available. Install with: pip install gudhi")
+        return 0.0
+    except Exception as e:
+        print(f"Warning: Wasserstein distance computation failed: {e}")
+        return 0.0
+
+
+def compute_layer_stability(layer_diagrams: List[Dict], 
+                            dimension: int = 1,
+                            order: int = 2) -> Dict:
+    """
+    Compute topological stability across layers using Wasserstein distances
+    
+    Args:
+        layer_diagrams: List of persistence diagrams for consecutive layers
+        dimension: Homology dimension to analyze
+        order: Wasserstein order
+        
+    Returns:
+        stability_stats: {
+            'wasserstein_distances': list of distances between adjacent layers,
+            'avg_stability': average stability (lower Wasserstein = more stable),
+            'max_transition': maximum topological change,
+            'stable_regions': list of (start_layer, end_layer) for stable regions
+        }
+    """
+    wasserstein_distances = []
+    
+    # Compute Wasserstein distance between consecutive layers
+    for i in range(len(layer_diagrams) - 1):
+        dist = compute_wasserstein_distance(
+            layer_diagrams[i], 
+            layer_diagrams[i + 1],
+            dimension=dimension,
+            order=order
+        )
+        wasserstein_distances.append(dist)
+    
+    if not wasserstein_distances:
+        return {
+            'wasserstein_distances': [],
+            'avg_stability': 0.0,
+            'max_transition': 0.0,
+            'stable_regions': []
+        }
+    
+    # Compute statistics
+    avg_stability = np.mean(wasserstein_distances)
+    max_transition = np.max(wasserstein_distances)
+    
+    # Identify stable regions (where Wasserstein distance is below threshold)
+    stability_threshold = np.median(wasserstein_distances)
+    stable_regions = []
+    
+    current_region_start = 0
+    for i, dist in enumerate(wasserstein_distances):
+        if dist > stability_threshold:
+            # End of stable region
+            if i > current_region_start:
+                stable_regions.append((current_region_start, i))
+            current_region_start = i + 1
+    
+    # Add final region if stable
+    if len(wasserstein_distances) > current_region_start:
+        stable_regions.append((current_region_start, len(wasserstein_distances)))
+    
+    return {
+        'wasserstein_distances': wasserstein_distances,
+        'avg_stability': float(avg_stability),
+        'max_transition': float(max_transition),
+        'stable_regions': stable_regions
     }
 
 
@@ -407,32 +638,27 @@ def get_hole_score(
         
         # 3. Persistent Homology
         print(f"  Layer {l}: Computing persistent homology with {metric} distance...")
+    
+        persistence_data = compute_persistence_diagram(
+            all_acts,
+            metric=metric,
+            max_dimension=max_dimension,
+            max_edge_length=np.inf
+        )
         
-        try:
-            persistence_data = compute_persistence_diagram(
-                all_acts,
-                metric=metric,
-                max_dimension=max_dimension,
-                max_edge_length=np.inf
-            )
-            
-            betti_numbers = persistence_data['betti_numbers']
-            persistence_stats = persistence_data['persistence_stats']
-            
-            # Extract key metrics
-            beta0 = betti_numbers.get(0, 0)
-            beta1 = betti_numbers.get(1, 0)
-            beta2 = betti_numbers.get(2, 0)
-            
-            mean_pers_h0 = persistence_stats.get('H0_mean', 0.0)
-            mean_pers_h1 = persistence_stats.get('H1_mean', 0.0)
-            total_pers = sum([persistence_stats.get(f'H{d}_total', 0.0) 
-                             for d in range(max_dimension + 1)])
-            
-        except Exception as e:
-            print(f"  Warning: Persistence computation failed for layer {l}: {e}")
-            beta0, beta1, beta2 = 0, 0, 0
-            mean_pers_h0, mean_pers_h1, total_pers = 0.0, 0.0, 0.0
+        betti_numbers = persistence_data['betti_numbers']
+        persistence_stats = persistence_data['persistence_stats']
+        
+        # Extract key metrics
+        beta0 = betti_numbers.get(0, 0)
+        beta1 = betti_numbers.get(1, 0)
+        beta2 = betti_numbers.get(2, 0)
+        
+        mean_pers_h0 = persistence_stats.get('H0_mean', 0.0)
+        mean_pers_h1 = persistence_stats.get('H1_mean', 0.0)
+        total_pers = sum([persistence_stats.get(f'H{d}_total', 0.0) 
+                            for d in range(max_dimension + 1)])
+        
         
         # === TOPOLOGICAL STEERING SCORE (TSS) ===
         # Weighted combination of metrics
@@ -635,7 +861,7 @@ def get_hole_score_all_metrics(
 def compare_metrics_for_layer(
     layer_scores: Dict,
     layer_idx: int
-):
+    ):
     """
     Compare how different metrics rank a specific layer
     
@@ -673,6 +899,6 @@ def compare_metrics_for_layer(
     print(f"\nLayer {layer_idx} - TSS Scores by Metric:")
     print("-" * 60)
     for rank, (metric, scores) in enumerate(tss_ranking, 1):
-        print(f"{rank}. {metric:25s}: TSS={scores['tss']:.3f}, β₁={scores['beta1']}")
+        print(f"{rank}. {metric:25s}: TSS={scores['tss']:.3f}, beta_1={scores['beta1']}")
     
     return comparison
