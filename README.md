@@ -7,6 +7,8 @@ pip install huggingface_hub
 pip install gudhi
 pip install scipy
 pip install scikit-learn
+pip install typing_extensions
+pip install urllib3
 ```
 
 ## Quick Start
@@ -20,8 +22,8 @@ You can run everything with just **two steps**:
 2. **Download the model:**
 ```
 huggingface-cli login
-huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/volume/h100_instance2/cache/Llama-3-8B-Instruct \
-                  --local-dir-use-symlinks False
+huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /data/project/le-lab/cache/Llama-3-8B-Instruct --local-dir-use-symlinks False
+huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-lab/cache/Qwen2.5-32B-Instruct --local-dir-use-symlinks False
 ```
 2. **Run the main script**
    ```bash
@@ -38,7 +40,7 @@ huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /media/
 |-----------------|-------------------|-------------------|---------|
 | **Distance Metrics** | 4 (Euclidean, Cosine, Mahalanobis, Geodesic) | 3 (Euclidean, Cosine, Mahalanobis) | 🟡 Partial |
 | **Persistent Homology** | ✅ Full (H0, H1, H2, persistence diagrams) | ✅ Full | ✅ Complete |
-| **Betti Numbers** | ✅ (β₀, β₁, β₂) | ✅ (β₀, β₁, β₂) | ✅ Complete |
+| **Betti Numbers** | ✅ (beta0, beta1, beta2) | ✅ (beta0, beta1, beta2) | ✅ Complete |
 | **Clustering Metrics** | ✅ Purity, separability | ✅ Purity, separability | ✅ Complete |
 | **Visualization** | ✅ Dendrograms, heatmaps, blob graphs, Sankey | ❌ None | ❌ Missing |
 | **Cross-Layer Analysis** | ✅ Sankey evolution tracking | ❌ Per-layer only | ❌ Missing |

@@ -1,13 +1,13 @@
 ###### MODEL ######
-MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
+MODEL = "/data/project/le-lab/cache/Qwen2.5-32B-Instruct"
 
 if "Llama-3-8B-Instruct" in MODEL:
-    # LLAMA3-8B-INSRUCT
     LAYERS = list(range(32))
     INST_TEMPLATE = """<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{}"""
     QUICK_TOKEN_ID_DICT = {" Yes" : 7566, " No" : 2360}
+    
 elif "Qwen2.5-32B-Instruct" in MODEL:
-    # Qwen-32B-INSRUCT
     LAYERS = list(range(64))
     INST_TEMPLATE = """<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}"""
     QUICK_TOKEN_ID_DICT = {" Yes" : 7414, " No" : 2308}

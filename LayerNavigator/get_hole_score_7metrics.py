@@ -204,12 +204,12 @@ def compute_persistence_diagram(
     Returns:
         persistence_data: {
             'diagram': list of (dimension, (birth, death)),
-            'betti_numbers': {0: β0, 1: β1, 2: β2},
+            'betti_numbers': {0: beta_0, 1: beta_1, 2: beta_2},
             'persistence_stats': {...},
             'persistence_entropy': {0: H0_entropy, 1: H1_entropy, ...},
-            'betti_curves': {0: [(ε, β0), ...], 1: [(ε, β1), ...], ...},
-            'betti_curve_auc': {0: AUC_β0, 1: AUC_β1, ...},
-            'strong_loops_count': int,  # H1 features with persistence > threshold
+            'betti_curves': {0: [(eta, beta_0), ...], 1: [(eta, beta_1), ...], ...},
+            'betti_curve_auc': {0: AUC_beta_0, 1: AUC_beta_1, ...},
+            'strong_loops_count': int, # H1 features with persistence > threshold
         }
     """
     # ============================================
@@ -251,16 +251,9 @@ def compute_persistence_diagram(
         # Apply density normalization
         local_scales = compute_local_scales(activations, k=k_neighbors)
         distances = apply_density_normalization(distances, local_scales)
-        
-    else:
-        raise ValueError(
-            f"Unknown metric: {metric}. "
-            f"Valid options: 'euclidean', 'cosine', 'mahalanobis', 'geodesic', "
-            f"'dens_norm_euclidean', 'dens_norm_cosine', 'dens_norm_mahalanobis'"
-        )
     
     # ============================================
-    # STEP 2: CREATE RIPS COMPLEX AND COMPUTE PERSISTENCE
+    # STEP 2: CREATE RIPS COMPLEX AND COMPUTE PERSISTENCE HOMOLOGY
     # ============================================
     
     # Create Rips complex
@@ -284,7 +277,6 @@ def compute_persistence_diagram(
     # ============================================
     # STEP 3: COMPUTE BASIC PERSISTENCE STATISTICS
     # ============================================
-    
     persistence_stats = {}
     for dim in range(max_dimension + 1):
         pairs = persistence_by_dim[dim]
@@ -293,7 +285,7 @@ def compute_persistence_diagram(
             finite_pairs = [(b, d) for b, d in pairs if d != np.inf]
             
             if finite_pairs:
-                persistences = [d - b for b, d in finite_pairs]
+                persistences = [d - b for b, d in finite_pairs] # compute the living period of each pair
                 persistence_stats[f'H{dim}_mean'] = np.mean(persistences)
                 persistence_stats[f'H{dim}_max'] = np.max(persistences)
                 persistence_stats[f'H{dim}_total'] = np.sum(persistences)
@@ -310,7 +302,12 @@ def compute_persistence_diagram(
             persistence_stats[f'H{dim}_count'] = 0
     
     # ============================================
-    # STEP 4: COMPUTE PERSISTENCE ENTROPY (NEW METRIC 1)
+    # STEP 4: COMPUTE PERSISTENCE ENTROPY 
+    # Persistence Entropy = -sum(p_i × log(p_i)) where p_i = (persistence of feature i) / (total persistence)
+    # Uniform structure -> reliable steering
+    # Low entropy -> Uniform, reliable topological structure -> Better steering
+    # High entropy -> Mixed feature quality -> Unreliable steering
+    # Combine:  tss *= (1.0 - normalized_entropy)
     # ============================================
     
     persistence_entropy = {}
@@ -334,18 +331,24 @@ def compute_persistence_diagram(
             persistence_entropy[dim] = 0.0
     
     # ============================================
-    # STEP 5: COMPUTE BETTI CURVES (NEW METRIC 3)
+    # STEP 5: COMPUTE BETTI CURVES
+    # beta_i only at final filtration scale, missing how entanglement evolves across scales.
+    # betti show number of loops at filtration threshold epsilon
+    # entanglement_penalty = 1.0 / (1.0 + 0.1 * beta1_AUC)
     # ============================================
-    
-    # Determine filtration range
-    max_filtration = simplex_tree.filtration()[-1][1] if len(simplex_tree.get_filtration()) > 0 else 1.0
+    filtration_list = list(simplex_tree.get_filtration())
+    if len(filtration_list) > 0:
+        max_filtration = filtration_list[-1][1]  # Last simplex's filtration value
+    else:
+        max_filtration = 1.0
+
     min_filtration = 0.0
-    
+
     # Create filtration thresholds
     filtration_values = np.linspace(min_filtration, max_filtration, num_filtration_steps)
-    
+
     betti_curves = {dim: [] for dim in range(max_dimension + 1)}
-    
+
     for epsilon in filtration_values:
         # Count features alive at this epsilon
         for dim in range(max_dimension + 1):
@@ -367,7 +370,7 @@ def compute_persistence_diagram(
             betti_curve_auc[dim] = 0.0
     
     # ============================================
-    # STEP 6: COMPUTE H₁ ENHANCED STATISTICS (NEW METRIC 4)
+    # STEP 6: COMPUTE H_1 ENHANCED STATISTICS
     # ============================================
     
     # Count "strong loops" - loops with high persistence
@@ -387,7 +390,7 @@ def compute_persistence_diagram(
     else:
         strong_loops_count = 0
     
-    # Compute weighted entanglement score: β₁ weighted by mean H₁ persistence
+    # Compute weighted entanglement score: beta_1 weighted by mean H₁ persistence
     mean_h1_persistence = persistence_stats.get('H1_mean', 0.0)
     beta1 = betti_numbers[1] if len(betti_numbers) > 1 else 0
     weighted_entanglement = beta1 * mean_h1_persistence
@@ -411,7 +414,7 @@ def compute_persistence_diagram(
         'betti_curves': betti_curves,
         'betti_curve_auc': betti_curve_auc,
         
-        # NEW METRIC 4: H₁ Enhanced Statistics
+        # NEW METRIC 4: H1 Enhanced Statistics
         'strong_loops_count': strong_loops_count,
         'weighted_entanglement': weighted_entanglement,
     }
@@ -437,37 +440,33 @@ def compute_wasserstein_distance(diagram1: Dict, diagram2: Dict,
     Returns:
         wasserstein_distance: float
     """
-    try:
-        import gudhi.wasserstein
-        
-        # Extract persistence pairs for the specified dimension
-        pairs1 = diagram1['persistence_by_dim'][dimension]
-        pairs2 = diagram2['persistence_by_dim'][dimension]
-        
-        # Filter out infinite persistence
-        finite_pairs1 = np.array([[b, d] for b, d in pairs1 if d != np.inf])
-        finite_pairs2 = np.array([[b, d] for b, d in pairs2 if d != np.inf])
-        
-        # Handle empty diagrams
-        if len(finite_pairs1) == 0 or len(finite_pairs2) == 0:
-            return 0.0
-        
-        # Compute Wasserstein distance
-        distance = gudhi.wasserstein.wasserstein_distance(
-            finite_pairs1, 
-            finite_pairs2, 
-            order=order
-        )
-        
-        return float(distance)
-        
-    except ImportError:
-        print("Warning: GUDHI Wasserstein module not available. Install with: pip install gudhi")
+    import gudhi.wasserstein
+    
+    # Extract persistence pairs for the specified dimension
+    pairs1 = diagram1['persistence_by_dim'][dimension]
+    pairs2 = diagram2['persistence_by_dim'][dimension]
+    
+    # Filter out infinite persistence
+    finite_pairs1 = np.array([[b, d] for b, d in pairs1 if d != np.inf])
+    finite_pairs2 = np.array([[b, d] for b, d in pairs2 if d != np.inf])
+    
+    # Handle empty diagrams
+    if len(finite_pairs1) == 0 or len(finite_pairs2) == 0:
         return 0.0
-    except Exception as e:
-        print(f"Warning: Wasserstein distance computation failed: {e}")
-        return 0.0
+    
+    # Compute Wasserstein distance
+    distance = gudhi.wasserstein.wasserstein_distance(
+        finite_pairs1, 
+        finite_pairs2, 
+        order=order
+    )
+    
+    return float(distance)
 
+# Current layers are analyzed independently, missing how topology changes across layers.
+# Compute topology similarity across adjacent layers
+# W(layer_14, layer_15) = 0.05  # Small change (stable region)
+# W(layer_16, layer_17) = 0.38  # Large value (transition region)
 
 def compute_layer_stability(layer_diagrams: List[Dict], 
                             dimension: int = 1,
@@ -569,19 +568,7 @@ def get_hole_score(
         subsample: Subsample N points for efficiency (None = use all)
         
     Returns:
-        hole_score_info: {
-            layer: {
-                'purity': float,
-                'separability': float,
-                'beta0': int,
-                'beta1': int,
-                'beta2': int,
-                'mean_persistence_H0': float,
-                'mean_persistence_H1': float,
-                'total_persistence': float,
-                'tss': float  # Topological Steering Score
-            }
-        }
+        hole_score_info: Dict with comprehensive TSS variants
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -615,7 +602,11 @@ def get_hole_score(
             all_acts.append(torch.stack(acts[i][l]))
             all_labels.append(torch.ones(all_acts[i].shape[0]) * i)
         
-        all_acts = torch.cat(all_acts, dim=0).cpu().numpy()  # Move to CPU for GUDHI
+        # Tuc: for Llama3
+        # all_acts = torch.cat(all_acts, dim=0).cpu().numpy()  # Move to CPU for GUDHI
+        # TUC: for Qwen
+        all_acts = torch.cat(all_acts, dim=0).float().cpu().numpy()  # Convert to float32, move to CPU for GUDHI
+        
         all_labels = torch.cat(all_labels, dim=0).cpu().numpy()
         
         # Subsample if specified (for large datasets)
@@ -646,55 +637,514 @@ def get_hole_score(
             max_edge_length=np.inf
         )
         
+        # Extract all computed metrics
         betti_numbers = persistence_data['betti_numbers']
         persistence_stats = persistence_data['persistence_stats']
+        persistence_entropy = persistence_data['persistence_entropy']
+        betti_curve_auc = persistence_data['betti_curve_auc']
+        strong_loops_count = persistence_data['strong_loops_count']
+        weighted_entanglement = persistence_data['weighted_entanglement']
+        persistence_by_dim = persistence_data['persistence_by_dim']
         
-        # Extract key metrics
+        # Extract Betti numbers
         beta0 = betti_numbers.get(0, 0)
         beta1 = betti_numbers.get(1, 0)
         beta2 = betti_numbers.get(2, 0)
         
+        # Extract basic persistence statistics for all dimensions
         mean_pers_h0 = persistence_stats.get('H0_mean', 0.0)
         mean_pers_h1 = persistence_stats.get('H1_mean', 0.0)
+        mean_pers_h2 = persistence_stats.get('H2_mean', 0.0)
+        
+        max_pers_h0 = persistence_stats.get('H0_max', 0.0)
+        max_pers_h1 = persistence_stats.get('H1_max', 0.0)
+        max_pers_h2 = persistence_stats.get('H2_max', 0.0)
+        
+        total_pers_h0 = persistence_stats.get('H0_total', 0.0)
+        total_pers_h1 = persistence_stats.get('H1_total', 0.0)
+        total_pers_h2 = persistence_stats.get('H2_total', 0.0)
+        
+        count_h0 = persistence_stats.get('H0_count', 0)
+        count_h1 = persistence_stats.get('H1_count', 0)
+        count_h2 = persistence_stats.get('H2_count', 0)
+        
         total_pers = sum([persistence_stats.get(f'H{d}_total', 0.0) 
-                            for d in range(max_dimension + 1)])
+                         for d in range(max_dimension + 1)])
         
+        # Extract raw entropy (no normalization)
+        entropy_h0 = persistence_entropy.get(0, 0.0)
+        entropy_h1 = persistence_entropy.get(1, 0.0)
+        entropy_h2 = persistence_entropy.get(2, 0.0)
         
-        # === TOPOLOGICAL STEERING SCORE (TSS) ===
-        # Weighted combination of metrics
-        # Higher purity = better
-        # Higher separability = better
-        # Higher H0 persistence = more stable features
-        # Lower β1 = less entanglement (penalize loops)
+        auc_h0 = betti_curve_auc.get(0, 0.0)
+        auc_h1 = betti_curve_auc.get(1, 0.0)
+        auc_h2 = betti_curve_auc.get(2, 0.0)
         
-        entanglement_penalty = 1.0 / (1.0 + 0.1 * beta1)  # Reduce score if loops exist
-        
-        tss = (
+        # Get finite persistence pairs for fragility analysis
+        finite_h0_pairs = [(b, d) for b, d in persistence_by_dim[0] if d != np.inf]
+        finite_h1_pairs = [(b, d) for b, d in persistence_by_dim[1] if d != np.inf]
+        finite_h2_pairs = [(b, d) for b, d in persistence_by_dim[2] if d != np.inf]
+
+        # =====================================================================
+        # COMPUTE PENALTIES AND FACTORS
+        # =====================================================================
+
+        # Basic penalties
+        entanglement_penalty = 1.0 / (1.0 + 0.1 * beta1)  # beta1 count penalty
+        beta1_penalty = entanglement_penalty  # Alias for clarity
+        beta2_penalty = 1.0 / (1.0 + 0.05 * beta2)  # beta2 count penalty
+
+        # Advanced penalties
+        auc_penalty = 1.0 / (1.0 + 0.1 * auc_h1)  # Multi-scale beta1
+        strong_loops_penalty = 1.0 / (1.0 + 0.2 * strong_loops_count)  # Real loops only
+        weighted_penalty = 1.0 / (1.0 + 0.05 * weighted_entanglement)  # beta1 × persistence
+
+        # Raw entropy scores (no normalization)
+        # Lower entropy = more uniform = better
+        h0_entropy_score = entropy_h0
+        h1_entropy_score = entropy_h1
+        h2_entropy_score = entropy_h2
+
+        # Beta0 score (target = 2 for binary)
+        beta0_score = 1.0 - min(abs(beta0 - 2.0) / 10.0, 1.0)
+
+        # Topological simplicity
+        topological_simplicity = (
+            beta0_score +                    # Right number of components
+            (1.0 / (1.0 + beta1)) +         # Few loops
+            (1.0 / (1.0 + beta2))           # Few voids
+        ) / 3.0
+
+        # =====================================================================
+        # CATEGORY 1: BASELINE VARIANTS
+        # =====================================================================
+
+        # Base components (no weighting)
+        base_components = purity + separability + mean_pers_h0
+
+        # VARIANT 1: No penalty
+        tss_no_pen = base_components
+
+        # VARIANT 2: Original with beta1 penalty (unweighted)
+        tss = base_components * entanglement_penalty
+
+        # VARIANT 3: Weighted (0.35, 0.35, 0.30)
+        tss_weighted = (
             0.35 * purity +
             0.35 * separability +
             0.30 * mean_pers_h0
         ) * entanglement_penalty
+
+        # VARIANT 4: Uniform weighted (1/3, 1/3, 1/3)
+        tss_uniform_weighted = (base_components / 3.0) * entanglement_penalty
+
+        # =====================================================================
+        # CATEGORY 2: ALTERNATIVE PENALTIES
+        # =====================================================================
+
+        # VARIANT 5: Multi-scale entanglement (beta1 AUC)
+        tss_beta1_auc = base_components * auc_penalty
+        tss_beta1_auc_uniform = (base_components / 3.0) * auc_penalty
+
+        # VARIANT 6: Strong loops only
+        tss_strong_loops = base_components * strong_loops_penalty
+        tss_strong_loops_uniform = (base_components / 3.0) * strong_loops_penalty
+
+        # VARIANT 7: Weighted entanglement
+        tss_weighted_entanglement = base_components * weighted_penalty
+        tss_weighted_entanglement_uniform = (base_components / 3.0) * weighted_penalty
+
+        # VARIANT 8: Entropy-enhanced (using raw H1 entropy)
+        # Lower entropy = better, so use inverse
+        entropy_factor = 1.0 / (1.0 + entropy_h1) if entropy_h1 > 0 else 1.0
+        tss_with_entropy = (base_components / 3.0) * entanglement_penalty * entropy_factor
+
+        # VARIANT 9: Comprehensive (all penalties combined)
+        comprehensive_penalty = (
+            entanglement_penalty * 0.25 +      # beta1 count
+            auc_penalty * 0.25 +                # Multi-scale entanglement
+            strong_loops_penalty * 0.25 +       # Real vs noise loops
+            entropy_factor * 0.25               # Feature uniformity
+        )
+        tss_comprehensive_uniform = (base_components / 3.0) * comprehensive_penalty
+        tss_comprehensive = base_components * comprehensive_penalty
+
+        # =====================================================================
+        # CATEGORY 3: EXPLICIT BETTI NUMBER FORMULATIONS
+        # =====================================================================
+
+        # VARIANT 10: beta0-aware (target beta0=2 for binary classification)
+        tss_beta0_aware = (
+            0.25 * purity +
+            0.25 * separability +
+            0.25 * mean_pers_h0 +
+            0.25 * beta0_score
+        ) * entanglement_penalty
+
+        # VARIANT 11: Multi-Betti penalty (beta1 + beta2)
+        multi_betti_penalty = (beta1_penalty + beta2_penalty) / 2.0
+        tss_multi_betti = (base_components / 3.0) * multi_betti_penalty
+
+        # VARIANT 12: beta2 penalty included
+        tss_with_beta2 = base_components * beta1_penalty * beta2_penalty
+
+        # =====================================================================
+        # CATEGORY 4: PERSISTENCE-CENTRIC VARIANTS
+        # =====================================================================
+
+        # VARIANT 13: Max persistence instead of mean
+        tss_max_persistence_h0 = (
+            (purity + separability + max_pers_h0) / 3.0
+        ) * entanglement_penalty
+
+        # VARIANT 14: Total persistence (cumulative stability)
+        normalized_total_pers_h0 = min(total_pers_h0 / 10.0, 1.0)
+        tss_total_persistence = (
+            (purity + separability + normalized_total_pers_h0) / 3.0
+        ) * entanglement_penalty
+
+        # VARIANT 15: Multi-scale persistence (H₀ AUC)
+        normalized_auc_h0 = min(auc_h0 / 50.0, 1.0)
+        tss_h0_auc = (
+            (purity + separability + normalized_auc_h0) / 3.0
+        ) * entanglement_penalty
+
+        # =====================================================================
+        # CATEGORY 5: PERSISTENCE HYPOTHESIS VARIANTS (OLD)
+        # =====================================================================
+
+        # VARIANT 16: H0 persistence only (robust clustering)
+        h0_persistence_only = mean_pers_h0
+
+        # VARIANT 17: H1 persistence only
+        h1_persistence_only = mean_pers_h1
+
+        # VARIANT 18: H2 persistence only
+        h2_persistence_only = mean_pers_h2
+
+        # VARIANT 19: All persistence (weighted) - OLD VERSION
+        all_persistence_weighted_old = (
+            mean_pers_h0 +
+            mean_pers_h1 +
+            mean_pers_h2
+        ) / 3.0
+
+        # VARIANT 20: Paradoxical - robust clusters, fragile loops
+        # Hypothesis: Want HIGH H0 persistence, LOW H1 persistence
+        h1_fragility_bonus = 1.0 / (1.0 + mean_pers_h1) if mean_pers_h1 > 0 else 1.0
+        tss_robust_clusters_fragile_loops = mean_pers_h0 * h1_fragility_bonus
+
+        # VARIANT 21: Paradoxical - robust clusters, fragile voids
+        h2_fragility_bonus = 1.0 / (1.0 + mean_pers_h2) if mean_pers_h2 > 0 else 1.0
+        tss_robust_clusters_fragile_voids = mean_pers_h0 * h2_fragility_bonus
+
+        # VARIANT 22: Good persistence vs bad persistence
+        # H0 persistence = good, H1+H2 persistence = bad
+        bad_persistence = mean_pers_h1 + mean_pers_h2
+        tss_good_vs_bad_persistence = max(0.0, mean_pers_h0 - 0.5 * bad_persistence)
+
+        # =====================================================================
+        # CATEGORY 6: THEORY-DRIVEN ALTERNATIVES
+        # =====================================================================
+
+        # VARIANT 23: Topological simplicity
+        tss_topological_simplicity = (
+            (separability + mean_pers_h0 + topological_simplicity) / 3.0
+        )
+
+        # VARIANT 24: Geometric-only (no topology)
+        tss_geometric_only = 0.5 * purity + 0.5 * separability
+
+        # VARIANT 25: Topology-only (no geometric clustering)
+        tss_topology_only = mean_pers_h0 * entanglement_penalty
+
+        # VARIANT 26: Pure persistence (selective)
+        # H0 up, H1 down, H2 down
+        tss_pure_persistence = (
+            0.5 * mean_pers_h0 +
+            0.3 * (1.0 / (1.0 + mean_pers_h1 + 1e-8)) +
+            0.2 * (1.0 / (1.0 + mean_pers_h2 + 1e-8))
+        )
+
+        # =====================================================================
+        # CATEGORY 7: HYPOTHESIS-ALIGNED VARIANTS (UPDATED)
+        # =====================================================================
         
-        # Store results
+        # ─────────────────────────────────────────────────────────────────────
+        # GEOMETRIC BASELINES (Control - not topological)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 27: Purity only (GEOMETRIC BASELINE)
+        purity_only = purity
+        
+        # VARIANT 28: Separability only (GEOMETRIC BASELINE)
+        separability_only = separability
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # PERSISTENCE-BASED VARIANTS (Directly test hypothesis)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 29: H₀ persistence (LONG-LIVED CLUSTERS)
+        persistence_h0_only = mean_pers_h0
+        
+        # VARIANT 30: H₁ persistence (LONG-LIVED LOOPS) - UPDATED
+        persistence_h1_only = mean_pers_h1
+        
+        # VARIANT 31: H₂ persistence (LONG-LIVED VOIDS) - UPDATED
+        persistence_h2_only = mean_pers_h2
+        
+        # VARIANT 32: All persistence weighted (COMPREHENSIVE LONGEVITY) - UPDATED
+        all_persistence_weighted = (
+            0.5 * mean_pers_h0 +  # Clusters (most important)
+            0.3 * mean_pers_h1 +  # Loops (secondary)
+            0.2 * mean_pers_h2    # Voids (tertiary)
+        )
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # MULTI-SCALE ROBUSTNESS (Scale-invariance from hypothesis)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 33: H₀ multi-scale robustness (SCALE-INVARIANT CLUSTERS) - UPDATED
+        h0_scale_invariance = auc_h0
+        
+        # VARIANT 34: H₁ multi-scale robustness (SCALE-INVARIANT LOOPS) - UPDATED
+        h1_scale_invariance = auc_h1
+        
+        # VARIANT 35: H₂ multi-scale robustness (SCALE-INVARIANT VOIDS)
+        h2_scale_invariance = auc_h2
+        
+        # VARIANT 36: Multi-scale robustness (ALL DIMENSIONS)
+        multi_scale_robustness = (
+            0.5 * auc_h0 +  # Cluster scale-invariance
+            0.3 * auc_h1 +  # Loop scale-invariance
+            0.2 * auc_h2    # Void scale-invariance
+        )
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # ROBUSTNESS vs FRAGILITY (Direct hypothesis test)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 37: Strong features only (ROBUST TOPOLOGICAL FEATURES)
+        strong_features_score = float(strong_loops_count)
+        
+        # VARIANT 38: Fragility detection (PENALIZE SHORT-LIVED FEATURES)
+        if len(finite_h0_pairs) > 0:
+            h0_persistences = np.array([d - b for b, d in finite_h0_pairs])
+            max_h0_pers = np.max(h0_persistences) if len(h0_persistences) > 0 else 1.0
+            fragility_threshold = 0.1 * max_h0_pers
+            fragile_features_count = int(np.sum(h0_persistences < fragility_threshold))
+            fragility_penalty_score = 1.0 / (1.0 + fragile_features_count)
+        else:
+            fragile_features_count = 0
+            fragility_penalty_score = 1.0
+        
+        robustness_only = fragility_penalty_score
+        
+        # VARIANT 39: Persistence dominance ratio (LONG-LIVED DOMINANCE)
+        persistence_dominance_h0 = max_pers_h0 / (mean_pers_h0 + 1e-8)
+        
+        # VARIANT 40: Persistence spread (UNIFORMLY ROBUST)
+        total_persistence_normalized = min(total_pers_h0 / 10.0, 1.0)
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # ENTROPY-BASED (Feature quality uniformity)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 41: H₀ persistence entropy (RAW - lower = more uniform)
+        h0_entropy_only = entropy_h0
+        
+        # VARIANT 42: H₁ persistence entropy (RAW - lower = more uniform)
+        h1_entropy_only = entropy_h1
+        
+        # VARIANT 43: H₂ persistence entropy (RAW - lower = more uniform)
+        h2_entropy_only = entropy_h2
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # COMBINED PERSISTENCE METRICS (Sophisticated hypothesis tests)
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 44: Persistence × Purity (ROBUST GEOMETRY + TOPOLOGY)
+        persistence_geometric_combined = mean_pers_h0 * purity
+        
+        # VARIANT 45: Persistence × Separability (ROBUST SEPARATION)
+        persistence_separation_combined = mean_pers_h0 * separability
+        
+        # VARIANT 46: Max persistence focus (MOST ROBUST FEATURE)
+        max_persistence_score = (
+            0.5 * max_pers_h0 +
+            0.3 * max_pers_h1 +
+            0.2 * max_pers_h2
+        )
+        
+        # VARIANT 47: Weighted entanglement (PERSISTENT STRUCTURE)
+        weighted_entanglement_score = weighted_entanglement
+        
+        # ─────────────────────────────────────────────────────────────────────
+        # HYPOTHESIS VARIANTS: CONTRADICTORY PREDICTIONS
+        # ─────────────────────────────────────────────────────────────────────
+        
+        # VARIANT 48: Anti-persistence (CONTROL - opposite hypothesis)
+        anti_persistence = 1.0 / (mean_pers_h0 + 0.1)
+        
+        # VARIANT 49: Fragility reward (CONTROL - opposite hypothesis)
+        fragility_reward = float(fragile_features_count)
+        
+        # VARIANT 50: Beta counts only (CONTROL - count vs persistence)
+        beta_counts_combined = float(beta0 + beta1 + beta2)
+
+        # =====================================================================
+        # LEGACY VARIANTS (For backward compatibility)
+        # =====================================================================
+        
+        # These use OLD formulas (penalties instead of rewards)
+        beta1_only = 1.0 / (1.0 + 0.1 * beta1)
+        beta1_auc_only = 1.0 / (1.0 + 0.1 * auc_h1)
+        beta2_only = 1.0 / (1.0 + 0.1 * beta2)
+        beta0_only = beta0_score
+        strong_loops_only = 1.0 / (1.0 + 0.2 * strong_loops_count)
+        entropy_only = entropy_factor  # Uses inverse formula
+
+        # =====================================================================
+        # STORE ALL RESULTS
+        # =====================================================================
+
         hole_score_info[l] = {
-            # Clustering quality
+            # ===== CLUSTERING QUALITY =====
             'purity': float(purity),
             'separability': float(separability),
-            
-            # Topological features
+
+            # ===== BETTI NUMBERS =====
             'beta0': int(beta0),
             'beta1': int(beta1),
             'beta2': int(beta2),
-            
-            # Persistence measures
+
+            # ===== BASIC PERSISTENCE STATISTICS =====
+            # H0 (Connected Components)
             'mean_persistence_H0': float(mean_pers_h0),
+            'max_persistence_H0': float(max_pers_h0),
+            'total_persistence_H0': float(total_pers_h0),
+            'count_H0': int(count_h0),
+
+            # H1 (Loops)
             'mean_persistence_H1': float(mean_pers_h1),
+            'max_persistence_H1': float(max_pers_h1),
+            'total_persistence_H1': float(total_pers_h1),
+            'count_H1': int(count_h1),
+
+            # H2 (Voids)
+            'mean_persistence_H2': float(mean_pers_h2),
+            'max_persistence_H2': float(max_pers_h2),
+            'total_persistence_H2': float(total_pers_h2),
+            'count_H2': int(count_h2),
+
+            # Total across all dimensions
             'total_persistence': float(total_pers),
-            
-            # Combined score
+
+            # ===== PERSISTENCE ENTROPY (RAW VALUES) =====
+            'persistence_entropy_H0': float(entropy_h0),
+            'persistence_entropy_H1': float(entropy_h1),
+            'persistence_entropy_H2': float(entropy_h2),
+
+            # ===== BETTI CURVE AUC =====
+            'betti_curve_auc_H0': float(auc_h0),
+            'betti_curve_auc_H1': float(auc_h1),
+            'betti_curve_auc_H2': float(auc_h2),
+
+            # ===== H1 ENHANCED STATISTICS =====
+            'strong_loops_count': int(strong_loops_count),
+            'weighted_entanglement': float(weighted_entanglement),
+            'fragile_features_count': int(fragile_features_count),
+
+            # ===== CATEGORY 1: BASELINE VARIANTS =====
+            'tss_no_pen': float(tss_no_pen),
             'tss': float(tss),
+            'tss_weighted': float(tss_weighted),
+            'tss_uniform_weighted': float(tss_uniform_weighted),
+
+            # ===== CATEGORY 2: ALTERNATIVE PENALTIES =====
+            'tss_beta1_auc': float(tss_beta1_auc),
+            'tss_beta1_auc_uniform': float(tss_beta1_auc_uniform),
+            'tss_strong_loops': float(tss_strong_loops),
+            'tss_strong_loops_uniform': float(tss_strong_loops_uniform),
+            'tss_weighted_entanglement': float(tss_weighted_entanglement),
+            'tss_weighted_entanglement_uniform': float(tss_weighted_entanglement_uniform),
+            'tss_with_entropy': float(tss_with_entropy),
+            'tss_comprehensive': float(tss_comprehensive),
+            'tss_comprehensive_uniform': float(tss_comprehensive_uniform),
+
+            # ===== CATEGORY 3: EXPLICIT BETTI FORMULATIONS =====
+            'tss_beta0_aware': float(tss_beta0_aware),
+            'tss_multi_betti': float(tss_multi_betti),
+            'tss_with_beta2': float(tss_with_beta2),
+
+            # ===== CATEGORY 4: PERSISTENCE-CENTRIC =====
+            'tss_max_persistence_h0': float(tss_max_persistence_h0),
+            'tss_total_persistence': float(tss_total_persistence),
+            'tss_h0_auc': float(tss_h0_auc),
+
+            # ===== CATEGORY 5: PERSISTENCE HYPOTHESIS (OLD) =====
+            'h0_persistence_only': float(h0_persistence_only),
+            'h1_persistence_only': float(h1_persistence_only),
+            'h2_persistence_only': float(h2_persistence_only),
+            'all_persistence_weighted_old': float(all_persistence_weighted_old),
+            'tss_robust_clusters_fragile_loops': float(tss_robust_clusters_fragile_loops),
+            'tss_robust_clusters_fragile_voids': float(tss_robust_clusters_fragile_voids),
+            'tss_good_vs_bad_persistence': float(tss_good_vs_bad_persistence),
+
+            # ===== CATEGORY 6: THEORY-DRIVEN =====
+            'tss_topological_simplicity': float(tss_topological_simplicity),
+            'tss_geometric_only': float(tss_geometric_only),
+            'tss_topology_only': float(tss_topology_only),
+            'tss_pure_persistence': float(tss_pure_persistence),
+
+            # ===== CATEGORY 7: HYPOTHESIS-ALIGNED VARIANTS (NEW) =====
+            # Geometric baselines
+            'purity_only': float(purity_only),
+            'separability_only': float(separability_only),
             
-            # Metadata
+            # Persistence by dimension
+            'persistence_h0_only': float(persistence_h0_only),
+            'persistence_h1_only': float(persistence_h1_only),
+            'persistence_h2_only': float(persistence_h2_only),
+            'all_persistence_weighted': float(all_persistence_weighted),
+            
+            # Multi-scale robustness
+            'h0_scale_invariance': float(h0_scale_invariance),
+            'h1_scale_invariance': float(h1_scale_invariance),
+            'h2_scale_invariance': float(h2_scale_invariance),
+            'multi_scale_robustness': float(multi_scale_robustness),
+            
+            # Robustness vs fragility
+            'strong_features_score': float(strong_features_score),
+            'robustness_only': float(robustness_only),
+            'persistence_dominance_h0': float(persistence_dominance_h0),
+            'total_persistence_normalized': float(total_persistence_normalized),
+            
+            # Entropy (raw values)
+            'h0_entropy_only': float(h0_entropy_only),
+            'h1_entropy_only': float(h1_entropy_only),
+            'h2_entropy_only': float(h2_entropy_only),
+            
+            # Combined
+            'persistence_geometric_combined': float(persistence_geometric_combined),
+            'persistence_separation_combined': float(persistence_separation_combined),
+            'max_persistence_score': float(max_persistence_score),
+            'weighted_entanglement_score': float(weighted_entanglement_score),
+            
+            # Controls (opposite hypothesis)
+            'anti_persistence': float(anti_persistence),
+            'fragility_reward': float(fragility_reward),
+            'beta_counts_combined': float(beta_counts_combined),
+            
+            # ===== LEGACY VARIANTS (OLD FORMULAS) =====
+            'beta1_only': float(beta1_only),
+            'beta1_auc_only': float(beta1_auc_only),
+            'beta2_only': float(beta2_only),
+            'beta0_only': float(beta0_only),
+            'strong_loops_only': float(strong_loops_only),
+            'entropy_only': float(entropy_only),
+
+            # ===== METADATA =====
             'metric': metric,
             'n_samples': int(len(all_acts))
         }
@@ -702,14 +1152,13 @@ def get_hole_score(
         # Save per-layer results
         with open(f"{save_root}L{l}.json", "w") as f:
             json.dump(hole_score_info[l], f, indent=4)
-        
-        print(f"  Layer {l}: TSS={tss:.3f}, Purity={purity:.3f}, Sep={separability:.3f}, β1={beta1}")
     
     # Save complete results
     with open(f"{save_root}all_layers.json", "w") as f:
         json.dump(hole_score_info, f, indent=4)
     
-    print(f"HOLE scores saved to: {save_root}")
+    print(f"\nHOLE scores saved to: {save_root}")
+    print(f"Total metrics stored per layer: {len(hole_score_info[layers[0]])} fields")
     
     return hole_score_info
 

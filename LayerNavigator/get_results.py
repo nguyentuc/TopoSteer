@@ -5,10 +5,172 @@ import os
 from utils import *
 import json
 from globalenv import *
+import numpy as np 
 
+# Compute perplexity
+def compute_perplexity_on_generation(
+    model,
+    input_data,
+    generated_text: str,
+    max_length: int = 512
+):
+    """
+    Compute perplexity on generated text
+    
+    Args:
+        model: Model wrapper
+        input_data: Input tensor/data
+        generated_text: Generated output text
+        max_length: Maximum sequence length to evaluate
+        
+    Returns:
+        perplexity: Perplexity score for the generated text
+    """
+    # Tokenize the generated text
+    tokens = model.tokenizer(generated_text, return_tensors="pt", truncation=True, max_length=max_length)
+    input_ids = tokens['input_ids'].to(model.device)
+    
+    # Get model output
+    with torch.no_grad():
+        outputs = model.model(input_ids, labels=input_ids)
+        loss = outputs.loss
+    
+    # Compute perplexity
+    perplexity = torch.exp(loss).item()
+    return perplexity
+
+
+def compute_perplexity_on_prompt(
+    model,
+    input_data,
+    max_length: int = 512
+):
+    """
+    Compute perplexity on the input prompt itself
+    
+    Args:
+        model: Model wrapper
+        input_data: Input tensor/data from dataset
+        max_length: Maximum sequence length
+        
+    Returns:
+        perplexity: Perplexity score
+    """
+    input_ids = input_data.to(model.device)
+    with torch.no_grad():
+        outputs = model.model(input_ids, labels=input_ids)
+        loss = outputs.loss
+    
+    perplexity = torch.exp(loss).item()
+    return perplexity
+
+
+def get_perplexity_BASE_results(
+    model,
+    test_dataset: UniDataset,
+    max_new_tokens: int = 200,
+):
+    """
+    Compute baseline perplexity without steering
+    
+    Args:
+        model: Model wrapper
+        test_dataset: Test dataset
+        max_new_tokens: Maximum tokens to generate
+        
+    Returns:
+        avg_perplexity: Average perplexity across all generations
+        perplexities: List of per-sample perplexities
+    """
+    assert test_dataset.train == False, "Only Use Test Mode"
+    assert test_dataset.set in ["test", "val"], "Only Use Test Dataset"
+    
+    model.reset_all()
+    
+    all_perplexities = []
+    
+    # Generate and compute perplexity for each sample
+    for d in test_dataset:
+        # Generate text
+        cur_results = model.generate(d.to(model.device), max_new_tokens=max_new_tokens)
+        
+        # Compute perplexity on each generated text
+        for generated_text in cur_results:
+            try:
+                ppl = compute_perplexity_on_generation(model, d, generated_text)
+                all_perplexities.append(ppl)
+            except:
+                # Skip if perplexity computation fails (e.g., empty generation)
+                continue
+    
+    avg_perplexity = np.mean(all_perplexities) if all_perplexities else float('inf')
+    return avg_perplexity
+
+
+def get_perplexity_results(
+    model,
+    layers: List[int],
+    test_dataset: UniDataset,
+    Alphas: List[float],
+    train_task: str,
+    train_method: str,
+    max_new_tokens: int = 200,
+):
+    """
+    Compute perplexity with steering applied
+    
+    Args:
+        model: Model wrapper
+        layers: List of layers to apply steering
+        test_dataset: Test dataset
+        Alphas: Steering strengths for each layer
+        train_task: Task name for loading vectors
+        train_method: Method for loading vectors
+        max_new_tokens: Maximum tokens to generate
+        
+    Returns:
+        avg_perplexity: Average perplexity with steering
+        perplexities: List of per-sample perplexities
+    """
+    assert test_dataset.train == False, "Only Use Test Dataset"
+    assert test_dataset.set in ["val", "test"], "Only Use Val and Test Dataset"
+    assert len(layers) == len(Alphas), "layers, Alphas must have same length"
+    
+    vec_root = f"./Vectors/{train_task}/{train_method}"
+    
+    vects = {}
+    # Load steering vectors
+    for i in range(len(layers)):
+        vector_path = vec_root + f"/L{layers[i]}.pt"
+        vects[layers[i]] = torch.load(vector_path).to(model.device)
+        vects[layers[i]] *= Alphas[i]
+    
+    # Apply steering to model
+    model.reset_all()
+    for l in layers:
+        model.set_add_activations(l, vects[l])
+    
+    all_perplexities = []
+    
+    # Generate and compute perplexity for each sample
+    for d in test_dataset:
+        # Generate text with steering
+        cur_results = model.generate(d.to(model.device), max_new_tokens=max_new_tokens)
+        
+        # Compute perplexity on each generated text
+        for generated_text in cur_results:
+            try:
+                ppl = compute_perplexity_on_generation(model, d, generated_text)
+                all_perplexities.append(ppl)
+            except:
+                # Skip if perplexity computation fails
+                continue
+    
+    avg_perplexity = np.mean(all_perplexities) if all_perplexities else float('inf')
+    print(f"Steered Perplexity: {avg_perplexity:.4f}")
+    return avg_perplexity
 
 # All functions are about *test* dataset
-
 def get_raw_BASE_results(
     model,
     test_dataset:UniDataset,
