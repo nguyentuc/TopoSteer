@@ -56,9 +56,3 @@ huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-
 - Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
 
 - Ablation Study on different metric.
-
----
-## Next improvement
-- Make slides for next Thursday meeting.
-- Propose metrics in hyperbolic space for measuring the persistent homology
-- The compositions of both inner metric (persistent homology) and outer metrics (layernavigation) in choosing layer to steer.
