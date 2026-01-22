@@ -371,7 +371,7 @@ if __name__ == "__main__":
                             'layers': top_layers,
                             'prob': float(test_prob),
                             'delta': float(delta),
-                            'prob_delta': float(prob_delta),
+                            'prob_delta': float(delta),
                             'perplexity': float(test_ppl),
                             'ppl_delta': float(ppl_delta)
                         }
@@ -379,7 +379,7 @@ if __name__ == "__main__":
                         variant_results[variant_name][metric] = {
                             'prob': float(test_prob),
                             'delta': float(delta),
-                            'prob_delta': float(prob_delta),
+                            'prob_delta': float(delta),
                             'perplexity': float(test_ppl),
                             'ppl_delta': float(ppl_delta),
                             'layers': top_layers
