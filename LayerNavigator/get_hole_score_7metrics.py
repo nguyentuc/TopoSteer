@@ -1261,9 +1261,9 @@ def get_hole_score_all_metrics(
         'cosine',
         'mahalanobis',
         'geodesic',
-        'dens_norm_euclidean',
-        'dens_norm_cosine',
-        'dens_norm_mahalanobis'
+        # 'dens_norm_euclidean',
+        # 'dens_norm_cosine',
+        # 'dens_norm_mahalanobis'
     ]
     
     all_metric_scores = {}
