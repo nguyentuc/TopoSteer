@@ -38,13 +38,13 @@ huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-
 
 | Feature Category | Full HOLE Library | My Implementation | Status |
 |-----------------|-------------------|-------------------|---------|
-| **Distance Metrics** | 4 (Euclidean, Cosine, Mahalanobis, Geodesic) | 3 (Euclidean, Cosine, Mahalanobis) | 🟡 Partial |
-| **Persistent Homology** | ✅ Full (H0, H1, H2, persistence diagrams) | ✅ Full | ✅ Complete |
-| **Betti Numbers** | ✅ (beta0, beta1, beta2) | ✅ (beta0, beta1, beta2) | ✅ Complete |
-| **Clustering Metrics** | ✅ Purity, separability | ✅ Purity, separability | ✅ Complete |
-| **Visualization** | ✅ Dendrograms, heatmaps, blob graphs, Sankey | ❌ None | ❌ Missing |
-| **Cross-Layer Analysis** | ✅ Sankey evolution tracking | ❌ Per-layer only | ❌ Missing |
-| **Robustness Testing** | ✅ Noise, pruning, quantization | ❌ None | ❌ Missing |
+| **Distance Metrics** | 4 (Euclidean, Cosine, Mahalanobis, Geodesic) | 3 (Euclidean, Cosine, Mahalanobis) | Partial |
+| **Persistent Homology** | Full (H0, H1, H2, persistence diagrams) |  Full |  Complete |
+| **Betti Numbers** |  (beta0, beta1, beta2) |  (beta0, beta1, beta2) |  Complete |
+| **Clustering Metrics** | Purity, separability |  Purity, separability | Complete |
+| **Visualization** | Dendrograms, heatmaps, blob graphs, Sankey |  None |  Missing |
+| **Cross-Layer Analysis** |  Sankey evolution tracking |  Per-layer only |  Missing |
+| **Robustness Testing** | Noise, pruning, quantization |  None |  Missing |
 | **Purpose** | Comprehensive NN interpretation | Layer selection for steering | Different goal |
 
 - Current runing HOLE to select layer based on the TSS score (combination score) with:
@@ -56,3 +56,5 @@ huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-
 - Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
 
 - Ablation Study on different metric.
+
+## z4_main_allies_Qwen.py + z4_main_believes-it-has-phenomenal-consciousness_Qwen.py are running on LAIR
