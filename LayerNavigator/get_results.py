@@ -7,39 +7,6 @@ import json
 from globalenv import *
 import numpy as np 
 
-# Compute perplexity
-def compute_perplexity_on_generation(
-    model,
-    input_data,
-    generated_text: str,
-    max_length: int = 512
-):
-    """
-    Compute perplexity on generated text
-    
-    Args:
-        model: Model wrapper
-        input_data: Input tensor/data
-        generated_text: Generated output text
-        max_length: Maximum sequence length to evaluate
-        
-    Returns:
-        perplexity: Perplexity score for the generated text
-    """
-    # Tokenize the generated text
-    tokens = model.tokenizer(generated_text, return_tensors="pt", truncation=True, max_length=max_length)
-    input_ids = tokens['input_ids'].to(model.device)
-    
-    # Get model output
-    with torch.no_grad():
-        outputs = model.model(input_ids, labels=input_ids)
-        loss = outputs.loss
-    
-    # Compute perplexity
-    perplexity = torch.exp(loss).item()
-    return perplexity
-
-
 def compute_perplexity_on_prompt(
     model,
     input_data,
@@ -65,23 +32,118 @@ def compute_perplexity_on_prompt(
     return perplexity
 
 
+def compute_perplexity_on_generation(
+    model,
+    input_data,
+    generated_text: str,
+    max_length: int = 200,
+    batch_index: int = 0  # NEW: which sample in the batch
+):
+    """
+    Compute perplexity on generated text GIVEN the prompt context.
+    
+    Args:
+        model: Model wrapper
+        input_data: Input tensor or BatchEncoding (the prompt, already tokenized)
+        generated_text: Generated output text (the answer)
+        max_length: Maximum sequence length to evaluate
+        batch_index: Index of the sample in the batch (if batched)
+        
+    Returns:
+        perplexity: Perplexity score for the generated text
+    """
+    # Handle empty generation
+    if not generated_text or len(generated_text.strip()) == 0:
+        return float('inf')
+    
+    # Tokenize ONLY the generated answer
+    answer_tokens = model.tokenizer(
+        generated_text, 
+        return_tensors="pt",
+        add_special_tokens=False,
+        truncation=False
+    )
+    answer_ids = answer_tokens['input_ids'].to(model.device)
+    
+    # Handle case where tokenization produces empty result
+    if answer_ids.shape[1] == 0:
+        return float('inf')
+    
+    # Extract prompt token IDs - handle both Tensor and BatchEncoding
+    if isinstance(input_data, dict) or hasattr(input_data, 'input_ids'):
+        prompt_ids = input_data['input_ids'].to(model.device)
+    else:
+        prompt_ids = input_data.to(model.device)
+    
+    # Handle batched input - extract the specific sample
+    if prompt_ids.dim() == 2 and prompt_ids.shape[0] > 1:
+        # Batched input - select the specific sample
+        prompt_ids = prompt_ids[batch_index:batch_index+1]  # Keep 2D: [1, seq_len]
+    elif prompt_ids.dim() == 1:
+        # 1D tensor - add batch dimension
+        prompt_ids = prompt_ids.unsqueeze(0)
+    
+    # Now both should be [1, seq_len]
+    # Concatenate prompt + answer token IDs directly
+    full_ids = torch.cat([prompt_ids, answer_ids], dim=1)
+    
+    # Truncate if too long
+    if full_ids.shape[1] > max_length:
+        full_ids = full_ids[:, :max_length]
+    
+    # Create labels: -100 for prompt tokens, actual IDs for answer tokens
+    labels = full_ids.clone()
+    prompt_length = prompt_ids.shape[1]
+    
+    # Ensure we don't mask beyond sequence length
+    if prompt_length >= full_ids.shape[1]:
+        return float('inf')
+    
+    labels[:, :prompt_length] = -100  # Mask prompt
+    
+    # Verify we have answer tokens to evaluate
+    num_answer_tokens = (labels != -100).sum().item()
+    if num_answer_tokens == 0:
+        return float('inf')
+    
+    # Create attention mask
+    attention_mask = torch.ones_like(full_ids)
+    
+    # Get model output with loss computed ONLY on answer tokens
+    with torch.no_grad():
+        try:
+            outputs = model.model(
+                input_ids=full_ids,
+                attention_mask=attention_mask,
+                labels=labels
+            )
+            loss = outputs.loss
+        except Exception as e:
+            print(f"Error in forward pass: {e}")
+            return float('inf')
+    
+    # Check for invalid loss
+    if loss is None or torch.isnan(loss) or torch.isinf(loss):
+        return float('inf')
+    
+    # Compute perplexity
+    perplexity = torch.exp(loss).item()
+    
+    # Debug output for unreasonably high perplexity
+    if perplexity > 1000:
+        print(f"\n=== WARNING: Very High Perplexity ===")
+        print(f"PPL: {perplexity:.2f} | Loss: {loss.item():.4f}")
+        print(f"Prompt tokens: {prompt_length} | Answer tokens: {num_answer_tokens}")
+        print(f"Generated text: '{generated_text[:100]}'")
+        print(f"=====================================\n")
+    return perplexity
+
 def get_perplexity_BASE_results(
     model,
     test_dataset: UniDataset,
     max_new_tokens: int = 200,
 ):
-    """
-    Compute baseline perplexity without steering
-    
-    Args:
-        model: Model wrapper
-        test_dataset: Test dataset
-        max_new_tokens: Maximum tokens to generate
-        
-    Returns:
-        avg_perplexity: Average perplexity across all generations
-        perplexities: List of per-sample perplexities
-    """
+    """..."""
     assert test_dataset.train == False, "Only Use Test Mode"
     assert test_dataset.set in ["test", "val"], "Only Use Test Dataset"
     
@@ -95,15 +157,16 @@ def get_perplexity_BASE_results(
         cur_results = model.generate(d.to(model.device), max_new_tokens=max_new_tokens)
         
         # Compute perplexity on each generated text
-        for generated_text in cur_results:
+        for idx, generated_text in enumerate(cur_results):
             try:
-                ppl = compute_perplexity_on_generation(model, d, generated_text)
+                ppl = compute_perplexity_on_generation(model, d, generated_text, batch_index=idx)
                 all_perplexities.append(ppl)
-            except:
-                # Skip if perplexity computation fails (e.g., empty generation)
+            except Exception as e:
+                print(f"Skipping sample due to error: {e}")
                 continue
     
     avg_perplexity = np.mean(all_perplexities) if all_perplexities else float('inf')
+    print(f"Baseline Perplexity: {avg_perplexity:.4f}")
     return avg_perplexity
 
 
@@ -158,12 +221,12 @@ def get_perplexity_results(
         cur_results = model.generate(d.to(model.device), max_new_tokens=max_new_tokens)
         
         # Compute perplexity on each generated text
-        for generated_text in cur_results:
+        for idx, generated_text in enumerate(cur_results):
             try:
-                ppl = compute_perplexity_on_generation(model, d, generated_text)
+                ppl = compute_perplexity_on_generation(model, d, generated_text, batch_index=idx)
                 all_perplexities.append(ppl)
             except:
-                # Skip if perplexity computation fails
+                print(f"Skipping sample due to error: {e}")
                 continue
     
     avg_perplexity = np.mean(all_perplexities) if all_perplexities else float('inf')

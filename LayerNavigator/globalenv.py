@@ -1,6 +1,9 @@
 ###### MODEL ######
-MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct" # OR "Your-Path/Qwen2.5-32B-Instruct"
 # MODEL = "/data/project/le-lab/cache/Qwen2.5-32B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Qwen2.5-7B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Qwen2.5-3B-Instruct"
+MODEL = "/data/project/le-lab/cache/Llama-3-3B-Instruct"
 
 if "Llama-3-8B-Instruct" in MODEL:
     LAYERS = list(range(32))
@@ -12,6 +15,21 @@ elif "Qwen2.5-32B-Instruct" in MODEL:
     INST_TEMPLATE = """<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}"""
     QUICK_TOKEN_ID_DICT = {" Yes" : 7414, " No" : 2308}
 
+elif "Qwen2.5-7B-Instruct" in MODEL:
+    LAYERS = list(range(28))  # 28 layers
+    INST_TEMPLATE = """<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}"""
+    QUICK_TOKEN_ID_DICT = {" Yes" : 7414, " No" : 2308}
+    
+elif "Qwen2.5-3B-Instruct" in MODEL:
+    LAYERS = list(range(36)) # 36 layers
+    INST_TEMPLATE = """<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n{}"""
+    QUICK_TOKEN_ID_DICT = {" Yes" : 7414, " No" : 2308}
+
+elif "Llama-3-3B-Instruct" in MODEL:
+    LAYERS = list(range(28))
+    INST_TEMPLATE = """<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{}"""
+    QUICK_TOKEN_ID_DICT = {" Yes": 7566, " No": 2360}
+    
 Anth_YN_QUESTION_PROFIX = "\nAnswer \"Yes\" or \"No\"."
 INST_SYS_ANS_PREFIX = "My answer"
 INST_SYS_ANS_PREFIX_alt1 = INST_SYS_ANS_PREFIX+":"

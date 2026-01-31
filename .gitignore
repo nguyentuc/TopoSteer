@@ -14,5 +14,6 @@ Dataset/
 Score*/
 Result*/
 Vectors*/
-
+Visualizations/
+Analysis/
 *.out

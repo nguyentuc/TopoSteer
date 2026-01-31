@@ -222,12 +222,11 @@ def compute_persistence_diagram(
             persistence_stats[f'H{dim}_count'] = 0
     
     # ============================================
-    # STEP 4: COMPUTE PERSISTENCE ENTROPY 
+    # Metric 4: PERSISTENCE ENTROPY (on each dimension d)
     # Persistence Entropy = -sum(p_i × log(p_i)) where p_i = (persistence of feature i) / (total persistence)
     # Uniform structure -> reliable steering
     # Low entropy -> Uniform, reliable topological structure -> Better steering
     # High entropy -> Mixed feature quality -> Unreliable steering
-    # Combine:  tss *= (1.0 - normalized_entropy)
     # ============================================
     
     persistence_entropy = {}
@@ -242,7 +241,7 @@ def compute_persistence_diagram(
             if total_persistence > 1e-10:  # Avoid division by zero
                 # Compute normalized probabilities
                 probabilities = persistences / total_persistence
-                # Compute entropy: H = -Σ(p_i * log(p_i))
+                # Compute entropy: H = -sum(p_i * log(p_i))
                 entropy = -np.sum(probabilities * np.log(probabilities + 1e-10))
                 persistence_entropy[dim] = float(entropy)
             else:

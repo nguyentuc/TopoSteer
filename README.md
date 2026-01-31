@@ -9,6 +9,8 @@ pip install scipy
 pip install scikit-learn
 pip install typing_extensions
 pip install urllib3
+pip install matplotlib
+pip install seaborn
 ```
 
 ## Quick Start
@@ -24,6 +26,8 @@ You can run everything with just **two steps**:
 huggingface-cli login
 huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct --local-dir /data/project/le-lab/cache/Llama-3-8B-Instruct --local-dir-use-symlinks False
 huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-lab/cache/Qwen2.5-32B-Instruct --local-dir-use-symlinks False
+huggingface-cli download Qwen/Qwen2.5-3B-Instruct --local-dir /data/project/le-lab/cache/Qwen2.5-3B-Instruct --local-dir-use-symlinks False
+huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/project/le-lab/cache/Llama-3-3B-Instruct --local-dir-use-symlinks False
 ```
 2. **Run the main script**
    ```bash
@@ -57,4 +61,8 @@ huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-
 
 - Ablation Study on different metric.
 
-## z4_main_allies_Qwen.py + z4_main_believes-it-has-phenomenal-consciousness_Qwen.py are running on LAIR
+## Running:
+[LAIR] z5_main_allies_LLama3.sh + z5_main_conscientiousness_LLama3.sh are running on LAIR
+[NEXT] Plot visualization for the steering score on each metrics (rank by larger to smaller) corresponding the activation:
++ provide visualization of tsne/umap to plot the 2D embeddings of the activation vectors.
++ 6e,6f visualization of heatmap dendrograms of activations vectors between layers.
