@@ -1,0 +1,415 @@
+{
+    "num_layers": 1,
+    "base_prob": 0.8186298571048072,
+    "base_ppl": 12.31749448299408,
+    "strategies": {
+        "original_layernav": {
+            "method": "original_layernav",
+            "metric": "N/A",
+            "category": "baseline",
+            "layers": [
+                13
+            ],
+            "prob": 0.8450027310182238,
+            "prob_delta": 0.026372873913416583,
+            "perplexity": 12.315985350608825,
+            "ppl_delta": 0.0015091323852551852
+        },
+        "layernavigator_euclidean": {
+            "method": "layernavigator",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "layernavigator_cosine": {
+            "method": "layernavigator",
+            "metric": "cosine",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "layernavigator_mahalanobis": {
+            "method": "layernavigator",
+            "metric": "mahalanobis",
+            "category": "original_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "max_euclidean": {
+            "method": "max",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "max_cosine": {
+            "method": "max",
+            "metric": "cosine",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "max_mahalanobis": {
+            "method": "max",
+            "metric": "mahalanobis",
+            "category": "original_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "robust_euclidean": {
+            "method": "robust",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                14
+            ],
+            "prob": 0.8918617428742326,
+            "prob_delta": 0.07323188576942541,
+            "perplexity": 12.388855633735657,
+            "ppl_delta": -0.071361150741577
+        },
+        "robust_cosine": {
+            "method": "robust",
+            "metric": "cosine",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "robust_mahalanobis": {
+            "method": "robust",
+            "metric": "mahalanobis",
+            "category": "original_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "persistence_euclidean": {
+            "method": "persistence",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "persistence_cosine": {
+            "method": "persistence",
+            "metric": "cosine",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "persistence_mahalanobis": {
+            "method": "persistence",
+            "metric": "mahalanobis",
+            "category": "original_methods",
+            "layers": [
+                30
+            ],
+            "prob": 0.8241181210846236,
+            "prob_delta": 0.005488263979816388,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "total_euclidean": {
+            "method": "total",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "total_cosine": {
+            "method": "total",
+            "metric": "cosine",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "total_mahalanobis": {
+            "method": "total",
+            "metric": "mahalanobis",
+            "category": "scale_integrated_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "avg_euclidean": {
+            "method": "avg",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "avg_cosine": {
+            "method": "avg",
+            "metric": "cosine",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "avg_mahalanobis": {
+            "method": "avg",
+            "metric": "mahalanobis",
+            "category": "scale_integrated_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "integrated_euclidean": {
+            "method": "integrated",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                1
+            ],
+            "prob": 0.8184388233702845,
+            "prob_delta": -0.00019103373452267203,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "integrated_cosine": {
+            "method": "integrated",
+            "metric": "cosine",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "integrated_mahalanobis": {
+            "method": "integrated",
+            "metric": "mahalanobis",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "log_weighted_euclidean": {
+            "method": "log_weighted",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "log_weighted_cosine": {
+            "method": "log_weighted",
+            "metric": "cosine",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "log_weighted_mahalanobis": {
+            "method": "log_weighted",
+            "metric": "mahalanobis",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "robust_total_euclidean": {
+            "method": "robust_total",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "robust_total_cosine": {
+            "method": "robust_total",
+            "metric": "cosine",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "robust_total_mahalanobis": {
+            "method": "robust_total",
+            "metric": "mahalanobis",
+            "category": "scale_integrated_methods",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "ensemble_original_euclidean": {
+            "method": "ensemble_original",
+            "metric": "euclidean",
+            "category": "ensemble",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "ensemble_original_cosine": {
+            "method": "ensemble_original",
+            "metric": "cosine",
+            "category": "ensemble",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "ensemble_original_mahalanobis": {
+            "method": "ensemble_original",
+            "metric": "mahalanobis",
+            "category": "ensemble",
+            "layers": [
+                23
+            ],
+            "prob": 0.8435802168884269,
+            "prob_delta": 0.024950359783619702,
+            "perplexity": 12.362415852546691,
+            "ppl_delta": -0.04492136955261117
+        },
+        "ensemble_integrated_euclidean": {
+            "method": "ensemble_integrated",
+            "metric": "euclidean",
+            "category": "ensemble",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "ensemble_integrated_cosine": {
+            "method": "ensemble_integrated",
+            "metric": "cosine",
+            "category": "ensemble",
+            "layers": [
+                0
+            ],
+            "prob": 0.8186332358315369,
+            "prob_delta": 3.3787267297302748e-06,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        },
+        "ensemble_integrated_mahalanobis": {
+            "method": "ensemble_integrated",
+            "metric": "mahalanobis",
+            "category": "ensemble",
+            "layers": [
+                8
+            ],
+            "prob": 0.823423679781226,
+            "prob_delta": 0.004793822676418813,
+            "perplexity": 12.31749448299408,
+            "ppl_delta": 0.0
+        }
+    }
+}

@@ -1,0 +1,438 @@
+{
+  "num_layers": 1,
+  "base_prob": 0.5737995166084014,
+  "base_ppl": 4.526648788452149,
+  "strategies": {
+    "layernav": {
+      "layers": [
+        25
+      ],
+      "prob": 0.6475225944755345,
+      "delta": 0.07372307786713306,
+      "prob_delta": 0.07372307786713306,
+      "perplexity": 8.65056274652481,
+      "ppl_delta": -4.123913958072662,
+      "category": "baseline"
+    },
+    "beta0_euclidean": {
+      "variant": "beta0",
+      "metric": "euclidean",
+      "category": "betti_numbers",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "beta1_euclidean": {
+      "variant": "beta1",
+      "metric": "euclidean",
+      "category": "betti_numbers",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "beta2_euclidean": {
+      "variant": "beta2",
+      "metric": "euclidean",
+      "category": "betti_numbers",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "sum_beta_counts_euclidean": {
+      "variant": "sum_beta_counts",
+      "metric": "euclidean",
+      "category": "betti_numbers",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "mean_persistence_H2_euclidean": {
+      "variant": "mean_persistence_H2",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "count_H0_euclidean": {
+      "variant": "count_H0",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "max_persistence_H1_euclidean": {
+      "variant": "max_persistence_H1",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.527927927927928,
+      "layers": [
+        35
+      ],
+      "prob": 0.6721659761630815,
+      "delta": 0.09836645955468004,
+      "prob_delta": 0.09836645955468004,
+      "perplexity": 5.647278485298156,
+      "ppl_delta": -1.1206296968460077
+    },
+    "max_persistence_H0_euclidean": {
+      "variant": "max_persistence_H0",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": -0.50990990990991,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "mean_persistence_H0_euclidean": {
+      "variant": "mean_persistence_H0",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.4924066924066925,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "mean_persistence_H1_euclidean": {
+      "variant": "mean_persistence_H1",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.48880308880308887,
+      "layers": [
+        35
+      ],
+      "prob": 0.6721659761630815,
+      "delta": 0.09836645955468004,
+      "prob_delta": 0.09836645955468004,
+      "perplexity": 5.647278485298156,
+      "ppl_delta": -1.1206296968460077
+    },
+    "max_persistence_H2_euclidean": {
+      "variant": "max_persistence_H2",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "total_persistence_H0_euclidean": {
+      "variant": "total_persistence_H0",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.4924066924066925,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "total_persistence_H2_euclidean": {
+      "variant": "total_persistence_H2",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "count_H2_euclidean": {
+      "variant": "count_H2",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "h2_persistence_only_euclidean": {
+      "variant": "h2_persistence_only",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "entropy_H0_euclidean": {
+      "variant": "entropy_H0",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": 0.5011583011583012,
+      "layers": [
+        35
+      ],
+      "prob": 0.6721659761630815,
+      "delta": 0.09836645955468004,
+      "prob_delta": 0.09836645955468004,
+      "perplexity": 5.647278485298156,
+      "ppl_delta": -1.1206296968460077
+    },
+    "h0_persistence_only_euclidean": {
+      "variant": "h0_persistence_only",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.4924066924066925,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "persistence_inverseH1_inverseH2_euclidean": {
+      "variant": "persistence_inverseH1_inverseH2",
+      "metric": "euclidean",
+      "category": "paradoxical_persistence",
+      "correlation": 0.4924066924066925,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "entropy_H1_euclidean": {
+      "variant": "entropy_H1",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": -0.2563706563706564,
+      "layers": [
+        12
+      ],
+      "prob": 0.5714993768964978,
+      "delta": -0.0023001397119036815,
+      "prob_delta": -0.0023001397119036815,
+      "perplexity": 4.584760177135467,
+      "ppl_delta": -0.058111388683318665
+    },
+    "entropy_H2_euclidean": {
+      "variant": "entropy_H2",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "inverse_h0_entropy_euclidean": {
+      "variant": "inverse_h0_entropy",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": -0.5011583011583012,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "robust_clusters_fragile_voids_euclidean": {
+      "variant": "robust_clusters_fragile_voids",
+      "metric": "euclidean",
+      "category": "paradoxical_persistence",
+      "correlation": 0.4924066924066925,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "robust_clusters_fragile_loops_euclidean": {
+      "variant": "robust_clusters_fragile_loops",
+      "metric": "euclidean",
+      "category": "paradoxical_persistence",
+      "correlation": 0.49163449163449163,
+      "layers": [
+        24
+      ],
+      "prob": 0.6126819442224596,
+      "delta": 0.038882427614058135,
+      "prob_delta": 0.038882427614058135,
+      "perplexity": 6.813614258766174,
+      "ppl_delta": -2.2869654703140254
+    },
+    "mean_all_persistence_euclidean": {
+      "variant": "mean_all_persistence",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.4906048906048906,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "h1_persistence_only_euclidean": {
+      "variant": "h1_persistence_only",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.48880308880308887,
+      "layers": [
+        35
+      ],
+      "prob": 0.6721659761630815,
+      "delta": 0.09836645955468004,
+      "prob_delta": 0.09836645955468004,
+      "perplexity": 5.647278485298156,
+      "ppl_delta": -1.1206296968460077
+    },
+    "total_persistence_euclidean": {
+      "variant": "total_persistence",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.4870012870012871,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    },
+    "total_persistence_H1_euclidean": {
+      "variant": "total_persistence_H1",
+      "metric": "euclidean",
+      "category": "persistence_stats",
+      "correlation": 0.39562419562419565,
+      "layers": [
+        12
+      ],
+      "prob": 0.5714993768964978,
+      "delta": -0.0023001397119036815,
+      "prob_delta": -0.0023001397119036815,
+      "perplexity": 4.584760177135467,
+      "ppl_delta": -0.058111388683318665
+    },
+    "inverse_h1_entropy_euclidean": {
+      "variant": "inverse_h1_entropy",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": 0.2563706563706564,
+      "layers": [
+        23
+      ],
+      "prob": 0.5604120652758052,
+      "delta": -0.013387451332596223,
+      "prob_delta": -0.013387451332596223,
+      "perplexity": 5.769064412117005,
+      "ppl_delta": -1.242415623664856
+    },
+    "inverse_h2_entropy_euclidean": {
+      "variant": "inverse_h2_entropy",
+      "metric": "euclidean",
+      "category": "entropy",
+      "correlation": NaN,
+      "layers": [
+        0
+      ],
+      "prob": 0.5757389648045682,
+      "delta": 0.0019394481961667598,
+      "prob_delta": 0.0019394481961667598,
+      "perplexity": 4.540778546333313,
+      "ppl_delta": -0.01412975788116455
+    },
+    "betti_curve_auc_H0_euclidean": {
+      "variant": "betti_curve_auc_H0",
+      "metric": "euclidean",
+      "category": "multi_scale_robustness",
+      "correlation": 0.49111969111969117,
+      "layers": [
+        30
+      ],
+      "prob": 0.6283586343861753,
+      "delta": 0.05455911777777389,
+      "prob_delta": 0.05455911777777389,
+      "perplexity": 5.298835716247559,
+      "ppl_delta": -0.7721869277954099
+    }
+  }
+}

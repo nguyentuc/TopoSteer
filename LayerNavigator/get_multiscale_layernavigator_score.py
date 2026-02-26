@@ -449,18 +449,15 @@ def get_multiscale_layernavigator_score(
         # STEP 4: SAMPLE SCALES FOR EFFICIENCY
         # ====================================================================
         if len(all_filtration_values) > num_scales:
-            # Sample uniformly in log-space
-            min_scale = all_filtration_values[1] if len(all_filtration_values) > 1 else 0.001
+            min_scale = 0.0
             max_scale = all_filtration_values[-1]
             
-            if min_scale > 0:
-                sampled_scales = np.logspace(
-                    np.log10(min_scale),
-                    np.log10(max_scale),
-                    num_scales
-                )
-            else:
-                sampled_scales = np.linspace(min_scale, max_scale, num_scales)
+            sampled_scales = np.linspace(min_scale, max_scale, num_scales)
+            
+            # Remove exact zeros if any
+            sampled_scales = sampled_scales[sampled_scales >= 1e-10]
+            
+            print(f"    Uniform sampling: {len(sampled_scales)} scales from {sampled_scales[0]:.6f} to {sampled_scales[-1]:.6f}")
         else:
             sampled_scales = np.array(all_filtration_values)
         

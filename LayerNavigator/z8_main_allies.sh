@@ -5,7 +5,7 @@
 #SBATCH --mem=70GB
 #SBATCH --time=336:00:00
 #SBATCH --partition=general
-#SBATCH --output=z6_inference_only_subscribes-to-Christianity_test-%j.out
+#SBATCH --output=z8_main_allies_LLama8B-%j.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=tucnguye@iu.edu
 
@@ -19,6 +19,6 @@ echo "$cmd1"
 eval $cmd1
 
 gpu=0
-cmd="CUDA_VISIBLE_DEVICES=$gpu python z6_inference_only_subscribes-to-Christianity_test.py"
+cmd="CUDA_VISIBLE_DEVICES=$gpu python z8_main_allies.py"
 echo "$cmd"
 eval $cmd

@@ -227,12 +227,12 @@ if __name__ == "__main__":
                 vec_method="md",
                 acts_pre="standard",
                 metric=metric,
-                num_scales=10,  # Sample 50 scales
+                num_scales=5,  # Sample 50 scales
                 subsample=None,  # Use all data (or set to 500 for speed)
                 save_results=True
             )
             all_multiscale_scores[metric] = scores
-            print(f"✓ {metric} completed")
+            print(f"{metric} completed")
         
         print("\nAll multi-scale scores computed\n")
 

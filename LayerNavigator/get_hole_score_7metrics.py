@@ -1,7 +1,15 @@
-# get_hole_score.py
 """
 HOLE (Homological Observation of Latent Embeddings) Metric Computation
+Comprehensive Version with Class-Specific Cloud Analysis
+
 Companion to LayerNavigator's get_score.py
+
+Features:
+- 7 distance metrics (euclidean, cosine, mahalanobis, geodesic, density-normalized variants)
+- 50+ topological metrics from combined cloud (G1-G6)
+- 21 class-specific metrics (positive, negative, difference clouds) (G7)
+- Multi-metric comparison and agreement analysis
+- Wasserstein distance for layer stability analysis
 """
 
 import torch
@@ -14,6 +22,11 @@ import gudhi
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import pairwise_distances
 from sklearn.neighbors import NearestNeighbors
+
+
+# ============================================
+# DISTANCE COMPUTATION FUNCTIONS
+# ============================================
 
 def compute_geodesic_distance(activations: np.ndarray, k: int = 10) -> np.ndarray:
     """
@@ -95,6 +108,10 @@ def apply_density_normalization(distance_matrix: np.ndarray, local_scales: np.nd
     return normalized_distances
 
 
+# ============================================
+# PERSISTENCE COMPUTATION FUNCTION
+# ============================================
+
 def compute_persistence_diagram(
     activations: np.ndarray,
     metric: str = 'cosine',
@@ -129,7 +146,7 @@ def compute_persistence_diagram(
             'persistence_entropy': {0: H0_entropy, 1: H1_entropy, ...},
             'betti_curves': {0: [(eta, beta_0), ...], 1: [(eta, beta_1), ...], ...},
             'betti_curve_auc': {0: AUC_beta_0, 1: AUC_beta_1, ...},
-            'strong_loops_count': int, # H1 features with persistence > threshold
+            'strong_loops_count': int,
         }
     """
     # ============================================
@@ -172,6 +189,9 @@ def compute_persistence_diagram(
         local_scales = compute_local_scales(activations, k=k_neighbors)
         distances = apply_density_normalization(distances, local_scales)
     
+    else:
+        raise ValueError(f"Unsupported metric: {metric}")
+    
     # ============================================
     # STEP 2: CREATE RIPS COMPLEX AND COMPUTE PERSISTENCE HOMOLOGY
     # ============================================
@@ -205,7 +225,7 @@ def compute_persistence_diagram(
             finite_pairs = [(b, d) for b, d in pairs if d != np.inf]
             
             if finite_pairs:
-                persistences = [d - b for b, d in finite_pairs] # compute the living period of each pair
+                persistences = [d - b for b, d in finite_pairs]
                 persistence_stats[f'H{dim}_mean'] = np.mean(persistences)
                 persistence_stats[f'H{dim}_max'] = np.max(persistences)
                 persistence_stats[f'H{dim}_total'] = np.sum(persistences)
@@ -222,11 +242,7 @@ def compute_persistence_diagram(
             persistence_stats[f'H{dim}_count'] = 0
     
     # ============================================
-    # Metric 4: PERSISTENCE ENTROPY (on each dimension d)
-    # Persistence Entropy = -sum(p_i × log(p_i)) where p_i = (persistence of feature i) / (total persistence)
-    # Uniform structure -> reliable steering
-    # Low entropy -> Uniform, reliable topological structure -> Better steering
-    # High entropy -> Mixed feature quality -> Unreliable steering
+    # STEP 4: PERSISTENCE ENTROPY
     # ============================================
     
     persistence_entropy = {}
@@ -238,7 +254,7 @@ def compute_persistence_diagram(
             persistences = np.array([d - b for b, d in finite_pairs])
             total_persistence = np.sum(persistences)
             
-            if total_persistence > 1e-10:  # Avoid division by zero
+            if total_persistence > 1e-10:
                 # Compute normalized probabilities
                 probabilities = persistences / total_persistence
                 # Compute entropy: H = -sum(p_i * log(p_i))
@@ -251,13 +267,10 @@ def compute_persistence_diagram(
     
     # ============================================
     # STEP 5: COMPUTE BETTI CURVES
-    # beta_i only at final filtration scale, missing how entanglement evolves across scales.
-    # betti show number of loops at filtration threshold epsilon
-    # entanglement_penalty = 1.0 / (1.0 + 0.1 * beta1_AUC)
     # ============================================
     filtration_list = list(simplex_tree.get_filtration())
     if len(filtration_list) > 0:
-        max_filtration = filtration_list[-1][1]  # Last simplex's filtration value
+        max_filtration = filtration_list[-1][1]
     else:
         max_filtration = 1.0
 
@@ -272,7 +285,6 @@ def compute_persistence_diagram(
         # Count features alive at this epsilon
         for dim in range(max_dimension + 1):
             pairs = persistence_by_dim[dim]
-            # Count features where birth <= epsilon < death
             alive_count = sum(1 for b, d in pairs if b <= epsilon and (d > epsilon or d == np.inf))
             betti_curves[dim].append((float(epsilon), alive_count))
     
@@ -299,19 +311,13 @@ def compute_persistence_diagram(
     if finite_h1_pairs:
         h1_persistences = np.array([d - b for b, d in finite_h1_pairs])
         
-        # Define "strong loop" threshold (e.g., 50th percentile or absolute threshold)
         if len(h1_persistences) > 0:
-            # Use median as threshold, or you can use a fixed value like 0.5
             strong_loop_threshold = np.median(h1_persistences) if len(h1_persistences) > 1 else h1_persistences[0]
             strong_loops_count = int(np.sum(h1_persistences > strong_loop_threshold))
         else:
             strong_loops_count = 0
     else:
         strong_loops_count = 0
-    
-    # Compute weighted entanglement score: beta_1 weighted by mean H₁ persistence
-    mean_h1_persistence = persistence_stats.get('H1_mean', 0.0)
-    beta1 = betti_numbers[1] if len(betti_numbers) > 1 else 0
     
     # ============================================
     # STEP 7: RETURN COMPREHENSIVE RESULTS
@@ -325,28 +331,26 @@ def compute_persistence_diagram(
                           for i in range(max_dimension + 1)},
         'persistence_stats': persistence_stats,
         
-        # NEW METRIC 1: Persistence Entropy
+        # Persistence Entropy
         'persistence_entropy': persistence_entropy,
         
-        # NEW METRIC 3: Betti Curves and AUC
+        # Betti Curves and AUC
         'betti_curves': betti_curves,
         'betti_curve_auc': betti_curve_auc,
         
-        # NEW METRIC 4: H1 Enhanced Statistics
+        # H1 Enhanced Statistics
         'strong_loops_count': strong_loops_count
     }
 
 
 # ============================================
-# HELPER FUNCTION FOR METRIC 2: WASSERSTEIN DISTANCE
+# WASSERSTEIN DISTANCE FUNCTIONS
 # ============================================
 
 def compute_wasserstein_distance(diagram1: Dict, diagram2: Dict, 
                                   dimension: int = 1, order: int = 2) -> float:
     """
     Compute Wasserstein distance between two persistence diagrams
-    
-    This is NEW METRIC 2 - used to compare topology between layers
     
     Args:
         diagram1: Output from compute_persistence_diagram for layer i
@@ -380,112 +384,43 @@ def compute_wasserstein_distance(diagram1: Dict, diagram2: Dict,
     
     return float(distance)
 
-# Current layers are analyzed independently, missing how topology changes across layers.
-# Compute topology similarity across adjacent layers
-# W(layer_14, layer_15) = 0.05  # Small change (stable region)
-# W(layer_16, layer_17) = 0.38  # Large value (transition region)
+# ============================================
+# MAIN HOLE SCORE COMPUTATION FUNCTION
+# ============================================
 
-def compute_layer_stability(layer_diagrams: List[Dict], 
-                            dimension: int = 1,
-                            order: int = 2) -> Dict:
-    """
-    Compute topological stability across layers using Wasserstein distances
-    
-    Args:
-        layer_diagrams: List of persistence diagrams for consecutive layers
-        dimension: Homology dimension to analyze
-        order: Wasserstein order
-        
-    Returns:
-        stability_stats: {
-            'wasserstein_distances': list of distances between adjacent layers,
-            'avg_stability': average stability (lower Wasserstein = more stable),
-            'max_transition': maximum topological change,
-            'stable_regions': list of (start_layer, end_layer) for stable regions
-        }
-    """
-    wasserstein_distances = []
-    
-    # Compute Wasserstein distance between consecutive layers
-    for i in range(len(layer_diagrams) - 1):
-        dist = compute_wasserstein_distance(
-            layer_diagrams[i], 
-            layer_diagrams[i + 1],
-            dimension=dimension,
-            order=order
-        )
-        wasserstein_distances.append(dist)
-    
-    if not wasserstein_distances:
-        return {
-            'wasserstein_distances': [],
-            'avg_stability': 0.0,
-            'max_transition': 0.0,
-            'stable_regions': []
-        }
-    
-    # Compute statistics
-    avg_stability = np.mean(wasserstein_distances)
-    max_transition = np.max(wasserstein_distances)
-    
-    # Identify stable regions (where Wasserstein distance is below threshold)
-    stability_threshold = np.median(wasserstein_distances)
-    stable_regions = []
-    
-    current_region_start = 0
-    for i, dist in enumerate(wasserstein_distances):
-        if dist > stability_threshold:
-            # End of stable region
-            if i > current_region_start:
-                stable_regions.append((current_region_start, i))
-            current_region_start = i + 1
-    
-    # Add final region if stable
-    if len(wasserstein_distances) > current_region_start:
-        stable_regions.append((current_region_start, len(wasserstein_distances)))
-    
-    return {
-        'wasserstein_distances': wasserstein_distances,
-        'avg_stability': float(avg_stability),
-        'max_transition': float(max_transition),
-        'stable_regions': stable_regions
-    }
-
-# main function that compute all persistent homology based distance
 def get_hole_score(
     layers: List[int],
-    dataset,  # UniDataset from LayerNavigator
+    dataset,
     vec_task: str,
     vec_method: str,
     acts_pre: str = "standard",
     metric: str = "cosine",
     max_dimension: int = 2,
-    subsample: int = None  # Subsample for computational efficiency
+    subsample: int = None,
+    compute_class_clouds: bool = True
 ):
     """
     Compute HOLE metrics for each layer
     
-    Following LayerNavigator's get_score structure but with topological metrics
+    Computes persistence on 4 point clouds:
+      1. Combined cloud (all activations together) - Original 50+ metrics
+      2. Positive cloud (label=1 activations only) - Class-specific metrics
+      3. Negative cloud (label=0 activations only) - Class-specific metrics
+      4. Difference cloud (pos - neg_mean) - Steering direction topology
     
     Args:
         layers: List of layer indices to analyze
         dataset: Dataset object (must have train=True)
-        vec_task: Task name (e.g., 'sycophancy')
+        vec_task: Task name
         vec_method: Vector extraction method
         acts_pre: Preprocessing method ('standard' for z-score)
-        metric: Distance metric - one of:
-            - 'euclidean': Euclidean distance (ℓ₂-norm)
-            - 'cosine': Cosine distance (directional similarity)
-            - 'mahalanobis': Mahalanobis distance (covariance-aware)
-            - 'geodesic': Geodesic distance via k-NN graph
-            - 'dens_norm_euclidean': Density-normalized Euclidean
-            - 'dens_norm_cosine': Density-normalized Cosine
-            - 'dens_norm_mahalanobis': Density-normalized Mahalanobis
+        metric: Distance metric (euclidean, cosine, mahalanobis, geodesic, dens_norm_*)
         max_dimension: Maximum homology dimension (0, 1, 2)
-        subsample: Subsample N points for efficiency (None = use all)
+        subsample: Subsample N points PER CLASS for efficiency (None = use all)
+        compute_class_clouds: If True, compute pos/neg/diff clouds (adds 21 metrics)
         
     Returns:
-        hole_score_info: Dict with comprehensive TSS variants
+        hole_score_info: Dict with comprehensive metrics (~71 total if compute_class_clouds=True)
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -497,62 +432,114 @@ def get_hole_score(
     # Score Save Path
     acts_pre_str = f"-{acts_pre}" if acts_pre is not None else ""
     metric_str = f"-{metric}"
+    cloud_suffix = "_WITH_CLASS_CLOUDS" if compute_class_clouds else ""
     
-    save_root = f"./Score_HOLE{acts_pre_str}{metric_str}/{dataset.task}/{svec_path}/"
+    save_root = f"./Score_HOLE{acts_pre_str}{metric_str}{cloud_suffix}/{dataset.task}/{svec_path}/"
     os.makedirs(save_root, exist_ok=True)
     
     ans_num = 2  # Binary classification
     
-    # Load activations (same as LayerNavigator)
+    # Load activations
     print("Loading activations...")
     acts = torch.load(f"{vec_root}/acts.pt")
     
     hole_score_info = {}
     
     # Process each layer
-    for l in tqdm(layers, desc="Computing HOLE Scores"):
-        # Prepare activations and labels
-        all_acts = []
-        all_labels = []
+    for l in tqdm(layers, desc=f"Computing HOLE Scores ({metric})"):
+        # ========================================================
+        # STEP 1: PREPARE ACTIVATIONS - SEPARATE BY CLASS
+        # ========================================================
+        
+        # Separate by label for class-specific analysis
+        pos_acts_list = []  # Label 1
+        neg_acts_list = []  # Label 0
         
         for i in range(ans_num):
-            all_acts.append(torch.stack(acts[i][l]))
-            all_labels.append(torch.ones(all_acts[i].shape[0]) * i) # activation vector is saved by label
+            if i == 1:
+                pos_acts_list.append(torch.stack(acts[i][l]))
+            else:
+                neg_acts_list.append(torch.stack(acts[i][l]))
         
-        # Tuc: for Llama3
-        # all_acts = torch.cat(all_acts, dim=0).cpu().numpy()  # Move to CPU for GUDHI
-        # TUC: for Qwen
-        all_acts = torch.cat(all_acts, dim=0).float().cpu().numpy()  # Convert to float32, move to CPU for GUDHI
+        # Convert to numpy
+        pos_acts = torch.cat(pos_acts_list, dim=0).float().cpu().numpy()
+        neg_acts = torch.cat(neg_acts_list, dim=0).float().cpu().numpy()
         
-        all_labels = torch.cat(all_labels, dim=0).cpu().numpy()
+        # Subsample if specified (per class to maintain balance)
+        if subsample is not None:
+            if len(pos_acts) > subsample:
+                pos_indices = np.random.choice(len(pos_acts), subsample, replace=False)
+                pos_acts = pos_acts[pos_indices]
+            
+            if len(neg_acts) > subsample:
+                neg_indices = np.random.choice(len(neg_acts), subsample, replace=False)
+                neg_acts = neg_acts[neg_indices]
         
-        # Subsample if specified (for large datasets)
-        if subsample is not None and len(all_acts) > subsample:
-            indices = np.random.choice(len(all_acts), subsample, replace=False)
-            all_acts = all_acts[indices]
-            all_labels = all_labels[indices]
+        # Combined cloud (for original metrics)
+        combined_acts = np.vstack([pos_acts, neg_acts])
         
-        # Normalize activations (same as LayerNavigator)
+        # ========================================================
+        # STEP 2: CREATE DIFFERENCE CLOUD (STEERING DIRECTION SPACE)
+        # ========================================================
+        
+        if compute_class_clouds:
+            # Difference cloud: How each positive deviates from negative center
+            neg_mean = neg_acts.mean(axis=0)
+            diff_acts = pos_acts - neg_mean
+            
+            print(f"  Layer {l}: Point clouds created:")
+            print(f"    - Combined: {len(combined_acts)} points")
+            print(f"    - Positive: {len(pos_acts)} points")
+            print(f"    - Negative: {len(neg_acts)} points")
+            print(f"    - Difference: {len(diff_acts)} points")
+        
+        # ========================================================
+        # STEP 3: NORMALIZE ACTIVATIONS
+        # ========================================================
+        
         if acts_pre == "standard":
-            all_acts = (all_acts - all_acts.mean(axis=0)) / (all_acts.std(axis=0) + 1e-8)
+            # Normalize combined (maintains between-class relationships)
+            combined_mean = combined_acts.mean(axis=0)
+            combined_std = combined_acts.std(axis=0) + 1e-8
+            
+            combined_acts_norm = (combined_acts - combined_mean) / combined_std
+            
+            if compute_class_clouds:
+                # Normalize pos/neg using COMBINED statistics (maintains relative positions)
+                pos_acts_norm = (pos_acts - combined_mean) / combined_std
+                neg_acts_norm = (neg_acts - combined_mean) / combined_std
+                
+                # Normalize difference cloud SEPARATELY (represents steering direction space)
+                diff_mean = diff_acts.mean(axis=0)
+                diff_std = diff_acts.std(axis=0) + 1e-8
+                diff_acts_norm = (diff_acts - diff_mean) / diff_std
+        else:
+            combined_acts_norm = combined_acts
+            if compute_class_clouds:
+                pos_acts_norm = pos_acts
+                neg_acts_norm = neg_acts
+                diff_acts_norm = diff_acts
         
-        # Persistent Homology
+        # ========================================================
+        # STEP 4: COMPUTE PERSISTENCE - COMBINED CLOUD (ORIGINAL)
+        # ========================================================
+        
         print(f"  Layer {l}: Computing persistent homology with {metric} distance...")
-    
-        persistence_data = compute_persistence_diagram(
-            all_acts,
+        
+        persistence_combined = compute_persistence_diagram(
+            combined_acts_norm,
             metric=metric,
             max_dimension=max_dimension,
             max_edge_length=np.inf
         )
         
         # Extract all computed metrics from persistent data
-        betti_numbers = persistence_data['betti_numbers']
-        persistence_stats = persistence_data['persistence_stats']
-        persistence_entropy = persistence_data['persistence_entropy']
-        betti_curve_auc = persistence_data['betti_curve_auc']
-        strong_loops_count = persistence_data['strong_loops_count']
-        persistence_by_dim = persistence_data['persistence_by_dim']
+        betti_numbers = persistence_combined['betti_numbers']
+        persistence_stats = persistence_combined['persistence_stats']
+        persistence_entropy = persistence_combined['persistence_entropy']
+        betti_curve_auc = persistence_combined['betti_curve_auc']
+        strong_loops_count = persistence_combined['strong_loops_count']
+        persistence_by_dim = persistence_combined['persistence_by_dim']
         
         # G1: Betti numbers
         beta0 = betti_numbers.get(0, 0)
@@ -581,6 +568,7 @@ def get_hole_score(
         h0_persistence_only = mean_pers_h0
         h1_persistence_only = mean_pers_h1
         h2_persistence_only = mean_pers_h2
+        
         # All persistence
         mean_all_persistence = (
             mean_pers_h0 +
@@ -589,18 +577,20 @@ def get_hole_score(
         ) / 3.0
 
         # Robust clusters, fragile loops
-        # Hypothesis: Want HIGH H0 persistence, LOW H1 persistence
         h1_fragility_bonus = 1.0 / (1.0 + mean_pers_h1) if mean_pers_h1 > 0 else 1.0
         robust_clusters_fragile_loops = mean_pers_h0 * h1_fragility_bonus
+        
         # Robust clusters, fragile voids
         h2_fragility_bonus = 1.0 / (1.0 + mean_pers_h2) if mean_pers_h2 > 0 else 1.0
         robust_clusters_fragile_voids = mean_pers_h0 * h2_fragility_bonus
+        
         # H0 up, H1 down, H2 down
         persistence_inverseH1_inverseH2 = (
             mean_pers_h0 +
-            (1.0 / (1.0 + mean_pers_h1 + 1e-8)) +
-            (1.0 / (1.0 + mean_pers_h2 + 1e-8))
+            (1.0 / (1.0 + mean_pers_h1)) +
+            (1.0 / (1.0 + mean_pers_h2))
         ) / 3.0
+        
         total_pers = sum([persistence_stats.get(f'H{d}_total', 0.0) 
                          for d in range(max_dimension + 1)])
         
@@ -617,9 +607,8 @@ def get_hole_score(
         auc_h1 = betti_curve_auc.get(1, 0.0)
         auc_h2 = betti_curve_auc.get(2, 0.0)
         
-        # G5: Strong loop count (number of loop h1 with high persistent)
+        # G5: Strong loop count
         strong_loops_count = float(strong_loops_count)
-        # Inverse number of strong loop count
         inverse_strong_loops_count = 1.0 / (1.0 + strong_loops_count)
         
         # Strong cluster
@@ -627,14 +616,12 @@ def get_hole_score(
         if finite_h0_pairs:
             h0_persistences = np.array([d - b for b, d in finite_h0_pairs])
             if len(h0_persistences) > 0:
-                # Use median as threshold, or you can use a fixed value like 0.5
                 strong_threshold = np.median(h0_persistences) if len(h0_persistences) > 1 else h0_persistences[0]
                 strong_cluster_count = int(np.sum(h0_persistences > strong_threshold))
             else:
                 strong_cluster_count = 0
         else:
             strong_cluster_count = 0
-        # Inverse number of strong loop count
         inverse_strong_cluster_count = 1.0 / (1.0 + strong_cluster_count)
         
         # Strong voids
@@ -642,18 +629,15 @@ def get_hole_score(
         if finite_h2_pairs:
             h2_persistences = np.array([d - b for b, d in finite_h2_pairs])
             if len(h2_persistences) > 0:
-                # Use median as threshold, or you can use a fixed value like 0.5
                 strong_threshold = np.median(h2_persistences) if len(h2_persistences) > 1 else h2_persistences[0]
                 strong_voids_count = int(np.sum(h2_persistences > strong_threshold))
             else:
                 strong_voids_count = 0
         else:
             strong_voids_count = 0
-        # Inverse number of strong loop count
         inverse_strong_voids_count = 1.0 / (1.0 + strong_voids_count)
         
-        
-        # G6: Persistence dominance ratio (LONG-LIVED DOMINANCE)
+        # G6: Persistence dominance ratio
         portion_of_persistence_dominance_h0 = max_pers_h0 / (mean_pers_h0 + 0.1)
         portion_of_persistence_dominance_h1 = max_pers_h1 / (mean_pers_h1 + 0.1)
         portion_of_persistence_dominance_h2 = max_pers_h2 / (mean_pers_h2 + 0.1)
@@ -662,12 +646,74 @@ def get_hole_score(
             max_pers_h1 +
             max_pers_h2
         ) / 3.0
+        
         # inverse
         inverse_mean_H0 = 1.0 / (mean_pers_h0 + 0.1)
         inverse_mean_H1 = 1.0 / (mean_pers_h1 + 0.1)
         inverse_mean_H2 = 1.0 / (mean_pers_h2 + 0.1)
         
-        ## All the score will be used to rank the layers
+        # ========================================================
+        # STEP 5: COMPUTE PERSISTENCE - CLASS-SPECIFIC CLOUDS (NEW)
+        # ========================================================
+        
+        if compute_class_clouds:
+            print(f"    Computing class-specific persistence...")
+            
+            # === POSITIVE CLOUD ===
+            persistence_pos = compute_persistence_diagram(
+                pos_acts_norm,
+                metric=metric,
+                max_dimension=max_dimension,
+                max_edge_length=np.inf
+            )
+            
+            # === NEGATIVE CLOUD ===
+            persistence_neg = compute_persistence_diagram(
+                neg_acts_norm,
+                metric=metric,
+                max_dimension=max_dimension,
+                max_edge_length=np.inf
+            )
+            
+            # === DIFFERENCE CLOUD ===
+            persistence_diff = compute_persistence_diagram(
+                diff_acts_norm,
+                metric=metric,
+                max_dimension=max_dimension,
+                max_edge_length=np.inf
+            )
+            
+            # Extract class-specific metrics for all dimensions
+            mean_persistence_H0_pos = float(persistence_pos['persistence_stats'].get('H0_mean', 0.0))
+            mean_persistence_H1_pos = float(persistence_pos['persistence_stats'].get('H1_mean', 0.0))
+            mean_persistence_H2_pos = float(persistence_pos['persistence_stats'].get('H2_mean', 0.0))
+            max_persistence_H0_pos = float(persistence_pos['persistence_stats'].get('H0_max', 0.0))
+            max_persistence_H1_pos = float(persistence_pos['persistence_stats'].get('H1_max', 0.0))
+            max_persistence_H2_pos = float(persistence_pos['persistence_stats'].get('H2_max', 0.0))
+            
+            mean_persistence_H0_neg = float(persistence_neg['persistence_stats'].get('H0_mean', 0.0))
+            mean_persistence_H1_neg = float(persistence_neg['persistence_stats'].get('H1_mean', 0.0))
+            mean_persistence_H2_neg = float(persistence_neg['persistence_stats'].get('H2_mean', 0.0))
+            max_persistence_H0_neg = float(persistence_neg['persistence_stats'].get('H0_max', 0.0))
+            max_persistence_H1_neg = float(persistence_neg['persistence_stats'].get('H1_max', 0.0))
+            max_persistence_H2_neg = float(persistence_neg['persistence_stats'].get('H2_max', 0.0))
+            
+            mean_persistence_H0_diff = float(persistence_diff['persistence_stats'].get('H0_mean', 0.0))
+            mean_persistence_H1_diff = float(persistence_diff['persistence_stats'].get('H1_mean', 0.0))
+            mean_persistence_H2_diff = float(persistence_diff['persistence_stats'].get('H2_mean', 0.0))
+            max_persistence_H0_diff = float(persistence_diff['persistence_stats'].get('H0_max', 0.0))
+            max_persistence_H1_diff = float(persistence_diff['persistence_stats'].get('H1_max', 0.0))
+            max_persistence_H2_diff = float(persistence_diff['persistence_stats'].get('H2_max', 0.0))
+            
+            # Compute derived class-specific metrics
+            h1_separation = abs(mean_persistence_H1_pos - mean_persistence_H1_neg)
+            steering_quality = mean_persistence_H0_diff / (1.0 + mean_persistence_H1_diff)
+            class_consistency = 1.0 / (1.0 + h1_separation)
+        
+        # ========================================================
+        # STEP 6: ASSEMBLE COMPLETE METRICS DICTIONARY
+        # ========================================================
+        
         hole_score_info[l] = {
             # ===== G1 BETTI NUMBERS =====
             'beta0': int(beta0),
@@ -715,15 +761,15 @@ def get_hole_score(
             'betti_curve_auc_H1': float(auc_h1),
             'betti_curve_auc_H2': float(auc_h2),
 
-            # ===== G5: Strong H1 =====
+            # ===== G5: Strong Features =====
             'strong_loops_count': float(strong_loops_count),
-            'inverse_strong_loops_count':float(inverse_strong_loops_count),
+            'inverse_strong_loops_count': float(inverse_strong_loops_count),
             'strong_cluster_count': float(strong_cluster_count),
             'inverse_strong_cluster_count': float(inverse_strong_cluster_count),
             'strong_voids_count': float(strong_voids_count),
             'inverse_strong_voids_count': float(inverse_strong_voids_count),
             
-            # G6:
+            # ===== G6: Dominance Ratios =====
             'portion_of_persistence_dominance_h0': float(portion_of_persistence_dominance_h0),
             'portion_of_persistence_dominance_h1': float(portion_of_persistence_dominance_h1),
             'portion_of_persistence_dominance_h2': float(portion_of_persistence_dominance_h2),
@@ -732,9 +778,43 @@ def get_hole_score(
             'inverse_mean_H1': float(inverse_mean_H1),
             'inverse_mean_H2': float(inverse_mean_H2),
 
+            # ===== G7: CLASS-SPECIFIC METRICS =====
+            # Positive Cloud (Label 1)
+            'mean_persistence_H0_pos': float(mean_persistence_H0_pos) if compute_class_clouds else None,
+            'mean_persistence_H1_pos': float(mean_persistence_H1_pos) if compute_class_clouds else None,
+            'mean_persistence_H2_pos': float(mean_persistence_H2_pos) if compute_class_clouds else None,
+            'max_persistence_H0_pos': float(max_persistence_H0_pos) if compute_class_clouds else None,
+            'max_persistence_H1_pos': float(max_persistence_H1_pos) if compute_class_clouds else None,
+            'max_persistence_H2_pos': float(max_persistence_H2_pos) if compute_class_clouds else None,
+            
+            # Negative Cloud (Label 0)
+            'mean_persistence_H0_neg': float(mean_persistence_H0_neg) if compute_class_clouds else None,
+            'mean_persistence_H1_neg': float(mean_persistence_H1_neg) if compute_class_clouds else None,
+            'mean_persistence_H2_neg': float(mean_persistence_H2_neg) if compute_class_clouds else None,
+            'max_persistence_H0_neg': float(max_persistence_H0_neg) if compute_class_clouds else None,
+            'max_persistence_H1_neg': float(max_persistence_H1_neg) if compute_class_clouds else None,
+            'max_persistence_H2_neg': float(max_persistence_H2_neg) if compute_class_clouds else None,
+            
+            # Difference Cloud (Steering Direction: pos - neg_mean)
+            'mean_persistence_H0_diff': float(mean_persistence_H0_diff) if compute_class_clouds else None,
+            'mean_persistence_H1_diff': float(mean_persistence_H1_diff) if compute_class_clouds else None,
+            'mean_persistence_H2_diff': float(mean_persistence_H2_diff) if compute_class_clouds else None,
+            'max_persistence_H0_diff': float(max_persistence_H0_diff) if compute_class_clouds else None,
+            'max_persistence_H1_diff': float(max_persistence_H1_diff) if compute_class_clouds else None,
+            'max_persistence_H2_diff': float(max_persistence_H2_diff) if compute_class_clouds else None,
+            
+            # Derived Class-Specific Metrics
+            'h1_separation': float(h1_separation) if compute_class_clouds else None,
+            'steering_quality': float(steering_quality) if compute_class_clouds else None,
+            'class_consistency': float(class_consistency) if compute_class_clouds else None,
+            
             # ===== METADATA =====
             'metric': metric,
-            'n_samples': int(len(all_acts))
+            'n_samples_combined': int(len(combined_acts_norm)),
+            'n_samples_pos': int(len(pos_acts)) if compute_class_clouds else None,
+            'n_samples_neg': int(len(neg_acts)) if compute_class_clouds else None,
+            'n_samples_diff': int(len(diff_acts_norm)) if compute_class_clouds else None,
+            'compute_class_clouds': compute_class_clouds
         }
         
         # Save per-layer results
@@ -745,53 +825,176 @@ def get_hole_score(
     with open(f"{save_root}all_layers.json", "w") as f:
         json.dump(hole_score_info, f, indent=4)
     
+    total_metrics = len(hole_score_info[layers[0]])
     print(f"\nHOLE scores saved to: {save_root}")
-    print(f"Total metrics stored per layer: {len(hole_score_info[layers[0]])} fields")
+    print(f"Total metrics stored per layer: {total_metrics} fields")
+    if compute_class_clouds:
+        print(f"  - Combined cloud metrics: ~50")
+        print(f"  - Class-specific metrics: 21")
+        print(f"  - Metadata: 5")
     
     return hole_score_info
 
+
+# ============================================
+# ALL METRICS COMPUTATION
+# ============================================
+
+def get_hole_score_all_metrics(
+    layers: List[int],
+    dataset,
+    vec_task: str,
+    vec_method: str,
+    acts_pre: str = "standard",
+    max_dimension: int = 2,
+    subsample: int = None,
+    compute_class_clouds: bool = True,
+    metrics_to_compute: List[str] = None
+):
+    """
+    Compute HOLE scores using ALL 7 distance metrics for comprehensive analysis
+    
+    Includes class-specific metrics (pos/neg/diff clouds) for each distance metric
+    
+    Args:
+        layers: List of layer indices to analyze
+        dataset: Dataset object (must have train=True)
+        vec_task: Task name
+        vec_method: Vector extraction method
+        acts_pre: Preprocessing method
+        max_dimension: Maximum homology dimension
+        subsample: Subsample size PER CLASS (not total)
+        compute_class_clouds: If True, compute pos/neg/diff clouds (+21 metrics per layer)
+        metrics_to_compute: List of metrics to compute. If None, compute all 7.
+                           Options: ['euclidean', 'cosine', 'mahalanobis', 'geodesic',
+                                    'dens_norm_euclidean', 'dens_norm_cosine', 
+                                    'dens_norm_mahalanobis']
+        
+    Returns:
+        all_metric_scores: {
+            metric_name: {
+                layer: {score_dict with ~71 metrics if compute_class_clouds=True}
+            }
+        }
+    """
+    # Default to all metrics if not specified
+    if metrics_to_compute is None:
+        all_metrics = [
+            'euclidean',
+            # 'cosine',
+            # 'mahalanobis',
+            # 'geodesic',
+            # 'dens_norm_euclidean',
+            # 'dens_norm_cosine',
+            # 'dens_norm_mahalanobis'
+        ]
+    else:
+        all_metrics = metrics_to_compute
+    
+    all_metric_scores = {}
+    
+    print("\n" + "="*80)
+    print(f"COMPUTING HOLE SCORES WITH {len(all_metrics)} DISTANCE METRICS")
+    if compute_class_clouds:
+        print("MODE: Comprehensive (Combined + Pos + Neg + Diff clouds)")
+        print("      ~71 metrics per layer per distance metric")
+    else:
+        print("MODE: Combined cloud only")
+        print("      ~50 metrics per layer per distance metric")
+    print("="*80)
+    
+    for i, metric in enumerate(all_metrics, 1):
+        print(f"\n[{i}/{len(all_metrics)}] Computing metric: {metric}")
+        print("-" * 80)
+        
+        scores = get_hole_score(
+            layers=layers,
+            dataset=dataset,
+            vec_task=vec_task,
+            vec_method=vec_method,
+            acts_pre=acts_pre,
+            metric=metric,
+            max_dimension=max_dimension,
+            subsample=subsample,
+            compute_class_clouds=compute_class_clouds
+        )
+        
+        all_metric_scores[metric] = scores
+        
+        # Print summary for this metric
+        sample_layer = layers[0]
+        n_metrics = len(scores[sample_layer])
+        print(f"Computed {n_metrics} metrics per layer")
+    
+    # Save comprehensive results
+    vec_root = f"./Vectors/{vec_task}/{vec_method}"
+    svec_path = vec_root[10:].replace("/", "+")
+    acts_pre_str = f"-{acts_pre}" if acts_pre is not None else ""
+    
+    cloud_suffix = "_WITH_CLASS_CLOUDS" if compute_class_clouds else ""
+    save_path = f"./Score_HOLE{acts_pre_str}_ALL_METRICS{cloud_suffix}/{dataset.task}/{svec_path}/"
+    os.makedirs(save_path, exist_ok=True)
+    
+    # Save JSON
+    with open(f"{save_path}all_metrics_all_layers.json", "w") as f:
+        json.dump(all_metric_scores, f, indent=4)
+    
+    # Save summary statistics
+    summary = {
+        'n_metrics': len(all_metrics),
+        'metrics_computed': all_metrics,
+        'n_layers': len(layers),
+        'layers': layers,
+        'compute_class_clouds': compute_class_clouds,
+        'metrics_per_layer': len(all_metric_scores[all_metrics[0]][layers[0]]),
+        'subsample_per_class': subsample,
+        'max_dimension': max_dimension
+    }
+    
+    with open(f"{save_path}computation_summary.json", "w") as f:
+        json.dump(summary, f, indent=4)
+    
+    print("\n" + "="*80)
+    print(f"All metrics saved to: {save_path}")
+    print(f"  - Total distance metrics: {len(all_metrics)}")
+    print(f"  - Metrics per layer: {summary['metrics_per_layer']}")
+    print(f"  - Total data points: {len(all_metrics)} metrics × {len(layers)} layers × {summary['metrics_per_layer']} values")
+    print("="*80)
+    
+    return all_metric_scores
+
+
+# ============================================
+# COMPARISON UTILITIES
+# ============================================
 
 def compare_ln_hole_scores(
     layers: List[int],
     ln_score_path: str,
     hole_score_path: str
 ):
-    """
-    Compare LayerNavigator and HOLE scores
-    
-    Args:
-        layers: List of layer indices
-        ln_score_path: Path to LayerNavigator scores
-        hole_score_path: Path to HOLE scores
-        
-    Returns:
-        comparison: Dict with correlation analysis
-    """
+    """Compare LayerNavigator and HOLE scores"""
     from scipy.stats import spearmanr, kendalltau
     
     ln_scores = []
     hole_scores = []
     
     for l in layers:
-        # Load LayerNavigator score
         with open(f"{ln_score_path}/L{l}.json", "r") as f:
             ln_data = json.load(f)
             ln_scores.append(ln_data['s_score'])
         
-        # Load HOLE score
         with open(f"{hole_score_path}/L{l}.json", "r") as f:
             hole_data = json.load(f)
-            hole_scores.append(hole_data['tss'])
+            # Use robust_clusters_fragile_loops as primary metric
+            hole_scores.append(hole_data.get('robust_clusters_fragile_loops', 0.0))
     
-    # Compute correlations
     spearman_corr, spearman_p = spearmanr(ln_scores, hole_scores)
     kendall_corr, kendall_p = kendalltau(ln_scores, hole_scores)
     
-    # Rank comparison
-    ln_ranking = np.argsort(ln_scores)[::-1]  # Descending
+    ln_ranking = np.argsort(ln_scores)[::-1]
     hole_ranking = np.argsort(hole_scores)[::-1]
     
-    # Top-K agreement
     top_k = min(10, len(layers))
     ln_top_k = set([layers[i] for i in ln_ranking[:top_k]])
     hole_top_k = set([layers[i] for i in hole_ranking[:top_k]])
@@ -813,98 +1016,20 @@ def compare_ln_hole_scores(
     return comparison
 
 
-def get_hole_score_all_metrics(
-    layers: List[int],
-    dataset,
-    vec_task: str,
-    vec_method: str,
-    acts_pre: str = "standard",
-    max_dimension: int = 2,
-    subsample: int = None
-):
-    """
-    Compute HOLE scores using ALL 7 distance metrics for comprehensive analysis
-    
-    This follows the HOLE paper's approach of computing multiple metrics
-    to reveal different geometric and semantic aspects.
-    
-    Args:
-        layers: List of layer indices to analyze
-        dataset: Dataset object (must have train=True)
-        vec_task: Task name
-        vec_method: Vector extraction method
-        acts_pre: Preprocessing method
-        max_dimension: Maximum homology dimension
-        subsample: Subsample size
-        
-    Returns:
-        all_metric_scores: {
-            metric_name: {
-                layer: {score_dict}
-            }
-        }
-    """
-    all_metrics = [
-        'euclidean',
-        'cosine',
-        'mahalanobis',
-        'geodesic',
-        'dens_norm_euclidean',
-        'dens_norm_cosine',
-        'dens_norm_mahalanobis'
-    ]
-    
-    all_metric_scores = {}
-    
-    print("\n" + "="*80)
-    print("COMPUTING HOLE SCORES WITH ALL 7 DISTANCE METRICS")
-    print("="*80)
-    
-    for metric in all_metrics:
-        print(f" Metric: {metric}")
-        print("-" * 80)
-        
-        scores = get_hole_score(
-            layers=layers,
-            dataset=dataset,
-            vec_task=vec_task,
-            vec_method=vec_method,
-            acts_pre=acts_pre,
-            metric=metric,
-            max_dimension=max_dimension,
-            subsample=subsample
-        )
-        
-        all_metric_scores[metric] = scores
-    
-    # Save comprehensive results
-    vec_root = f"./Vectors/{vec_task}/{vec_method}"
-    svec_path = vec_root[10:].replace("/", "+")
-    acts_pre_str = f"-{acts_pre}" if acts_pre is not None else ""
-    
-    save_path = f"./Score_HOLE{acts_pre_str}_ALL_METRICS/{dataset.task}/{svec_path}/"
-    os.makedirs(save_path, exist_ok=True)
-    
-    with open(f"{save_path}all_metrics_all_layers.json", "w") as f:
-        json.dump(all_metric_scores, f, indent=4)
-    
-    print("\n" + "="*80)
-    print(f"All metrics saved to: {save_path}")
-    print("="*80)
-    
-    return all_metric_scores
-
-
 def compare_metrics_for_layer(
     layer_scores: Dict,
-    layer_idx: int
-    ):
+    layer_idx: int,
+    show_class_metrics: bool = True
+):
     """
-    Compare how different metrics rank a specific layer
+    Compare how different distance metrics rank a specific layer
+    
+    Includes comparison of class-specific metrics across distance metrics
     
     Args:
         layer_scores: Output from get_hole_score_all_metrics()
         layer_idx: Which layer to compare
+        show_class_metrics: If True, display class-specific metrics
         
     Returns:
         comparison: Dict with metric comparisons
@@ -914,26 +1039,104 @@ def compare_metrics_for_layer(
         'metrics': {}
     }
     
+    # Collect all metrics for this layer
     for metric_name, scores in layer_scores.items():
         if layer_idx in scores:
+            layer_data = scores[layer_idx]
+            
+            # Core metrics (always present)
             comparison['metrics'][metric_name] = {
-                'tss': scores[layer_idx]['tss'],
-                'beta1': scores[layer_idx]['beta1'],
-                'mean_persistence_H0': scores[layer_idx]['mean_persistence_H0']
+                'beta0': layer_data.get('beta0', 0),
+                'beta1': layer_data.get('beta1', 0),
+                'beta2': layer_data.get('beta2', 0),
+                'mean_persistence_H0': layer_data.get('mean_persistence_H0', 0.0),
+                'mean_persistence_H1': layer_data.get('mean_persistence_H1', 0.0),
+                'mean_persistence_H2': layer_data.get('mean_persistence_H2', 0.0),
+                'robust_clusters_fragile_loops': layer_data.get('robust_clusters_fragile_loops', 0.0),
             }
+            
+            # Class-specific metrics (if computed)
+            if show_class_metrics and layer_data.get('compute_class_clouds', False):
+                comparison['metrics'][metric_name].update({
+                    'mean_persistence_H1_pos': layer_data.get('mean_persistence_H1_pos', 0.0),
+                    'mean_persistence_H1_neg': layer_data.get('mean_persistence_H1_neg', 0.0),
+                    'mean_persistence_H0_diff': layer_data.get('mean_persistence_H0_diff', 0.0),
+                    'mean_persistence_H1_diff': layer_data.get('mean_persistence_H1_diff', 0.0),
+                    'h1_separation': layer_data.get('h1_separation', 0.0),
+                    'steering_quality': layer_data.get('steering_quality', 0.0),
+                    'class_consistency': layer_data.get('class_consistency', 0.0),
+                })
     
-    # Rank by TSS score
-    tss_ranking = sorted(
+    # Print comprehensive comparison table
+    print(f"\n{'='*100}")
+    print(f"Layer {layer_idx} - Metric Comparison Across Distance Functions")
+    print(f"{'='*100}")
+    
+    # Table 1: Core Combined Cloud Metrics
+    print(f"\n--- COMBINED CLOUD METRICS ---")
+    print(f"{'Metric':<25} {'β₀':>6} {'β₁':>6} {'β₂':>6} {'H0_mean':>10} {'H1_mean':>10} {'H2_mean':>10} {'RobustFrag':>10}")
+    print("-" * 100)
+    
+    for metric_name, data in comparison['metrics'].items():
+        print(f"{metric_name:<25} "
+              f"{data['beta0']:>6} "
+              f"{data['beta1']:>6} "
+              f"{data['beta2']:>6} "
+              f"{data['mean_persistence_H0']:>10.5f} "
+              f"{data['mean_persistence_H1']:>10.5f} "
+              f"{data['mean_persistence_H2']:>10.5f} "
+              f"{data['robust_clusters_fragile_loops']:>10.5f}")
+    
+    # Table 2: Class-Specific Metrics (if available)
+    if show_class_metrics:
+        has_class_metrics = any(
+            'mean_persistence_H1_pos' in data 
+            for data in comparison['metrics'].values()
+        )
+        
+        if has_class_metrics:
+            print(f"\n--- CLASS-SPECIFIC METRICS ---")
+            print(f"{'Metric':<25} {'H1_pos':>10} {'H1_neg':>10} {'H0_diff':>10} {'H1_diff':>10} {'H1_sep':>10} {'Steer_Q':>10} {'Consist':>10}")
+            print("-" * 100)
+            
+            for metric_name, data in comparison['metrics'].items():
+                if 'mean_persistence_H1_pos' in data:
+                    print(f"{metric_name:<25} "
+                          f"{data['mean_persistence_H1_pos']:>10.5f} "
+                          f"{data['mean_persistence_H1_neg']:>10.5f} "
+                          f"{data['mean_persistence_H0_diff']:>10.5f} "
+                          f"{data['mean_persistence_H1_diff']:>10.5f} "
+                          f"{data['h1_separation']:>10.5f} "
+                          f"{data['steering_quality']:>10.5f} "
+                          f"{data['class_consistency']:>10.5f}")
+    
+    # Ranking analysis
+    print(f"\n--- RANKINGS ---")
+    
+    # Rank by robust_clusters_fragile_loops
+    ranking_robust = sorted(
         comparison['metrics'].items(),
-        key=lambda x: x[1]['tss'],
+        key=lambda x: x[1]['robust_clusters_fragile_loops'],
         reverse=True
     )
     
-    comparison['ranking_by_tss'] = [metric for metric, _ in tss_ranking]
+    print("\nBy Robust Clusters Fragile Loops (High H0, Low H1):")
+    for rank, (metric, data) in enumerate(ranking_robust, 1):
+        print(f"  {rank}. {metric:25s}: {data['robust_clusters_fragile_loops']:.5f}")
     
-    print(f"\nLayer {layer_idx} - TSS Scores by Metric:")
-    print("-" * 60)
-    for rank, (metric, scores) in enumerate(tss_ranking, 1):
-        print(f"{rank}. {metric:25s}: TSS={scores['tss']:.3f}, beta_1={scores['beta1']}")
+    # Rank by steering_quality (if available)
+    if show_class_metrics and has_class_metrics:
+        ranking_steering = sorted(
+            [(m, d) for m, d in comparison['metrics'].items() if 'steering_quality' in d],
+            key=lambda x: x[1]['steering_quality'],
+            reverse=True
+        )
+        
+        if ranking_steering:
+            print("\nBy Steering Quality (High H0_diff, Low H1_diff):")
+            for rank, (metric, data) in enumerate(ranking_steering, 1):
+                print(f"  {rank}. {metric:25s}: {data['steering_quality']:.5f}")
+    
+    comparison['ranking_robust_clusters_fragile_loops'] = [m for m, _ in ranking_robust]
     
     return comparison

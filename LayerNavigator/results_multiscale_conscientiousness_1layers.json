@@ -1,0 +1,151 @@
+{
+    "num_layers": 1,
+    "base_prob": 0.8206704636021638,
+    "base_ppl": 12.792430934906006,
+    "strategies": {
+        "original_layernav": {
+            "method": "original_layernav",
+            "metric": "N/A",
+            "category": "baseline",
+            "layers": [
+                13
+            ],
+            "prob": 0.8533745460058426,
+            "prob_delta": 0.032704082403678836,
+            "perplexity": 12.787245206832885,
+            "ppl_delta": 0.005185728073120899
+        },
+        "layernavigator_euclidean": {
+            "method": "layernavigator",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                8
+            ],
+            "prob": 0.81927777252492,
+            "prob_delta": -0.001392691077243824,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "max_euclidean": {
+            "method": "max",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "robust_euclidean": {
+            "method": "robust",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                8
+            ],
+            "prob": 0.81927777252492,
+            "prob_delta": -0.001392691077243824,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "persistence_euclidean": {
+            "method": "persistence",
+            "metric": "euclidean",
+            "category": "original_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "total_euclidean": {
+            "method": "total",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "avg_euclidean": {
+            "method": "avg",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "integrated_euclidean": {
+            "method": "integrated",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                2
+            ],
+            "prob": 0.8204853655936433,
+            "prob_delta": -0.00018509800852051228,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "log_weighted_euclidean": {
+            "method": "log_weighted",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "robust_total_euclidean": {
+            "method": "robust_total",
+            "metric": "euclidean",
+            "category": "scale_integrated_methods",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "ensemble_original_euclidean": {
+            "method": "ensemble_original",
+            "metric": "euclidean",
+            "category": "ensemble",
+            "layers": [
+                8
+            ],
+            "prob": 0.81927777252492,
+            "prob_delta": -0.001392691077243824,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        },
+        "ensemble_integrated_euclidean": {
+            "method": "ensemble_integrated",
+            "metric": "euclidean",
+            "category": "ensemble",
+            "layers": [
+                0
+            ],
+            "prob": 0.8204982949044376,
+            "prob_delta": -0.0001721686977261827,
+            "perplexity": 12.792430934906006,
+            "ppl_delta": 0.0
+        }
+    }
+}

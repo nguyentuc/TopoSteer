@@ -1,0 +1,200 @@
+{
+    "num_layers": 5,
+    "base_prob": 0.8122897584271236,
+    "base_ppl": 11.075427503585816,
+    "strategies": {
+        "layernav": {
+            "layers": [
+                12,
+                13,
+                14,
+                11,
+                31
+            ],
+            "prob": 0.9369227622593244,
+            "prob_delta": 0.12463300383220077,
+            "perplexity": 11.059797520637511,
+            "ppl_delta": 0.015629982948304644
+        },
+        "mean_persistence_H0_combined_euclidean": {
+            "variant": "mean_persistence_H0_combined",
+            "metric": "euclidean",
+            "layers": [
+                8,
+                7,
+                13,
+                9,
+                12
+            ],
+            "prob": 0.8462385128858463,
+            "prob_delta": 0.033948754458722696,
+            "perplexity": 11.0550665473938,
+            "ppl_delta": 0.02036095619201639
+        },
+        "mean_persistence_H0_combined_cosine": {
+            "variant": "mean_persistence_H0_combined",
+            "metric": "cosine",
+            "layers": [
+                8,
+                13,
+                7,
+                9,
+                14
+            ],
+            "prob": 0.9003101244310869,
+            "prob_delta": 0.08802036600396335,
+            "perplexity": 11.053113884925843,
+            "ppl_delta": 0.0223136186599735
+        },
+        "mean_persistence_H1_combined_euclidean": {
+            "variant": "mean_persistence_H1_combined",
+            "metric": "euclidean",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_combined_cosine": {
+            "variant": "mean_persistence_H1_combined",
+            "metric": "cosine",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_pos_euclidean": {
+            "variant": "mean_persistence_H1_pos",
+            "metric": "euclidean",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_pos_cosine": {
+            "variant": "mean_persistence_H1_pos",
+            "metric": "cosine",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_neg_euclidean": {
+            "variant": "mean_persistence_H1_neg",
+            "metric": "euclidean",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_neg_cosine": {
+            "variant": "mean_persistence_H1_neg",
+            "metric": "cosine",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H0_diff_euclidean": {
+            "variant": "mean_persistence_H0_diff",
+            "metric": "euclidean",
+            "layers": [
+                14,
+                13,
+                15,
+                12,
+                16
+            ],
+            "prob": 0.5991189791415826,
+            "prob_delta": -0.21317077928554096,
+            "perplexity": 12.628955478668212,
+            "ppl_delta": -1.553527975082396
+        },
+        "mean_persistence_H0_diff_cosine": {
+            "variant": "mean_persistence_H0_diff",
+            "metric": "cosine",
+            "layers": [
+                14,
+                13,
+                15,
+                12,
+                16
+            ],
+            "prob": 0.5991189791415826,
+            "prob_delta": -0.21317077928554096,
+            "perplexity": 12.628955478668212,
+            "ppl_delta": -1.553527975082396
+        },
+        "mean_persistence_H1_diff_euclidean": {
+            "variant": "mean_persistence_H1_diff",
+            "metric": "euclidean",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        },
+        "mean_persistence_H1_diff_cosine": {
+            "variant": "mean_persistence_H1_diff",
+            "metric": "cosine",
+            "layers": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "prob": 0.8123720040894586,
+            "prob_delta": 8.224566233505648e-05,
+            "perplexity": 11.069443073272705,
+            "ppl_delta": 0.005984430313111133
+        }
+    }
+}
