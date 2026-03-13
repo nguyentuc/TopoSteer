@@ -49,18 +49,8 @@ huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/proj
 | **Robustness Testing** | Noise, pruning, quantization |  None |  Missing |
 | **Purpose** | Comprehensive NN interpretation | Layer selection for steering | Different goal |
 
-- Current runing HOLE to select layer based on the TSS score (combination score) with:
-+ Cosine Metric(Done)
-+ Euclidean Metric (DONE - H100_2): Performance not so good compated with using Cosine metric
-+ Mahalanobis (Running on the H100_2)
-+ Geodesic Distance (Next, need to be implement)
-
-- Current HOLE score: tss = (0.35 * purity +0.35 * separability + 0.30 * mean_pers_h0) * entanglement_penalty
-
-- Ablation Study on different metric.
-
 ## Running:
-[LAIR] z5_main_allies_LLama3.sh + z5_main_conscientiousness_LLama3.sh are running on LAIR
+[H100] z8_main_v3.sh
 [NEXT] Plot visualization for the steering score on each metrics (rank by larger to smaller) corresponding the activation:
 + provide visualization of tsne/umap to plot the 2D embeddings of the activation vectors.
 + 6e,6f visualization of heatmap dendrograms of activations vectors between layers.
