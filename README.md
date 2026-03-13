@@ -1,7 +1,7 @@
 ## Environment Setup
 ```
-conda create --prefix /data/project/le-lab/conda_env/Adaptive_LayerSteering python=3.10 -y
-conda activate /data/project/le-lab/conda_env/Adaptive_LayerSteering
+conda create --prefix /media/volume/h100_instance2/conda_env/Adaptive_LayerSteering python=3.10 -y
+conda activate /media/volume/h100_instance2/conda_env/Adaptive_LayerSteering
 pip install -r requirements.txt
 pip install huggingface_hub
 pip install gudhi
