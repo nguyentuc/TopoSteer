@@ -14,7 +14,6 @@ pip install seaborn
 ```
 
 ## Quick Start
-
 We provide complete code and data to reproduce the **main results** from our paper.
 You can run everything with just **two steps**:
 

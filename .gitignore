@@ -17,3 +17,6 @@ Vectors*/
 Visualizations/
 Analysis/
 *.out
+
+# Images
+*.png

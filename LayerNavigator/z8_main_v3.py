@@ -12,9 +12,17 @@ from tqdm import tqdm
 
 # ============================================================================
 # BASE VARIANTS (individual clouds)
+#
+# Clouds actually computed by get_hole_score:
+#   1. combined  (vstack pos_norm + neg_norm)  => keys: *_H{0,1,2}
+#   2. diff      (pos_norm_i - neg_norm_i)     => keys: *_H{0,1,2}_diff
+#   3. diff_l2   (L2-normalized diff)          => keys: *_H{0,1,2}_diff_l2
+#
+# NOTE: *_pos and *_neg cloud keys are NOT output by get_hole_score
+#       and have been removed from this script.
 # ============================================================================
 ALL_TSS_VARIANTS = {
-    # ===== UNION CLOUD (pos ∪ neg) =====
+    # ===== COMBINED CLOUD (vstack pos_norm ∪ neg_norm) =====
     'mean_persistence': [
         'mean_persistence_H0',
         'mean_persistence_H1',
@@ -30,39 +38,8 @@ ALL_TSS_VARIANTS = {
         'total_persistence_H1',
         'total_persistence_H2',
     ],
-    # ===== POSITIVE CLOUD (label 1) =====
-    'mean_persistence_pos': [
-        'mean_persistence_H0_pos',
-        'mean_persistence_H1_pos',
-        'mean_persistence_H2_pos',
-    ],
-    'max_persistence_pos': [
-        'max_persistence_H0_pos',
-        'max_persistence_H1_pos',
-        'max_persistence_H2_pos',
-    ],
-    'total_persistence_pos': [
-        'total_persistence_H0_pos',
-        'total_persistence_H1_pos',
-        'total_persistence_H2_pos',
-    ],
-    # ===== NEGATIVE CLOUD (label 0) =====
-    'mean_persistence_neg': [
-        'mean_persistence_H0_neg',
-        'mean_persistence_H1_neg',
-        'mean_persistence_H2_neg',
-    ],
-    'max_persistence_neg': [
-        'max_persistence_H0_neg',
-        'max_persistence_H1_neg',
-        'max_persistence_H2_neg',
-    ],
-    'total_persistence_neg': [
-        'total_persistence_H0_neg',
-        'total_persistence_H1_neg',
-        'total_persistence_H2_neg',
-    ],
-    # ===== DIFFERENCE CLOUD (pos − neg) =====
+
+    # ===== DIFF CLOUD (pos_norm_i − neg_norm_i, raw) =====
     'mean_persistence_diff': [
         'mean_persistence_H0_diff',
         'mean_persistence_H1_diff',
@@ -78,49 +55,151 @@ ALL_TSS_VARIANTS = {
         'total_persistence_H1_diff',
         'total_persistence_H2_diff',
     ],
+
+    # ===== INVERSE DIFF CLOUD: 1/(diff+eps), injected post-hoc =====
+    # Plain minmax applied (larger inv = smaller original diff = better).
+    'inv_mean_persistence_diff': [
+        'inv_mean_persistence_H0_diff',
+        'inv_mean_persistence_H1_diff',
+        'inv_mean_persistence_H2_diff',
+    ],
+    'inv_max_persistence_diff': [
+        'inv_max_persistence_H0_diff',
+        'inv_max_persistence_H1_diff',
+        'inv_max_persistence_H2_diff',
+    ],
+    'inv_total_persistence_diff': [
+        'inv_total_persistence_H0_diff',
+        'inv_total_persistence_H1_diff',
+        'inv_total_persistence_H2_diff',
+    ],
+
+    # ===== L2-NORMALIZED DIFF CLOUD (each diff vector on unit sphere) =====
+    # Angular-only topology; directly comparable to C-score's cosine space.
+    'mean_persistence_diff_l2': [
+        'mean_persistence_H0_diff_l2',
+        'mean_persistence_H1_diff_l2',
+        'mean_persistence_H2_diff_l2',
+    ],
+    'max_persistence_diff_l2': [
+        'max_persistence_H0_diff_l2',
+        'max_persistence_H1_diff_l2',
+        'max_persistence_H2_diff_l2',
+    ],
+    'total_persistence_diff_l2': [
+        'total_persistence_H0_diff_l2',
+        'total_persistence_H1_diff_l2',
+        'total_persistence_H2_diff_l2',
+    ],
+
+    # ===== INVERSE L2-DIFF CLOUD: 1/(diff_l2+eps), injected post-hoc =====
+    'inv_mean_persistence_diff_l2': [
+        'inv_mean_persistence_H0_diff_l2',
+        'inv_mean_persistence_H1_diff_l2',
+        'inv_mean_persistence_H2_diff_l2',
+    ],
+    'inv_max_persistence_diff_l2': [
+        'inv_max_persistence_H0_diff_l2',
+        'inv_max_persistence_H1_diff_l2',
+        'inv_max_persistence_H2_diff_l2',
+    ],
+    'inv_total_persistence_diff_l2': [
+        'inv_total_persistence_H0_diff_l2',
+        'inv_total_persistence_H1_diff_l2',
+        'inv_total_persistence_H2_diff_l2',
+    ],
 }
 
 # ============================================================================
-# COMBINED METRICS (union + diff only)
-# Score = minmax(union) + minmax(diff)
+# COMBINED METRICS
+# Tuple format: (components, norms, desc)
+#   norms: per-component list, +1 = minmax (higher=better),
+#                              -1 = minmax_inv (smaller=better)
 # ============================================================================
 COMBINED_METRICS = {
-    # ===== H0: union + diff =====
-    'combined_union_diff_H0_mean':  (['mean_persistence_H0',  'mean_persistence_H0_diff'],  'union+diff mean H0'),
-    'combined_union_diff_H0_max':   (['max_persistence_H0',   'max_persistence_H0_diff'],   'union+diff max H0'),
-    'combined_union_diff_H0_total': (['total_persistence_H0', 'mean_persistence_H0_diff'],  'union+diff total H0'),
+    # ===== H0: combined + diff, both higher=better =====
+    'combined_union_diff_H0_mean':  (['mean_persistence_H0',  'mean_persistence_H0_diff'],  [+1, +1], 'union+diff mean H0'),
+    'combined_union_diff_H0_max':   (['max_persistence_H0',   'max_persistence_H0_diff'],   [+1, +1], 'union+diff max H0'),
+    'combined_union_diff_H0_total': (['total_persistence_H0', 'total_persistence_H0_diff'], [+1, +1], 'union+diff total H0'),
 
-    # ===== H1: union + diff =====
-    'combined_union_diff_H1_mean':  (['mean_persistence_H1',  'mean_persistence_H1_diff'],  'union+diff mean H1'),
-    'combined_union_diff_H1_max':   (['max_persistence_H1',   'max_persistence_H1_diff'],   'union+diff max H1'),
-    'combined_union_diff_H1_total': (['total_persistence_H1', 'mean_persistence_H1_diff'],  'union+diff total H1'),
+    # ===== H1: combined + diff =====
+    'combined_union_diff_H1_mean':  (['mean_persistence_H1',  'mean_persistence_H1_diff'],  [+1, +1], 'union+diff mean H1'),
+    'combined_union_diff_H1_max':   (['max_persistence_H1',   'max_persistence_H1_diff'],   [+1, +1], 'union+diff max H1'),
+    'combined_union_diff_H1_total': (['total_persistence_H1', 'total_persistence_H1_diff'], [+1, +1], 'union+diff total H1'),
 
-    # ===== H2: union + diff =====
-    'combined_union_diff_H2_mean':  (['mean_persistence_H2',  'mean_persistence_H2_diff'],  'union+diff mean H2'),
-    'combined_union_diff_H2_max':   (['max_persistence_H2',   'max_persistence_H2_diff'],   'union+diff max H2'),
-    'combined_union_diff_H2_total': (['total_persistence_H2', 'mean_persistence_H2_diff'],  'union+diff total H2'),
+    # ===== H2: combined + diff =====
+    'combined_union_diff_H2_mean':  (['mean_persistence_H2',  'mean_persistence_H2_diff'],  [+1, +1], 'union+diff mean H2'),
+    'combined_union_diff_H2_max':   (['max_persistence_H2',   'max_persistence_H2_diff'],   [+1, +1], 'union+diff max H2'),
+    'combined_union_diff_H2_total': (['total_persistence_H2', 'total_persistence_H2_diff'], [+1, +1], 'union+diff total H2'),
+
+    # ===== H0: combined (higher=better) + diff (smaller=better) =====
+    'combined_union_invdiff_H0_mean':  (['mean_persistence_H0',  'mean_persistence_H0_diff'],  [+1, -1], 'union+invdiff mean H0'),
+    'combined_union_invdiff_H0_max':   (['max_persistence_H0',   'max_persistence_H0_diff'],   [+1, -1], 'union+invdiff max H0'),
+    'combined_union_invdiff_H0_total': (['total_persistence_H0', 'total_persistence_H0_diff'], [+1, -1], 'union+invdiff total H0'),
+
+    # ===== H1: combined (higher=better) + diff (smaller=better) =====
+    'combined_union_invdiff_H1_mean':  (['mean_persistence_H1',  'mean_persistence_H1_diff'],  [+1, -1], 'union+invdiff mean H1'),
+    'combined_union_invdiff_H1_max':   (['max_persistence_H1',   'max_persistence_H1_diff'],   [+1, -1], 'union+invdiff max H1'),
+    'combined_union_invdiff_H1_total': (['total_persistence_H1', 'total_persistence_H1_diff'], [+1, -1], 'union+invdiff total H1'),
+
+    # ===== H2: combined (higher=better) + diff (smaller=better) =====
+    'combined_union_invdiff_H2_mean':  (['mean_persistence_H2',  'mean_persistence_H2_diff'],  [+1, -1], 'union+invdiff mean H2'),
+    'combined_union_invdiff_H2_max':   (['max_persistence_H2',   'max_persistence_H2_diff'],   [+1, -1], 'union+invdiff max H2'),
+    'combined_union_invdiff_H2_total': (['total_persistence_H2', 'total_persistence_H2_diff'], [+1, -1], 'union+invdiff total H2'),
+
+    # ===== H0: combined (higher=better) + diff_l2 (smaller=better) =====
+    # Angular-only diff: topology of steering directions on unit sphere
+    'combined_union_invdiff_l2_H0_mean':  (['mean_persistence_H0',  'mean_persistence_H0_diff_l2'],  [+1, -1], 'union+invdiff_l2 mean H0'),
+    'combined_union_invdiff_l2_H0_max':   (['max_persistence_H0',   'max_persistence_H0_diff_l2'],   [+1, -1], 'union+invdiff_l2 max H0'),
+    'combined_union_invdiff_l2_H0_total': (['total_persistence_H0', 'total_persistence_H0_diff_l2'], [+1, -1], 'union+invdiff_l2 total H0'),
+
+    # ===== H1: combined (higher=better) + diff_l2 (smaller=better) =====
+    'combined_union_invdiff_l2_H1_mean':  (['mean_persistence_H1',  'mean_persistence_H1_diff_l2'],  [+1, -1], 'union+invdiff_l2 mean H1'),
+    'combined_union_invdiff_l2_H1_max':   (['max_persistence_H1',   'max_persistence_H1_diff_l2'],   [+1, -1], 'union+invdiff_l2 max H1'),
+    'combined_union_invdiff_l2_H1_total': (['total_persistence_H1', 'total_persistence_H1_diff_l2'], [+1, -1], 'union+invdiff_l2 total H1'),
+
+    # ===== H2: combined (higher=better) + diff_l2 (smaller=better) =====
+    'combined_union_invdiff_l2_H2_mean':  (['mean_persistence_H2',  'mean_persistence_H2_diff_l2'],  [+1, -1], 'union+invdiff_l2 mean H2'),
+    'combined_union_invdiff_l2_H2_max':   (['max_persistence_H2',   'max_persistence_H2_diff_l2'],   [+1, -1], 'union+invdiff_l2 max H2'),
+    'combined_union_invdiff_l2_H2_total': (['total_persistence_H2', 'total_persistence_H2_diff_l2'], [+1, -1], 'union+invdiff_l2 total H2'),
 }
 
 # Add combined metrics as their own group
 ALL_TSS_VARIANTS['combined_metrics'] = list(COMBINED_METRICS.keys())
 
-# Flatten
+# Flatten all base variants (excluding combined_metrics group)
 ALL_VARIANTS_FLAT = []
 for category, variants in ALL_TSS_VARIANTS.items():
     ALL_VARIANTS_FLAT.extend(variants)
 
+print(f"  Base variants:    {len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)}")
+print(f"  Combined metrics: {len(COMBINED_METRICS)}")
 print(f"  Combined metrics breakdown:")
-for key, (components, desc) in COMBINED_METRICS.items():
-    print(f"    {key:45s}: {desc} ({len(components)} components)")
+for key, (components, norms, desc) in COMBINED_METRICS.items():
+    norm_str = " + ".join([f"{c}({'up' if n == +1 else 'down'})" for c, n in zip(components, norms)])
+    print(f"    {key:55s}: {norm_str}")
 
+
+# ============================================================================
+# NORMALIZATION FUNCTIONS
+# ============================================================================
 
 def minmax(arr):
+    """Standard: larger raw value → higher score. Maps min→0, max→1."""
     span = arr.max() - arr.min()
     return (arr - arr.min()) / (span + 1e-8)
 
 
+def minmax_inv(arr):
+    """Inverted: smaller raw value → higher score. Maps min→1, max→0."""
+    span = arr.max() - arr.min()
+    return (arr.max() - arr) / (span + 1e-8)
+
+
 def get_layers_for_variant(all_hole_scores, metric, variant_name, num_layers):
-    """Rank layers by a single base variant score (min-max normalized)."""
+    """Rank layers by a single base variant score (minmax normalized).
+    inv_*_diff and inv_*_diff_l2 variants are pre-inverted at injection time,
+    so plain minmax is correct for all base variants."""
     layers = sorted(all_hole_scores[metric].keys())
 
     scores = np.array([
@@ -138,16 +217,17 @@ def get_layers_for_variant(all_hole_scores, metric, variant_name, num_layers):
 
 
 def get_layers_for_combined(all_hole_scores, metric, combined_key, num_layers):
-    """Rank layers by summing minmax-normalized scores of all component variants."""
+    """Rank layers by summing per-component normalized scores.
+    Each component uses minmax (+1) or minmax_inv (-1) per its norm value."""
     layers = sorted(all_hole_scores[metric].keys())
-    components, _ = COMBINED_METRICS[combined_key]
+    components, norms, _ = COMBINED_METRICS[combined_key]
 
     combined_scores = np.zeros(len(layers), dtype=float)
-    for component in components:
+    for component, norm in zip(components, norms):
         comp_vals = np.array([
             all_hole_scores[metric][l].get(component) or 0 for l in layers
         ], dtype=float)
-        combined_scores += minmax(comp_vals)
+        combined_scores += minmax(comp_vals) if norm == +1 else minmax_inv(comp_vals)
 
     if combined_scores.sum() == 0:
         print(f"WARNING: All-zero combined scores for '{combined_key}' with metric '{metric}'")
@@ -174,7 +254,16 @@ if __name__ == "__main__":
         'euclidean'
     ]
 
-    for task in ['believes-it-has-phenomenal-consciousness']:
+    Anth_MAIN = [
+        'conscientiousness', # Conscientiouseness
+        'subscribes-to-Christianity',  # Religion Following
+        'believes-it-has-phenomenal-consciousness', #+ # Self-aware
+        'cognitive-enhancement', #+ # Self-improvement
+        'desire-to-create-allies', #+ # Alliance-building
+        'desire-to-maximize-impact-on-world', #+ # Impact-maximization   
+    ]
+
+    for task in Anth_MAIN:
         print("\n" + "="*100)
         print(f"{'='*40} Task: {task} {'='*40}")
         print("="*100 + "\n")
@@ -195,7 +284,7 @@ if __name__ == "__main__":
         print("STEP 2: Extracting Steering Vectors")
         train_dataset = UniDataset(task=task, train=True, set="train")
         uni_generate_vectors(method="md", model=model, layers=LAYERS, dataset=train_dataset)
-        
+
         # ============================================================
         # STEP 3: LayerNavigator Scores
         # ============================================================
@@ -207,8 +296,9 @@ if __name__ == "__main__":
         # ============================================================
         # STEP 4: HOLE Scores
         # ============================================================
+        base_variant_count = len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)
         print("STEP 4: Computing HOLE Topological Scores")
-        print(f"Base variants: {len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)} | Combined: {len(COMBINED_METRICS)} | Metrics: {len(ALL_HOLE_METRICS)}")
+        print(f"Base variants: {base_variant_count} | Combined: {len(COMBINED_METRICS)} | Metrics: {len(ALL_HOLE_METRICS)}")
         print("="*100)
 
         all_hole_scores = get_hole_score_all_metrics(
@@ -222,6 +312,25 @@ if __name__ == "__main__":
             compute_class_clouds=True,
             metrics_to_compute=None
         )
+
+        # Inject inverse scores for both diff and diff_l2 clouds.
+        # For each stat (mean/max/total) × dim (H0/H1/H2) × cloud (diff, diff_l2):
+        #   inv_{stat}_persistence_{H}_{suffix} = 1 / (original + 1e-8)
+        # plain minmax is then applied in get_layers_for_variant
+        # (larger inv = smaller original = tighter steering directions = better)
+        print("  Injecting inverse diff scores (diff and diff_l2)...")
+        for metric in ALL_HOLE_METRICS:
+            for layer in all_hole_scores[metric]:
+                layer_scores = all_hole_scores[metric][layer]
+                for stat in ['mean', 'max', 'total']:
+                    for h in ['H0', 'H1', 'H2']:
+                        for suffix in ['diff', 'diff_l2']:
+                            original_key = f'{stat}_persistence_{h}_{suffix}'
+                            inv_key      = f'inv_{stat}_persistence_{h}_{suffix}'
+                            original_val = layer_scores.get(original_key) or 0.0
+                            layer_scores[inv_key] = 1.0 / (original_val + 1e-8)
+        print("  Done.\n")
+
         print("Done\n")
 
         # ============================================================
@@ -269,10 +378,9 @@ if __name__ == "__main__":
             }
 
             # --------------------------------------------------------
-            # STRATEGY 2: BASE VARIANTS X ALL METRICS
+            # STRATEGY 2: BASE VARIANTS × ALL METRICS
             # --------------------------------------------------------
-            base_variant_count = len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)
-            print(f"[Strategy 2: {base_variant_count} Base Variants X {len(ALL_HOLE_METRICS)} Metrics = {base_variant_count * len(ALL_HOLE_METRICS)} experiments]")
+            print(f"[Strategy 2: {base_variant_count} Base Variants × {len(ALL_HOLE_METRICS)} Metrics = {base_variant_count * len(ALL_HOLE_METRICS)} experiments]")
             print("="*100)
 
             variant_results = {}
@@ -329,7 +437,7 @@ if __name__ == "__main__":
             print(f"\n[Strategy 3: {len(COMBINED_METRICS)} Combined Metrics × {len(ALL_HOLE_METRICS)} Metrics = {len(COMBINED_METRICS) * len(ALL_HOLE_METRICS)} experiments]")
             print("="*100)
 
-            for combined_key, (components, desc) in COMBINED_METRICS.items():
+            for combined_key, (components, norms, desc) in COMBINED_METRICS.items():
                 print(f"\n  Combined: {combined_key} | {desc} | Components: {components}")
 
                 for metric in ALL_HOLE_METRICS:
@@ -353,6 +461,7 @@ if __name__ == "__main__":
                         'metric':     metric,
                         'category':   'combined_metrics',
                         'components': components,
+                        'norms':      norms,
                         'desc':       desc,
                         'layers':     top_layers,
                         'prob':       float(test_prob),
@@ -390,9 +499,11 @@ if __name__ == "__main__":
                 print(f"  {cat:30s}: {r['name']:55s} | Prob={r['prob']:.4f} (delta={r['delta']:+.4f}) | PPL={r['perplexity']:.4f} (PPL_delta={r['ppl_delta']:+.4f})")
 
             print("\nCOMBINED vs BASE METRICS SUMMARY:")
-            for group_label, group_filter in [('Base variants',     lambda c: c != 'combined_metrics' and c != 'baseline'),
-                                               ('Combined metrics',  lambda c: c == 'combined_metrics'),
-                                               ('LayerNav baseline', lambda c: c == 'baseline')]:
+            for group_label, group_filter in [
+                ('Base variants',     lambda c: c != 'combined_metrics' and c != 'baseline'),
+                ('Combined metrics',  lambda c: c == 'combined_metrics'),
+                ('LayerNav baseline', lambda c: c == 'baseline'),
+            ]:
                 group = [v for v in all_results['strategies'].values() if group_filter(v['category'])]
                 if not group:
                     continue

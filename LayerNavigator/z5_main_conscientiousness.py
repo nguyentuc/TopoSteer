@@ -230,7 +230,7 @@ if __name__ == "__main__":
         base_ppl = get_perplexity_BASE_results(model=model, test_dataset=test_dataset)
         print(f"Base Prob (no steering): {base_prob:.4f}\n")
         print(f"Base Perplexity (no steering): {base_ppl:.4f}")
-
+        exit()
         # ============================================================
         # STEP 2: Extract Steering Vectors
         # ============================================================

@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --account=le-lab
 #SBATCH --gres=gpu:H100:1
-#SBATCH --mem=500GB
+#SBATCH --mem=100GB
 #SBATCH --time=336:00:00
 #SBATCH --partition=general
-#SBATCH --output=z8_main_believes-it-has-phenomenal-consciousness_v2_combinescore_Qwen3B-%j.out
+#SBATCH --output=z8_main_v3_LLama8B-%j.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=tucnguye@iu.edu
 
@@ -18,6 +18,6 @@ echo "$cmd1"
 eval $cmd1
 
 gpu=0
-cmd="CUDA_VISIBLE_DEVICES=$gpu python z8_main_believes-it-has-phenomenal-consciousness_v2_combinescore.py"
+cmd="CUDA_VISIBLE_DEVICES=$gpu python z8_main_v3.py"
 echo "$cmd"
 eval $cmd
