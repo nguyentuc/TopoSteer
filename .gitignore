@@ -9,7 +9,7 @@ node_modules/
 
 # Logs
 *.log
-
+*.pyc
 Dataset/
 Score*/
 Result*/

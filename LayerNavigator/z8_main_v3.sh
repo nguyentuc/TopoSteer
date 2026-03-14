@@ -4,13 +4,14 @@
 #SBATCH --mem=100GB
 #SBATCH --time=336:00:00
 #SBATCH --partition=general
-#SBATCH --output=z8_main_v3_LLama8B-%j.out
+#SBATCH --output=z8_main_v3_Qwen32B-%j.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=tucnguye@iu.edu
 
 nvidia-smi
 eval "$(conda shell.bash hook)"
 conda env list
+# conda activate /data/project/le-lab/conda_env/Adaptive_LayerSteering
 conda activate /data/project/le-lab/conda_env/Adaptive_LayerSteering
 
 cmd1="python globalenv.py"

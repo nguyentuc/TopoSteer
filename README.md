@@ -50,7 +50,5 @@ huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/proj
 | **Purpose** | Comprehensive NN interpretation | Layer selection for steering | Different goal |
 
 ## Running:
-[H100] z8_main_v3.sh
-[NEXT] Plot visualization for the steering score on each metrics (rank by larger to smaller) corresponding the activation:
-+ provide visualization of tsne/umap to plot the 2D embeddings of the activation vectors.
-+ 6e,6f visualization of heatmap dendrograms of activations vectors between layers.
+[H100_2] z8_main_v3.sh with LLama8B
+[LAIR] z8_main_v3.sh with Qwen32B 
