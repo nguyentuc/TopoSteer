@@ -50,5 +50,5 @@ huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/proj
 | **Purpose** | Comprehensive NN interpretation | Layer selection for steering | Different goal |
 
 ## Running:
-[H100_2] z8_main_v3.sh with LLama8B
-[LAIR] z8_main_v3.sh with Qwen32B 
+- [H100_2] z8_main_v3.sh with LLama8B
+- [LAIR] z8_main_v3.sh with Qwen32B 
