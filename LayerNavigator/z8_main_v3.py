@@ -237,6 +237,27 @@ def get_layers_for_combined(all_hole_scores, metric, combined_key, num_layers):
     return [layer for layer, _ in ranking[:num_layers]]
 
 
+RESULTS_BASE_DIR = "/data/project/le-lab/Adaptive_Layer_Steering/LayerNavigator/Final_Results/" 
+def save_results(model_name, task, num_layers, all_results):
+    """Save all strategy results for a single (model, task, num_layers) run."""
+    save_dir = os.path.join(RESULTS_BASE_DIR, model_name, task)
+    os.makedirs(save_dir, exist_ok=True)
+    save_path = os.path.join(save_dir, f"results_L{num_layers}.json")
+ 
+    output = {
+        "model":            model_name,
+        "task":             task,
+        "num_layers":       num_layers,
+        "base_prob":        all_results["base_prob"],
+        "base_ppl":         all_results["base_ppl"],
+        "strategies":       all_results["strategies"],
+    }
+ 
+    with open(save_path, "w") as f:
+        json.dump(output, f, indent=2)
+ 
+    print(f"\n  Results saved: {save_path}  ({len(all_results['strategies'])} strategies)")
+
 # ============================================================================
 # MAIN EXPERIMENT
 # ============================================================================
@@ -486,29 +507,10 @@ if __name__ == "__main__":
 
             print("\nTOP 30 STRATEGIES (All Types):")
             for rank, (name, result) in enumerate(sorted_strategies[:30], 1):
-                print(f"  {rank:2d}. {name:60s} | Prob={result['prob']:.4f} (delta={result['delta']:+.4f}) | PPL={result['perplexity']:.4f} (PPL_delta={result['ppl_delta']:+.4f}) | {result['category']:25s} | Layers={result['layers']}")
+                print(f"  {rank:2d}. {name:60s} | Prob={result['prob']:.4f} (delta={result['delta']:+.4f}) | PPL={result['perplexity']:.4f} (PPL_delta={result['ppl_delta']:+.4f}) | Layers={result['layers']}")
 
-            print("\nBEST PER CATEGORY:")
-            category_best = {}
-            for name, result in all_results['strategies'].items():
-                cat = result['category']
-                if cat not in category_best or result['prob'] > category_best[cat]['prob']:
-                    category_best[cat] = {**result, 'name': name}
-            for cat in sorted(category_best.keys()):
-                r = category_best[cat]
-                print(f"  {cat:30s}: {r['name']:55s} | Prob={r['prob']:.4f} (delta={r['delta']:+.4f}) | PPL={r['perplexity']:.4f} (PPL_delta={r['ppl_delta']:+.4f})")
-
-            print("\nCOMBINED vs BASE METRICS SUMMARY:")
-            for group_label, group_filter in [
-                ('Base variants',     lambda c: c != 'combined_metrics' and c != 'baseline'),
-                ('Combined metrics',  lambda c: c == 'combined_metrics'),
-                ('LayerNav baseline', lambda c: c == 'baseline'),
-            ]:
-                group = [v for v in all_results['strategies'].values() if group_filter(v['category'])]
-                if not group:
-                    continue
-                probs = [v['prob'] for v in group]
-                print(f"  {group_label:25s}: avg_prob={np.mean(probs):.4f} | max_prob={np.max(probs):.4f} | min_prob={np.min(probs):.4f} (n={len(group)})")
+            ## Save all result
+            save_results(model_name, task, num_layers, all_results)
 
         del test_dataset, train_dataset
         print("\n" + "="*100)
