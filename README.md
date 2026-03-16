@@ -52,4 +52,3 @@ huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/proj
 ## Running:
 - [H100_2] z8_main_v3.sh with LLama8B
 - [LAIR] z8_main_v3.sh with Qwen32B 
-- [H100-2] Qwen2.5-7B-Instruct
