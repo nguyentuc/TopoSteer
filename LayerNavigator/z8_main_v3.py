@@ -237,7 +237,7 @@ def get_layers_for_combined(all_hole_scores, metric, combined_key, num_layers):
     return [layer for layer, _ in ranking[:num_layers]]
 
 
-RESULTS_BASE_DIR = "/media/volume/h100_instance2/Adaptive_Layer_Steering/LayerNavigator/Final_Results/" 
+RESULTS_BASE_DIR = "/data/project/le-lab/Adaptive_Layer_Steering/LayerNavigator/Final_Results/" 
 def save_results(model_name, task, num_layers, all_results):
     """Save all strategy results for a single (model, task, num_layers) run."""
     save_dir = os.path.join(RESULTS_BASE_DIR, model_name, task)
