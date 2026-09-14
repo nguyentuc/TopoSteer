@@ -1,793 +1,0 @@
-Mon Jan 12 20:44:03 2026       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.172.08             Driver Version: 570.172.08     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA H100 NVL                On  |   00000000:E1:00.0 Off |                    0 |
-| N/A   38C    P0             65W /  400W |       0MiB /  95830MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|  No running processes found                                                             |
-+-----------------------------------------------------------------------------------------+
-
-# conda environments:
-#
-                       /data/project/le-lab/conda_env/Adaptive_LayerSteering
-                       /data/project/le-lab/conda_env/CREST
-                       /data/project/le-lab/conda_env/Dynasor
-                       /data/project/le-lab/conda_env/EasySteer
-                       /data/project/le-lab/conda_env/SEAL
-base                 * /u/tucnguye/miniconda3
-
-CUDA_VISIBLE_DEVICES=0 python main_all_metrics_persistence_homology_subscribesChristianity.py
-/data/project/le-lab/Adaptive_Layer_Steering/LayerNavigator/get_hole_score_7metrics.py:14: UserWarning: A NumPy version >=1.23.5 and <2.5.0 is required for this version of SciPy (detected version 1.22.4)
-  from scipy.spatial.distance import pdist, squareform
-Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:08,  2.98s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:05<00:05,  2.94s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:08<00:02,  2.90s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.05s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.37s/it]
-Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-
-====================================================================================================
-======================================== Task: subscribes-to-Christianity ========================================
-====================================================================================================
-
-STEP 1: Baseline Evaluation
-Get Tokens for Test:   0%|          | 0/2 [00:00<?, ?it/s]Get Tokens for Test: 100%|██████████| 2/2 [00:00<00:00, 249.22it/s]
-/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:492: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
-  warnings.warn(
-/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:497: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
-  warnings.warn(
-Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-Prob: 0.6893472298932479
-Base Prob (no steering): 0.6893
-
-STEP 2: Extracting Steering Vectors
-Get Tokens for Train:   0%|          | 0/700 [00:00<?, ?it/s]Get Tokens for Train:  52%|█████▏    | 362/700 [00:00<00:00, 3618.04it/s]Get Tokens for Train: 100%|██████████| 700/700 [00:00<00:00, 3825.15it/s]
-Get Acts:   0%|          | 0/700 [00:00<?, ?it/s]Get Acts:   0%|          | 2/700 [00:00<00:40, 17.28it/s]Get Acts:   1%|          | 4/700 [00:00<00:40, 17.28it/s]Get Acts:   1%|          | 6/700 [00:00<00:40, 17.27it/s]Get Acts:   1%|          | 8/700 [00:00<00:39, 17.34it/s]Get Acts:   1%|▏         | 10/700 [00:00<00:43, 15.88it/s]Get Acts:   2%|▏         | 12/700 [00:00<00:57, 12.01it/s]Get Acts:   2%|▏         | 14/700 [00:00<00:51, 13.34it/s]Get Acts:   2%|▏         | 16/700 [00:01<00:47, 14.31it/s]Get Acts:   3%|▎         | 18/700 [00:01<00:45, 15.03it/s]Get Acts:   3%|▎         | 20/700 [00:01<00:46, 14.63it/s]Get Acts:   3%|▎         | 22/700 [00:01<00:44, 15.30it/s]Get Acts:   3%|▎         | 24/700 [00:01<00:45, 14.87it/s]Get Acts:   4%|▎         | 26/700 [00:01<00:47, 14.29it/s]Get Acts:   4%|▍         | 28/700 [00:01<00:48, 13.76it/s]Get Acts:   4%|▍         | 30/700 [00:02<00:46, 14.39it/s]Get Acts:   5%|▍         | 32/700 [00:02<00:47, 14.12it/s]Get Acts:   5%|▍         | 34/700 [00:02<00:45, 14.80it/s]Get Acts:   5%|▌         | 36/700 [00:02<00:43, 15.33it/s]Get Acts:   5%|▌         | 38/700 [00:02<00:41, 15.80it/s]Get Acts:   6%|▌         | 40/700 [00:02<00:41, 16.05it/s]Get Acts:   6%|▌         | 42/700 [00:02<00:40, 16.08it/s]Get Acts:   6%|▋         | 44/700 [00:02<00:40, 16.08it/s]Get Acts:   7%|▋         | 46/700 [00:03<00:40, 16.20it/s]Get Acts:   7%|▋         | 48/700 [00:03<00:39, 16.47it/s]Get Acts:   7%|▋         | 50/700 [00:03<00:42, 15.40it/s]Get Acts:   7%|▋         | 52/700 [00:03<00:41, 15.71it/s]Get Acts:   8%|▊         | 54/700 [00:03<00:40, 16.05it/s]Get Acts:   8%|▊         | 56/700 [00:03<00:39, 16.18it/s]Get Acts:   8%|▊         | 58/700 [00:03<00:39, 16.31it/s]Get Acts:   9%|▊         | 60/700 [00:03<00:42, 15.06it/s]Get Acts:   9%|▉         | 62/700 [00:04<00:46, 13.66it/s]Get Acts:   9%|▉         | 64/700 [00:04<00:46, 13.57it/s]Get Acts:   9%|▉         | 66/700 [00:04<00:46, 13.58it/s]Get Acts:  10%|▉         | 68/700 [00:04<00:43, 14.38it/s]Get Acts:  10%|█         | 70/700 [00:04<00:41, 15.15it/s]Get Acts:  10%|█         | 72/700 [00:04<00:40, 15.52it/s]Get Acts:  11%|█         | 74/700 [00:04<00:43, 14.51it/s]Get Acts:  11%|█         | 76/700 [00:05<00:43, 14.21it/s]Get Acts:  11%|█         | 78/700 [00:05<00:42, 14.77it/s]Get Acts:  11%|█▏        | 80/700 [00:05<00:40, 15.30it/s]Get Acts:  12%|█▏        | 82/700 [00:05<00:39, 15.74it/s]Get Acts:  12%|█▏        | 84/700 [00:05<00:38, 16.15it/s]Get Acts:  12%|█▏        | 86/700 [00:05<00:37, 16.39it/s]Get Acts:  13%|█▎        | 88/700 [00:05<00:37, 16.46it/s]Get Acts:  13%|█▎        | 90/700 [00:05<00:36, 16.60it/s]Get Acts:  13%|█▎        | 92/700 [00:06<00:39, 15.47it/s]Get Acts:  13%|█▎        | 94/700 [00:06<00:38, 15.72it/s]Get Acts:  14%|█▎        | 96/700 [00:06<00:37, 15.96it/s]Get Acts:  14%|█▍        | 98/700 [00:06<00:40, 14.98it/s]Get Acts:  14%|█▍        | 100/700 [00:06<00:38, 15.47it/s]Get Acts:  15%|█▍        | 102/700 [00:06<00:37, 15.90it/s]Get Acts:  15%|█▍        | 104/700 [00:06<00:37, 16.07it/s]Get Acts:  15%|█▌        | 106/700 [00:06<00:36, 16.30it/s]Get Acts:  15%|█▌        | 108/700 [00:07<00:38, 15.30it/s]Get Acts:  16%|█▌        | 110/700 [00:07<00:37, 15.79it/s]Get Acts:  16%|█▌        | 112/700 [00:07<00:36, 15.92it/s]Get Acts:  16%|█▋        | 114/700 [00:07<00:41, 14.05it/s]Get Acts:  17%|█▋        | 116/700 [00:07<00:39, 14.65it/s]Get Acts:  17%|█▋        | 118/700 [00:07<00:40, 14.31it/s]Get Acts:  17%|█▋        | 120/700 [00:07<00:41, 13.87it/s]Get Acts:  17%|█▋        | 122/700 [00:08<00:39, 14.66it/s]Get Acts:  18%|█▊        | 124/700 [00:08<00:38, 15.15it/s]Get Acts:  18%|█▊        | 126/700 [00:08<00:39, 14.57it/s]Get Acts:  18%|█▊        | 128/700 [00:08<00:38, 15.04it/s]Get Acts:  19%|█▊        | 130/700 [00:08<00:36, 15.41it/s]Get Acts:  19%|█▉        | 132/700 [00:08<00:38, 14.62it/s]Get Acts:  19%|█▉        | 134/700 [00:08<00:39, 14.21it/s]Get Acts:  19%|█▉        | 136/700 [00:08<00:38, 14.74it/s]Get Acts:  20%|█▉        | 138/700 [00:09<00:41, 13.41it/s]Get Acts:  20%|██        | 140/700 [00:09<00:39, 14.22it/s]Get Acts:  20%|██        | 142/700 [00:09<00:39, 13.96it/s]Get Acts:  21%|██        | 144/700 [00:09<00:37, 14.70it/s]Get Acts:  21%|██        | 146/700 [00:09<00:36, 15.17it/s]Get Acts:  21%|██        | 148/700 [00:09<00:35, 15.55it/s]Get Acts:  21%|██▏       | 150/700 [00:09<00:37, 14.78it/s]Get Acts:  22%|██▏       | 152/700 [00:10<00:38, 14.28it/s]Get Acts:  22%|██▏       | 154/700 [00:10<00:38, 14.09it/s]Get Acts:  22%|██▏       | 156/700 [00:10<00:36, 14.80it/s]Get Acts:  23%|██▎       | 158/700 [00:10<00:38, 14.20it/s]Get Acts:  23%|██▎       | 160/700 [00:10<00:38, 13.97it/s]Get Acts:  23%|██▎       | 162/700 [00:10<00:39, 13.64it/s]Get Acts:  23%|██▎       | 164/700 [00:10<00:37, 14.46it/s]Get Acts:  24%|██▎       | 166/700 [00:11<00:35, 15.04it/s]Get Acts:  24%|██▍       | 168/700 [00:11<00:34, 15.44it/s]Get Acts:  24%|██▍       | 170/700 [00:11<00:33, 15.88it/s]Get Acts:  25%|██▍       | 172/700 [00:11<00:32, 16.04it/s]Get Acts:  25%|██▍       | 174/700 [00:11<00:32, 16.29it/s]Get Acts:  25%|██▌       | 176/700 [00:11<00:32, 16.34it/s]Get Acts:  25%|██▌       | 178/700 [00:11<00:34, 15.21it/s]Get Acts:  26%|██▌       | 180/700 [00:11<00:33, 15.51it/s]Get Acts:  26%|██▌       | 182/700 [00:12<00:35, 14.79it/s]Get Acts:  26%|██▋       | 184/700 [00:12<00:33, 15.25it/s]Get Acts:  27%|██▋       | 186/700 [00:12<00:32, 15.61it/s]Get Acts:  27%|██▋       | 188/700 [00:12<00:32, 15.92it/s]Get Acts:  27%|██▋       | 190/700 [00:12<00:34, 14.96it/s]Get Acts:  27%|██▋       | 192/700 [00:12<00:34, 14.52it/s]Get Acts:  28%|██▊       | 194/700 [00:12<00:33, 15.16it/s]Get Acts:  28%|██▊       | 196/700 [00:13<00:32, 15.55it/s]Get Acts:  28%|██▊       | 198/700 [00:13<00:34, 14.71it/s]Get Acts:  29%|██▊       | 200/700 [00:13<00:32, 15.26it/s]Get Acts:  29%|██▉       | 202/700 [00:13<00:32, 15.56it/s]Get Acts:  29%|██▉       | 204/700 [00:13<00:31, 15.86it/s]Get Acts:  29%|██▉       | 206/700 [00:13<00:30, 16.03it/s]Get Acts:  30%|██▉       | 208/700 [00:13<00:30, 16.19it/s]Get Acts:  30%|███       | 210/700 [00:13<00:30, 16.28it/s]Get Acts:  30%|███       | 212/700 [00:14<00:31, 15.26it/s]Get Acts:  31%|███       | 214/700 [00:14<00:33, 14.58it/s]Get Acts:  31%|███       | 216/700 [00:14<00:32, 15.08it/s]Get Acts:  31%|███       | 218/700 [00:14<00:30, 15.62it/s]Get Acts:  31%|███▏      | 220/700 [00:14<00:30, 15.95it/s]Get Acts:  32%|███▏      | 222/700 [00:14<00:31, 15.09it/s]Get Acts:  32%|███▏      | 224/700 [00:14<00:30, 15.45it/s]Get Acts:  32%|███▏      | 226/700 [00:14<00:29, 15.82it/s]Get Acts:  33%|███▎      | 228/700 [00:15<00:29, 15.93it/s]Get Acts:  33%|███▎      | 230/700 [00:15<00:29, 16.05it/s]Get Acts:  33%|███▎      | 232/700 [00:15<00:29, 16.13it/s]Get Acts:  33%|███▎      | 234/700 [00:15<00:28, 16.39it/s]Get Acts:  34%|███▎      | 236/700 [00:15<00:30, 15.31it/s]Get Acts:  34%|███▍      | 238/700 [00:15<00:29, 15.61it/s]Get Acts:  34%|███▍      | 240/700 [00:15<00:31, 14.79it/s]Get Acts:  35%|███▍      | 242/700 [00:16<00:34, 13.45it/s]Get Acts:  35%|███▍      | 244/700 [00:16<00:34, 13.29it/s]Get Acts:  35%|███▌      | 246/700 [00:16<00:34, 13.30it/s]Get Acts:  35%|███▌      | 248/700 [00:16<00:33, 13.31it/s]Get Acts:  36%|███▌      | 250/700 [00:16<00:34, 13.18it/s]Get Acts:  36%|███▌      | 252/700 [00:16<00:31, 14.08it/s]Get Acts:  36%|███▋      | 254/700 [00:16<00:30, 14.85it/s]Get Acts:  37%|███▋      | 256/700 [00:16<00:29, 15.30it/s]Get Acts:  37%|███▋      | 258/700 [00:17<00:27, 15.81it/s]Get Acts:  37%|███▋      | 260/700 [00:17<00:27, 15.96it/s]Get Acts:  37%|███▋      | 262/700 [00:17<00:27, 16.06it/s]Get Acts:  38%|███▊      | 264/700 [00:17<00:28, 15.20it/s]Get Acts:  38%|███▊      | 266/700 [00:17<00:28, 15.48it/s]Get Acts:  38%|███▊      | 268/700 [00:17<00:27, 15.70it/s]Get Acts:  39%|███▊      | 270/700 [00:17<00:26, 15.94it/s]Get Acts:  39%|███▉      | 272/700 [00:17<00:26, 16.17it/s]Get Acts:  39%|███▉      | 274/700 [00:18<00:26, 16.22it/s]Get Acts:  39%|███▉      | 276/700 [00:18<00:26, 16.29it/s]Get Acts:  40%|███▉      | 278/700 [00:18<00:25, 16.32it/s]Get Acts:  40%|████      | 280/700 [00:18<00:27, 15.09it/s]Get Acts:  40%|████      | 282/700 [00:18<00:30, 13.61it/s]Get Acts:  41%|████      | 284/700 [00:18<00:28, 14.43it/s]Get Acts:  41%|████      | 286/700 [00:18<00:29, 14.12it/s]Get Acts:  41%|████      | 288/700 [00:19<00:28, 14.69it/s]Get Acts:  41%|████▏     | 290/700 [00:19<00:27, 15.18it/s]Get Acts:  42%|████▏     | 292/700 [00:19<00:26, 15.53it/s]Get Acts:  42%|████▏     | 294/700 [00:19<00:25, 15.83it/s]Get Acts:  42%|████▏     | 296/700 [00:19<00:25, 16.02it/s]Get Acts:  43%|████▎     | 298/700 [00:19<00:24, 16.12it/s]Get Acts:  43%|████▎     | 300/700 [00:19<00:24, 16.24it/s]Get Acts:  43%|████▎     | 302/700 [00:19<00:24, 16.33it/s]Get Acts:  43%|████▎     | 304/700 [00:20<00:26, 15.23it/s]Get Acts:  44%|████▎     | 306/700 [00:20<00:25, 15.51it/s]Get Acts:  44%|████▍     | 308/700 [00:20<00:24, 15.89it/s]Get Acts:  44%|████▍     | 310/700 [00:20<00:24, 16.14it/s]Get Acts:  45%|████▍     | 312/700 [00:20<00:27, 14.13it/s]Get Acts:  45%|████▍     | 314/700 [00:20<00:28, 13.76it/s]Get Acts:  45%|████▌     | 316/700 [00:20<00:26, 14.40it/s]Get Acts:  45%|████▌     | 318/700 [00:21<00:25, 14.99it/s]Get Acts:  46%|████▌     | 320/700 [00:21<00:24, 15.38it/s]Get Acts:  46%|████▌     | 322/700 [00:21<00:24, 15.67it/s]Get Acts:  46%|████▋     | 324/700 [00:21<00:23, 15.91it/s]Get Acts:  47%|████▋     | 326/700 [00:21<00:24, 15.01it/s]Get Acts:  47%|████▋     | 328/700 [00:21<00:26, 14.22it/s]Get Acts:  47%|████▋     | 330/700 [00:21<00:24, 14.92it/s]Get Acts:  47%|████▋     | 332/700 [00:21<00:25, 14.45it/s]Get Acts:  48%|████▊     | 334/700 [00:22<00:24, 14.95it/s]Get Acts:  48%|████▊     | 336/700 [00:22<00:23, 15.33it/s]Get Acts:  48%|████▊     | 338/700 [00:22<00:24, 14.70it/s]Get Acts:  49%|████▊     | 340/700 [00:22<00:23, 15.24it/s]Get Acts:  49%|████▉     | 342/700 [00:22<00:22, 15.76it/s]Get Acts:  49%|████▉     | 344/700 [00:22<00:22, 15.97it/s]Get Acts:  49%|████▉     | 346/700 [00:22<00:22, 16.09it/s]Get Acts:  50%|████▉     | 348/700 [00:22<00:21, 16.27it/s]Get Acts:  50%|█████     | 350/700 [00:23<00:21, 16.40it/s]Get Acts:  50%|█████     | 352/700 [00:23<00:21, 16.48it/s]Get Acts:  51%|█████     | 354/700 [00:23<00:20, 16.65it/s]Get Acts:  51%|█████     | 356/700 [00:23<00:20, 16.75it/s]Get Acts:  51%|█████     | 358/700 [00:23<00:20, 16.93it/s]Get Acts:  51%|█████▏    | 360/700 [00:23<00:21, 15.68it/s]Get Acts:  52%|█████▏    | 362/700 [00:23<00:20, 16.12it/s]Get Acts:  52%|█████▏    | 364/700 [00:23<00:20, 16.39it/s]Get Acts:  52%|█████▏    | 366/700 [00:24<00:20, 16.65it/s]Get Acts:  53%|█████▎    | 368/700 [00:24<00:19, 16.69it/s]Get Acts:  53%|█████▎    | 370/700 [00:24<00:19, 16.65it/s]Get Acts:  53%|█████▎    | 372/700 [00:24<00:19, 16.67it/s]Get Acts:  53%|█████▎    | 374/700 [00:24<00:19, 16.85it/s]Get Acts:  54%|█████▎    | 376/700 [00:24<00:19, 16.75it/s]Get Acts:  54%|█████▍    | 378/700 [00:24<00:19, 16.67it/s]Get Acts:  54%|█████▍    | 380/700 [00:24<00:19, 16.72it/s]Get Acts:  55%|█████▍    | 382/700 [00:25<00:18, 16.83it/s]Get Acts:  55%|█████▍    | 384/700 [00:25<00:18, 16.66it/s]Get Acts:  55%|█████▌    | 386/700 [00:25<00:18, 16.75it/s]Get Acts:  55%|█████▌    | 388/700 [00:25<00:18, 16.66it/s]Get Acts:  56%|█████▌    | 390/700 [00:25<00:18, 16.78it/s]Get Acts:  56%|█████▌    | 392/700 [00:25<00:18, 16.91it/s]Get Acts:  56%|█████▋    | 394/700 [00:25<00:18, 16.96it/s]Get Acts:  57%|█████▋    | 396/700 [00:25<00:17, 17.00it/s]Get Acts:  57%|█████▋    | 398/700 [00:25<00:17, 16.98it/s]Get Acts:  57%|█████▋    | 400/700 [00:26<00:17, 16.81it/s]Get Acts:  57%|█████▋    | 402/700 [00:26<00:17, 16.86it/s]Get Acts:  58%|█████▊    | 404/700 [00:26<00:17, 16.86it/s]Get Acts:  58%|█████▊    | 406/700 [00:26<00:17, 16.77it/s]Get Acts:  58%|█████▊    | 408/700 [00:26<00:17, 16.70it/s]Get Acts:  59%|█████▊    | 410/700 [00:26<00:17, 16.68it/s]Get Acts:  59%|█████▉    | 412/700 [00:26<00:17, 16.73it/s]Get Acts:  59%|█████▉    | 414/700 [00:26<00:16, 16.83it/s]Get Acts:  59%|█████▉    | 416/700 [00:27<00:17, 16.70it/s]Get Acts:  60%|█████▉    | 418/700 [00:27<00:16, 16.81it/s]Get Acts:  60%|██████    | 420/700 [00:27<00:16, 16.78it/s]Get Acts:  60%|██████    | 422/700 [00:27<00:16, 16.73it/s]Get Acts:  61%|██████    | 424/700 [00:27<00:16, 16.85it/s]Get Acts:  61%|██████    | 426/700 [00:27<00:16, 16.90it/s]Get Acts:  61%|██████    | 428/700 [00:27<00:16, 16.91it/s]Get Acts:  61%|██████▏   | 430/700 [00:27<00:15, 17.03it/s]Get Acts:  62%|██████▏   | 432/700 [00:27<00:15, 17.08it/s]Get Acts:  62%|██████▏   | 434/700 [00:28<00:15, 17.10it/s]Get Acts:  62%|██████▏   | 436/700 [00:28<00:15, 17.09it/s]Get Acts:  63%|██████▎   | 438/700 [00:28<00:15, 16.86it/s]Get Acts:  63%|██████▎   | 440/700 [00:28<00:15, 16.94it/s]Get Acts:  63%|██████▎   | 442/700 [00:28<00:15, 16.93it/s]Get Acts:  63%|██████▎   | 444/700 [00:28<00:15, 16.99it/s]Get Acts:  64%|██████▎   | 446/700 [00:28<00:14, 16.94it/s]Get Acts:  64%|██████▍   | 448/700 [00:28<00:14, 17.01it/s]Get Acts:  64%|██████▍   | 450/700 [00:29<00:14, 16.92it/s]Get Acts:  65%|██████▍   | 452/700 [00:29<00:14, 16.90it/s]Get Acts:  65%|██████▍   | 454/700 [00:29<00:14, 16.96it/s]Get Acts:  65%|██████▌   | 456/700 [00:29<00:14, 17.00it/s]Get Acts:  65%|██████▌   | 458/700 [00:29<00:14, 16.95it/s]Get Acts:  66%|██████▌   | 460/700 [00:29<00:14, 16.88it/s]Get Acts:  66%|██████▌   | 462/700 [00:29<00:14, 16.80it/s]Get Acts:  66%|██████▋   | 464/700 [00:29<00:14, 16.70it/s]Get Acts:  67%|██████▋   | 466/700 [00:29<00:13, 16.78it/s]Get Acts:  67%|██████▋   | 468/700 [00:30<00:13, 16.92it/s]Get Acts:  67%|██████▋   | 470/700 [00:30<00:13, 16.97it/s]Get Acts:  67%|██████▋   | 472/700 [00:30<00:13, 17.01it/s]Get Acts:  68%|██████▊   | 474/700 [00:30<00:13, 17.04it/s]Get Acts:  68%|██████▊   | 476/700 [00:30<00:13, 17.02it/s]Get Acts:  68%|██████▊   | 478/700 [00:30<00:13, 16.90it/s]Get Acts:  69%|██████▊   | 480/700 [00:30<00:13, 16.92it/s]Get Acts:  69%|██████▉   | 482/700 [00:30<00:12, 16.91it/s]Get Acts:  69%|██████▉   | 484/700 [00:31<00:12, 16.78it/s]Get Acts:  69%|██████▉   | 486/700 [00:31<00:12, 16.80it/s]Get Acts:  70%|██████▉   | 488/700 [00:31<00:12, 16.63it/s]Get Acts:  70%|███████   | 490/700 [00:31<00:12, 16.77it/s]Get Acts:  70%|███████   | 492/700 [00:31<00:12, 16.79it/s]Get Acts:  71%|███████   | 494/700 [00:31<00:12, 16.89it/s]Get Acts:  71%|███████   | 496/700 [00:31<00:13, 15.55it/s]Get Acts:  71%|███████   | 498/700 [00:31<00:12, 15.93it/s]Get Acts:  71%|███████▏  | 500/700 [00:32<00:12, 16.17it/s]Get Acts:  72%|███████▏  | 502/700 [00:32<00:12, 16.46it/s]Get Acts:  72%|███████▏  | 504/700 [00:32<00:11, 16.60it/s]Get Acts:  72%|███████▏  | 506/700 [00:32<00:12, 15.55it/s]Get Acts:  73%|███████▎  | 508/700 [00:32<00:12, 15.74it/s]Get Acts:  73%|███████▎  | 510/700 [00:32<00:11, 16.11it/s]Get Acts:  73%|███████▎  | 512/700 [00:32<00:11, 16.38it/s]Get Acts:  73%|███████▎  | 514/700 [00:32<00:11, 16.52it/s]Get Acts:  74%|███████▎  | 516/700 [00:33<00:11, 16.71it/s]Get Acts:  74%|███████▍  | 518/700 [00:33<00:10, 16.74it/s]Get Acts:  74%|███████▍  | 520/700 [00:33<00:10, 16.63it/s]Get Acts:  75%|███████▍  | 522/700 [00:33<00:10, 16.76it/s]Get Acts:  75%|███████▍  | 524/700 [00:33<00:10, 16.67it/s]Get Acts:  75%|███████▌  | 526/700 [00:33<00:10, 16.67it/s]Get Acts:  75%|███████▌  | 528/700 [00:33<00:10, 16.52it/s]Get Acts:  76%|███████▌  | 530/700 [00:33<00:10, 16.53it/s]Get Acts:  76%|███████▌  | 532/700 [00:33<00:10, 16.62it/s]Get Acts:  76%|███████▋  | 534/700 [00:34<00:09, 16.69it/s]Get Acts:  77%|███████▋  | 536/700 [00:34<00:09, 16.74it/s]Get Acts:  77%|███████▋  | 538/700 [00:34<00:09, 16.83it/s]Get Acts:  77%|███████▋  | 540/700 [00:34<00:09, 16.73it/s]Get Acts:  77%|███████▋  | 542/700 [00:34<00:09, 16.83it/s]Get Acts:  78%|███████▊  | 544/700 [00:34<00:09, 16.98it/s]Get Acts:  78%|███████▊  | 546/700 [00:34<00:09, 17.01it/s]Get Acts:  78%|███████▊  | 548/700 [00:34<00:08, 16.99it/s]Get Acts:  79%|███████▊  | 550/700 [00:35<00:08, 16.79it/s]Get Acts:  79%|███████▉  | 552/700 [00:35<00:08, 16.88it/s]Get Acts:  79%|███████▉  | 554/700 [00:35<00:08, 16.99it/s]Get Acts:  79%|███████▉  | 556/700 [00:35<00:08, 16.98it/s]Get Acts:  80%|███████▉  | 558/700 [00:35<00:08, 16.99it/s]Get Acts:  80%|████████  | 560/700 [00:35<00:08, 17.01it/s]Get Acts:  80%|████████  | 562/700 [00:35<00:08, 16.96it/s]Get Acts:  81%|████████  | 564/700 [00:35<00:08, 16.90it/s]Get Acts:  81%|████████  | 566/700 [00:35<00:07, 16.86it/s]Get Acts:  81%|████████  | 568/700 [00:36<00:07, 16.80it/s]Get Acts:  81%|████████▏ | 570/700 [00:36<00:07, 16.91it/s]Get Acts:  82%|████████▏ | 572/700 [00:36<00:07, 16.88it/s]Get Acts:  82%|████████▏ | 574/700 [00:36<00:07, 16.96it/s]Get Acts:  82%|████████▏ | 576/700 [00:36<00:07, 16.81it/s]Get Acts:  83%|████████▎ | 578/700 [00:36<00:07, 16.85it/s]Get Acts:  83%|████████▎ | 580/700 [00:36<00:07, 16.78it/s]Get Acts:  83%|████████▎ | 582/700 [00:36<00:07, 16.83it/s]Get Acts:  83%|████████▎ | 584/700 [00:37<00:06, 16.73it/s]Get Acts:  84%|████████▎ | 586/700 [00:37<00:06, 16.77it/s]Get Acts:  84%|████████▍ | 588/700 [00:37<00:06, 16.86it/s]Get Acts:  84%|████████▍ | 590/700 [00:37<00:06, 16.82it/s]Get Acts:  85%|████████▍ | 592/700 [00:37<00:06, 16.73it/s]Get Acts:  85%|████████▍ | 594/700 [00:37<00:06, 16.86it/s]Get Acts:  85%|████████▌ | 596/700 [00:37<00:06, 16.98it/s]Get Acts:  85%|████████▌ | 598/700 [00:37<00:06, 16.85it/s]Get Acts:  86%|████████▌ | 600/700 [00:38<00:06, 15.63it/s]Get Acts:  86%|████████▌ | 602/700 [00:38<00:06, 15.73it/s]Get Acts:  86%|████████▋ | 604/700 [00:38<00:05, 16.06it/s]Get Acts:  87%|████████▋ | 606/700 [00:38<00:05, 16.34it/s]Get Acts:  87%|████████▋ | 608/700 [00:38<00:05, 16.51it/s]Get Acts:  87%|████████▋ | 610/700 [00:38<00:05, 16.58it/s]Get Acts:  87%|████████▋ | 612/700 [00:38<00:05, 16.59it/s]Get Acts:  88%|████████▊ | 614/700 [00:38<00:05, 16.64it/s]Get Acts:  88%|████████▊ | 616/700 [00:38<00:05, 16.61it/s]Get Acts:  88%|████████▊ | 618/700 [00:39<00:04, 16.69it/s]Get Acts:  89%|████████▊ | 620/700 [00:39<00:04, 16.63it/s]Get Acts:  89%|████████▉ | 622/700 [00:39<00:04, 16.75it/s]Get Acts:  89%|████████▉ | 624/700 [00:39<00:04, 16.73it/s]Get Acts:  89%|████████▉ | 626/700 [00:39<00:04, 16.77it/s]Get Acts:  90%|████████▉ | 628/700 [00:39<00:04, 16.89it/s]Get Acts:  90%|█████████ | 630/700 [00:39<00:04, 16.96it/s]Get Acts:  90%|█████████ | 632/700 [00:39<00:04, 16.91it/s]Get Acts:  91%|█████████ | 634/700 [00:40<00:03, 16.96it/s]Get Acts:  91%|█████████ | 636/700 [00:40<00:03, 16.76it/s]Get Acts:  91%|█████████ | 638/700 [00:40<00:03, 16.63it/s]Get Acts:  91%|█████████▏| 640/700 [00:40<00:03, 16.61it/s]Get Acts:  92%|█████████▏| 642/700 [00:40<00:03, 16.67it/s]Get Acts:  92%|█████████▏| 644/700 [00:40<00:03, 16.75it/s]Get Acts:  92%|█████████▏| 646/700 [00:40<00:03, 16.75it/s]Get Acts:  93%|█████████▎| 648/700 [00:40<00:03, 16.76it/s]Get Acts:  93%|█████████▎| 650/700 [00:41<00:02, 16.77it/s]Get Acts:  93%|█████████▎| 652/700 [00:41<00:02, 16.74it/s]Get Acts:  93%|█████████▎| 654/700 [00:41<00:02, 16.71it/s]Get Acts:  94%|█████████▎| 656/700 [00:41<00:02, 16.72it/s]Get Acts:  94%|█████████▍| 658/700 [00:41<00:02, 16.68it/s]Get Acts:  94%|█████████▍| 660/700 [00:41<00:02, 16.69it/s]Get Acts:  95%|█████████▍| 662/700 [00:41<00:02, 16.57it/s]Get Acts:  95%|█████████▍| 664/700 [00:41<00:02, 16.67it/s]Get Acts:  95%|█████████▌| 666/700 [00:41<00:02, 16.73it/s]Get Acts:  95%|█████████▌| 668/700 [00:42<00:01, 16.84it/s]Get Acts:  96%|█████████▌| 670/700 [00:42<00:01, 16.87it/s]Get Acts:  96%|█████████▌| 672/700 [00:42<00:01, 16.86it/s]Get Acts:  96%|█████████▋| 674/700 [00:42<00:01, 16.70it/s]Get Acts:  97%|█████████▋| 676/700 [00:42<00:01, 16.67it/s]Get Acts:  97%|█████████▋| 678/700 [00:42<00:01, 16.65it/s]Get Acts:  97%|█████████▋| 680/700 [00:42<00:01, 16.57it/s]Get Acts:  97%|█████████▋| 682/700 [00:42<00:01, 16.68it/s]Get Acts:  98%|█████████▊| 684/700 [00:43<00:00, 16.73it/s]Get Acts:  98%|█████████▊| 686/700 [00:43<00:00, 16.71it/s]Get Acts:  98%|█████████▊| 688/700 [00:43<00:00, 16.69it/s]Get Acts:  99%|█████████▊| 690/700 [00:43<00:00, 16.81it/s]Get Acts:  99%|█████████▉| 692/700 [00:43<00:00, 16.73it/s]Get Acts:  99%|█████████▉| 694/700 [00:43<00:00, 16.68it/s]Get Acts:  99%|█████████▉| 696/700 [00:43<00:00, 16.67it/s]Get Acts: 100%|█████████▉| 698/700 [00:43<00:00, 16.55it/s]Get Acts: 100%|██████████| 700/700 [00:44<00:00, 16.70it/s]Get Acts: 100%|██████████| 700/700 [00:44<00:00, 15.91it/s]
-Get MD Vectors:   0%|          | 0/32 [00:00<?, ?it/s]Get MD Vectors:  31%|███▏      | 10/32 [00:00<00:00, 95.31it/s]Get MD Vectors:  69%|██████▉   | 22/32 [00:00<00:00, 107.48it/s]Get MD Vectors: 100%|██████████| 32/32 [00:00<00:00, 106.98it/s]
-Steering vectors extracted
-
-STEP 3A: Computing LayerNavigator Scores
-Get Score:   0%|          | 0/32 [00:00<?, ?it/s]Get Score:  16%|█▌        | 5/32 [00:00<00:00, 49.12it/s]Get Score:  53%|█████▎    | 17/32 [00:00<00:00, 88.07it/s]Get Score:  84%|████████▍ | 27/32 [00:00<00:00, 91.83it/s]Get Score: 100%|██████████| 32/32 [00:00<00:00, 88.98it/s]
-LayerNavigator scores computed
-
-STEP 3B: Computing HOLE Topological Scores (ALL 7 METRICS)
-====================================================================================================
-
-================================================================================
-COMPUTING HOLE SCORES WITH ALL 7 DISTANCE METRICS
-================================================================================
- Metric: euclidean
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [00:12<06:19, 12.24s/it]Computing HOLE Scores:   6%|▋         | 2/32 [00:24<06:01, 12.04s/it]Computing HOLE Scores:   9%|▉         | 3/32 [00:36<05:50, 12.09s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [00:48<05:44, 12.30s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [01:00<05:29, 12.21s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [01:13<05:22, 12.39s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [01:25<05:06, 12.26s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [01:38<04:56, 12.37s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [01:50<04:46, 12.44s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [02:03<04:33, 12.43s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [02:15<04:22, 12.48s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [02:28<04:09, 12.48s/it]Computing HOLE Scores:  41%|████      | 13/32 [02:40<03:55, 12.40s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [02:52<03:40, 12.24s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [03:03<03:22, 11.89s/it]Computing HOLE Scores:  50%|█████     | 16/32 [03:14<03:07, 11.74s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [03:26<02:55, 11.68s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [03:38<02:43, 11.68s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [03:49<02:30, 11.55s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [04:00<02:18, 11.53s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [04:12<02:07, 11.63s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [04:24<01:56, 11.67s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [04:36<01:44, 11.62s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [04:48<01:33, 11.74s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [04:59<01:22, 11.76s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [05:12<01:11, 12.00s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [05:23<00:59, 11.84s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [05:35<00:47, 11.88s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [05:47<00:35, 11.81s/it]Computing HOLE Scores:  94%|█████████▍| 30/32 [05:59<00:23, 11.87s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [06:11<00:11, 11.86s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:22<00:00, 11.62s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:22<00:00, 11.95s/it]
-  Layer 0: Computing persistent homology with euclidean distance...
-  Layer 0: TSS=3.409, Purity=0.516, Sep=0.153, β1=0
-  Layer 1: Computing persistent homology with euclidean distance...
-  Layer 1: TSS=3.903, Purity=0.510, Sep=0.143, β1=0
-  Layer 2: Computing persistent homology with euclidean distance...
-  Layer 2: TSS=4.564, Purity=0.518, Sep=0.167, β1=0
-  Layer 3: Computing persistent homology with euclidean distance...
-  Layer 3: TSS=6.552, Purity=0.504, Sep=0.186, β1=0
-  Layer 4: Computing persistent homology with euclidean distance...
-  Layer 4: TSS=6.898, Purity=0.512, Sep=0.206, β1=0
-  Layer 5: Computing persistent homology with euclidean distance...
-  Layer 5: TSS=7.118, Purity=0.518, Sep=0.276, β1=0
-  Layer 6: Computing persistent homology with euclidean distance...
-  Layer 6: TSS=7.202, Purity=0.548, Sep=0.322, β1=0
-  Layer 7: Computing persistent homology with euclidean distance...
-  Layer 7: TSS=7.579, Purity=0.510, Sep=0.461, β1=0
-  Layer 8: Computing persistent homology with euclidean distance...
-  Layer 8: TSS=7.646, Purity=0.512, Sep=0.598, β1=0
-  Layer 9: Computing persistent homology with euclidean distance...
-  Layer 9: TSS=7.289, Purity=0.524, Sep=0.639, β1=0
-  Layer 10: Computing persistent homology with euclidean distance...
-  Layer 10: TSS=7.227, Purity=0.524, Sep=0.718, β1=0
-  Layer 11: Computing persistent homology with euclidean distance...
-  Layer 11: TSS=7.461, Purity=0.522, Sep=0.667, β1=0
-  Layer 12: Computing persistent homology with euclidean distance...
-  Layer 12: TSS=7.806, Purity=0.510, Sep=0.749, β1=0
-  Layer 13: Computing persistent homology with euclidean distance...
-  Layer 13: TSS=8.243, Purity=0.510, Sep=0.801, β1=0
-  Layer 14: Computing persistent homology with euclidean distance...
-  Layer 14: TSS=7.988, Purity=0.514, Sep=0.795, β1=0
-  Layer 15: Computing persistent homology with euclidean distance...
-  Layer 15: TSS=8.371, Purity=0.504, Sep=0.719, β1=0
-  Layer 16: Computing persistent homology with euclidean distance...
-  Layer 16: TSS=8.038, Purity=0.512, Sep=0.665, β1=0
-  Layer 17: Computing persistent homology with euclidean distance...
-  Layer 17: TSS=7.754, Purity=0.510, Sep=0.644, β1=0
-  Layer 18: Computing persistent homology with euclidean distance...
-  Layer 18: TSS=7.901, Purity=0.522, Sep=0.646, β1=0
-  Layer 19: Computing persistent homology with euclidean distance...
-  Layer 19: TSS=7.680, Purity=0.518, Sep=0.633, β1=0
-  Layer 20: Computing persistent homology with euclidean distance...
-  Layer 20: TSS=7.702, Purity=0.510, Sep=0.624, β1=0
-  Layer 21: Computing persistent homology with euclidean distance...
-  Layer 21: TSS=7.757, Purity=0.524, Sep=0.626, β1=0
-  Layer 22: Computing persistent homology with euclidean distance...
-  Layer 22: TSS=7.856, Purity=0.532, Sep=0.604, β1=0
-  Layer 23: Computing persistent homology with euclidean distance...
-  Layer 23: TSS=7.575, Purity=0.534, Sep=0.611, β1=0
-  Layer 24: Computing persistent homology with euclidean distance...
-  Layer 24: TSS=7.642, Purity=0.512, Sep=0.607, β1=0
-  Layer 25: Computing persistent homology with euclidean distance...
-  Layer 25: TSS=7.645, Purity=0.528, Sep=0.581, β1=0
-  Layer 26: Computing persistent homology with euclidean distance...
-  Layer 26: TSS=7.662, Purity=0.502, Sep=0.604, β1=0
-  Layer 27: Computing persistent homology with euclidean distance...
-  Layer 27: TSS=7.663, Purity=0.518, Sep=0.590, β1=0
-  Layer 28: Computing persistent homology with euclidean distance...
-  Layer 28: TSS=7.561, Purity=0.540, Sep=0.587, β1=0
-  Layer 29: Computing persistent homology with euclidean distance...
-  Layer 29: TSS=7.647, Purity=0.520, Sep=0.550, β1=0
-  Layer 30: Computing persistent homology with euclidean distance...
-  Layer 30: TSS=7.611, Purity=0.506, Sep=0.538, β1=0
-  Layer 31: Computing persistent homology with euclidean distance...
-  Layer 31: TSS=7.772, Purity=0.528, Sep=0.585, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-euclidean/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: cosine
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [00:11<05:49, 11.26s/it]Computing HOLE Scores:   6%|▋         | 2/32 [00:22<05:43, 11.47s/it]Computing HOLE Scores:   9%|▉         | 3/32 [00:33<05:27, 11.30s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [00:45<05:19, 11.42s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [00:56<05:07, 11.40s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [01:08<04:58, 11.50s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [01:20<04:50, 11.63s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [01:31<04:36, 11.54s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [01:44<04:31, 11.82s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [01:56<04:22, 11.92s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [02:08<04:10, 11.92s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [02:19<03:54, 11.71s/it]Computing HOLE Scores:  41%|████      | 13/32 [02:30<03:40, 11.61s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [02:42<03:30, 11.68s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [02:54<03:17, 11.65s/it]Computing HOLE Scores:  50%|█████     | 16/32 [03:05<03:05, 11.62s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [03:18<02:56, 11.77s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [03:30<02:45, 11.83s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [03:41<02:30, 11.58s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [03:55<02:28, 12.36s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [04:08<02:18, 12.57s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [04:21<02:08, 12.89s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [04:35<01:57, 13.06s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [04:47<01:42, 12.83s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [05:01<01:30, 13.00s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [05:14<01:18, 13.15s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [05:28<01:06, 13.28s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [05:41<00:53, 13.37s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [05:54<00:39, 13.27s/it]Computing HOLE Scores:  94%|█████████▍| 30/32 [06:08<00:26, 13.27s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [06:21<00:13, 13.31s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:34<00:00, 13.38s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:34<00:00, 12.34s/it]
-  Layer 0: Computing persistent homology with cosine distance...
-  Layer 0: TSS=0.231, Purity=0.508, Sep=0.138, β1=0
-  Layer 1: Computing persistent homology with cosine distance...
-  Layer 1: TSS=0.275, Purity=0.544, Sep=0.222, β1=0
-  Layer 2: Computing persistent homology with cosine distance...
-  Layer 2: TSS=0.244, Purity=0.506, Sep=0.164, β1=0
-  Layer 3: Computing persistent homology with cosine distance...
-  Layer 3: TSS=0.264, Purity=0.526, Sep=0.180, β1=0
-  Layer 4: Computing persistent homology with cosine distance...
-  Layer 4: TSS=0.285, Purity=0.524, Sep=0.235, β1=0
-  Layer 5: Computing persistent homology with cosine distance...
-  Layer 5: TSS=0.298, Purity=0.512, Sep=0.281, β1=0
-  Layer 6: Computing persistent homology with cosine distance...
-  Layer 6: TSS=0.310, Purity=0.518, Sep=0.306, β1=0
-  Layer 7: Computing persistent homology with cosine distance...
-  Layer 7: TSS=0.358, Purity=0.508, Sep=0.451, β1=0
-  Layer 8: Computing persistent homology with cosine distance...
-  Layer 8: TSS=0.417, Purity=0.528, Sep=0.599, β1=0
-  Layer 9: Computing persistent homology with cosine distance...
-  Layer 9: TSS=0.439, Purity=0.536, Sep=0.655, β1=0
-  Layer 10: Computing persistent homology with cosine distance...
-  Layer 10: TSS=0.448, Purity=0.504, Sep=0.715, β1=0
-  Layer 11: Computing persistent homology with cosine distance...
-  Layer 11: TSS=0.453, Purity=0.536, Sep=0.698, β1=0
-  Layer 12: Computing persistent homology with cosine distance...
-  Layer 12: TSS=0.467, Purity=0.510, Sep=0.752, β1=0
-  Layer 13: Computing persistent homology with cosine distance...
-  Layer 13: TSS=0.487, Purity=0.524, Sep=0.788, β1=0
-  Layer 14: Computing persistent homology with cosine distance...
-  Layer 14: TSS=0.489, Purity=0.524, Sep=0.796, β1=0
-  Layer 15: Computing persistent homology with cosine distance...
-  Layer 15: TSS=0.466, Purity=0.514, Sep=0.737, β1=0
-  Layer 16: Computing persistent homology with cosine distance...
-  Layer 16: TSS=0.444, Purity=0.508, Sep=0.685, β1=0
-  Layer 17: Computing persistent homology with cosine distance...
-  Layer 17: TSS=0.443, Purity=0.536, Sep=0.658, β1=0
-  Layer 18: Computing persistent homology with cosine distance...
-  Layer 18: TSS=0.436, Purity=0.512, Sep=0.660, β1=0
-  Layer 19: Computing persistent homology with cosine distance...
-  Layer 19: TSS=0.421, Purity=0.522, Sep=0.608, β1=0
-  Layer 20: Computing persistent homology with cosine distance...
-  Layer 20: TSS=0.427, Purity=0.522, Sep=0.626, β1=0
-  Layer 21: Computing persistent homology with cosine distance...
-  Layer 21: TSS=0.407, Purity=0.502, Sep=0.592, β1=0
-  Layer 22: Computing persistent homology with cosine distance...
-  Layer 22: TSS=0.407, Purity=0.514, Sep=0.581, β1=0
-  Layer 23: Computing persistent homology with cosine distance...
-  Layer 23: TSS=0.416, Purity=0.512, Sep=0.608, β1=0
-  Layer 24: Computing persistent homology with cosine distance...
-  Layer 24: TSS=0.414, Purity=0.512, Sep=0.603, β1=0
-  Layer 25: Computing persistent homology with cosine distance...
-  Layer 25: TSS=0.414, Purity=0.528, Sep=0.586, β1=0
-  Layer 26: Computing persistent homology with cosine distance...
-  Layer 26: TSS=0.422, Purity=0.546, Sep=0.591, β1=0
-  Layer 27: Computing persistent homology with cosine distance...
-  Layer 27: TSS=0.412, Purity=0.526, Sep=0.579, β1=0
-  Layer 28: Computing persistent homology with cosine distance...
-  Layer 28: TSS=0.412, Purity=0.532, Sep=0.572, β1=0
-  Layer 29: Computing persistent homology with cosine distance...
-  Layer 29: TSS=0.410, Purity=0.522, Sep=0.578, β1=0
-  Layer 30: Computing persistent homology with cosine distance...
-  Layer 30: TSS=0.403, Purity=0.528, Sep=0.552, β1=0
-  Layer 31: Computing persistent homology with cosine distance...
-  Layer 31: TSS=0.415, Purity=0.514, Sep=0.598, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-cosine/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: mahalanobis
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [15:52<8:11:55, 952.11s/it]Computing HOLE Scores:   6%|▋         | 2/32 [31:44<7:56:05, 952.17s/it]Computing HOLE Scores:   9%|▉         | 3/32 [47:36<7:40:16, 952.30s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [1:03:29<7:24:33, 952.62s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [1:19:23<7:08:51, 953.03s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [1:35:16<6:52:58, 953.02s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [1:51:09<6:37:00, 952.84s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [2:07:00<6:21:00, 952.54s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [2:22:53<6:05:06, 952.47s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [2:38:43<5:49:00, 951.83s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [2:54:38<5:33:24, 952.60s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [3:10:31<5:17:35, 952.78s/it]Computing HOLE Scores:  41%|████      | 13/32 [3:26:25<5:01:49, 953.12s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [3:42:18<4:45:57, 953.22s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [3:58:12<4:30:10, 953.54s/it]Computing HOLE Scores:  50%|█████     | 16/32 [4:14:08<4:14:26, 954.17s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [4:30:02<3:58:31, 954.11s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [4:45:56<3:42:35, 953.98s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [5:01:50<3:26:43, 954.11s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [5:17:45<3:10:51, 954.29s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [5:33:39<2:54:57, 954.31s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [5:49:34<2:39:04, 954.40s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [6:05:29<2:23:10, 954.55s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [6:21:24<2:07:18, 954.79s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [6:37:19<1:51:24, 954.96s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [6:53:15<1:35:31, 955.21s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [7:09:11<1:19:36, 955.40s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [7:25:07<1:03:41, 955.45s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [7:41:02<47:45, 955.33s/it]  Computing HOLE Scores:  94%|█████████▍| 30/32 [7:56:57<31:50, 955.31s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [8:12:52<15:55, 955.22s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:28:45<00:00, 954.71s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:28:45<00:00, 953.93s/it]
-  Layer 0: Computing persistent homology with mahalanobis distance...
-  Layer 0: TSS=9.722, Purity=0.528, Sep=0.171, β1=0
-  Layer 1: Computing persistent homology with mahalanobis distance...
-  Layer 1: TSS=9.706, Purity=0.514, Sep=0.139, β1=0
-  Layer 2: Computing persistent homology with mahalanobis distance...
-  Layer 2: TSS=9.712, Purity=0.506, Sep=0.163, β1=0
-  Layer 3: Computing persistent homology with mahalanobis distance...
-  Layer 3: TSS=9.723, Purity=0.516, Sep=0.185, β1=0
-  Layer 4: Computing persistent homology with mahalanobis distance...
-  Layer 4: TSS=9.734, Purity=0.516, Sep=0.217, β1=0
-  Layer 5: Computing persistent homology with mahalanobis distance...
-  Layer 5: TSS=9.760, Purity=0.530, Sep=0.278, β1=0
-  Layer 6: Computing persistent homology with mahalanobis distance...
-  Layer 6: TSS=9.763, Purity=0.514, Sep=0.302, β1=0
-  Layer 7: Computing persistent homology with mahalanobis distance...
-  Layer 7: TSS=9.818, Purity=0.518, Sep=0.455, β1=0
-  Layer 8: Computing persistent homology with mahalanobis distance...
-  Layer 8: TSS=9.881, Purity=0.534, Sep=0.620, β1=0
-  Layer 9: Computing persistent homology with mahalanobis distance...
-  Layer 9: TSS=9.883, Purity=0.518, Sep=0.641, β1=0
-  Layer 10: Computing persistent homology with mahalanobis distance...
-  Layer 10: TSS=9.904, Purity=0.512, Sep=0.707, β1=0
-  Layer 11: Computing persistent homology with mahalanobis distance...
-  Layer 11: TSS=9.887, Purity=0.502, Sep=0.669, β1=0
-  Layer 12: Computing persistent homology with mahalanobis distance...
-  Layer 12: TSS=9.920, Purity=0.510, Sep=0.756, β1=0
-  Layer 13: Computing persistent homology with mahalanobis distance...
-  Layer 13: TSS=9.931, Purity=0.510, Sep=0.786, β1=0
-  Layer 14: Computing persistent homology with mahalanobis distance...
-  Layer 14: TSS=9.935, Purity=0.522, Sep=0.787, β1=0
-  Layer 15: Computing persistent homology with mahalanobis distance...
-  Layer 15: TSS=9.915, Purity=0.530, Sep=0.721, β1=0
-  Layer 16: Computing persistent homology with mahalanobis distance...
-  Layer 16: TSS=9.893, Purity=0.510, Sep=0.679, β1=0
-  Layer 17: Computing persistent homology with mahalanobis distance...
-  Layer 17: TSS=9.889, Purity=0.514, Sep=0.663, β1=0
-  Layer 18: Computing persistent homology with mahalanobis distance...
-  Layer 18: TSS=9.884, Purity=0.512, Sep=0.649, β1=0
-  Layer 19: Computing persistent homology with mahalanobis distance...
-  Layer 19: TSS=9.885, Purity=0.530, Sep=0.636, β1=0
-  Layer 20: Computing persistent homology with mahalanobis distance...
-  Layer 20: TSS=9.885, Purity=0.524, Sep=0.642, β1=0
-  Layer 21: Computing persistent homology with mahalanobis distance...
-  Layer 21: TSS=9.863, Purity=0.508, Sep=0.592, β1=0
-  Layer 22: Computing persistent homology with mahalanobis distance...
-  Layer 22: TSS=9.871, Purity=0.506, Sep=0.618, β1=0
-  Layer 23: Computing persistent homology with mahalanobis distance...
-  Layer 23: TSS=9.873, Purity=0.536, Sep=0.595, β1=0
-  Layer 24: Computing persistent homology with mahalanobis distance...
-  Layer 24: TSS=9.858, Purity=0.510, Sep=0.578, β1=0
-  Layer 25: Computing persistent homology with mahalanobis distance...
-  Layer 25: TSS=9.870, Purity=0.522, Sep=0.600, β1=0
-  Layer 26: Computing persistent homology with mahalanobis distance...
-  Layer 26: TSS=9.870, Purity=0.532, Sep=0.589, β1=0
-  Layer 27: Computing persistent homology with mahalanobis distance...
-  Layer 27: TSS=9.869, Purity=0.514, Sep=0.605, β1=0
-  Layer 28: Computing persistent homology with mahalanobis distance...
-  Layer 28: TSS=9.859, Purity=0.522, Sep=0.570, β1=0
-  Layer 29: Computing persistent homology with mahalanobis distance...
-  Layer 29: TSS=9.865, Purity=0.528, Sep=0.580, β1=0
-  Layer 30: Computing persistent homology with mahalanobis distance...
-  Layer 30: TSS=9.856, Purity=0.520, Sep=0.562, β1=0
-  Layer 31: Computing persistent homology with mahalanobis distance...
-  Layer 31: TSS=9.869, Purity=0.524, Sep=0.595, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-mahalanobis/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: geodesic
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [00:11<06:00, 11.62s/it]Computing HOLE Scores:   6%|▋         | 2/32 [00:23<05:45, 11.53s/it]Computing HOLE Scores:   9%|▉         | 3/32 [00:35<05:40, 11.74s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [00:46<05:22, 11.53s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [00:58<05:13, 11.61s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [01:10<05:05, 11.76s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [01:21<04:50, 11.63s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [01:33<04:42, 11.79s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [01:44<04:27, 11.65s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [01:56<04:19, 11.78s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [02:09<04:09, 11.90s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [02:20<03:56, 11.81s/it]Computing HOLE Scores:  41%|████      | 13/32 [02:32<03:44, 11.83s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [02:44<03:32, 11.82s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [02:56<03:20, 11.79s/it]Computing HOLE Scores:  50%|█████     | 16/32 [03:07<03:08, 11.79s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [03:19<02:55, 11.72s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [03:31<02:43, 11.67s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [03:43<02:33, 11.78s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [03:55<02:22, 11.84s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [04:07<02:10, 11.88s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [04:18<01:58, 11.84s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [04:30<01:47, 11.89s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [04:42<01:34, 11.82s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [04:54<01:23, 11.96s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [05:06<01:11, 11.93s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [05:18<00:59, 11.94s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [05:30<00:47, 11.95s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [05:42<00:35, 11.86s/it]Computing HOLE Scores:  94%|█████████▍| 30/32 [05:53<00:23, 11.75s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [06:05<00:11, 11.79s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:18<00:00, 12.01s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:18<00:00, 11.82s/it]
-  Layer 0: Computing persistent homology with geodesic distance...
-  Layer 0: TSS=3.233, Purity=0.508, Sep=0.134, β1=0
-  Layer 1: Computing persistent homology with geodesic distance...
-  Layer 1: TSS=3.814, Purity=0.504, Sep=0.134, β1=0
-  Layer 2: Computing persistent homology with geodesic distance...
-  Layer 2: TSS=4.371, Purity=0.514, Sep=0.170, β1=0
-  Layer 3: Computing persistent homology with geodesic distance...
-  Layer 3: TSS=6.188, Purity=0.512, Sep=0.176, β1=0
-  Layer 4: Computing persistent homology with geodesic distance...
-  Layer 4: TSS=6.453, Purity=0.524, Sep=0.239, β1=0
-  Layer 5: Computing persistent homology with geodesic distance...
-  Layer 5: TSS=7.110, Purity=0.524, Sep=0.289, β1=0
-  Layer 6: Computing persistent homology with geodesic distance...
-  Layer 6: TSS=6.923, Purity=0.510, Sep=0.309, β1=0
-  Layer 7: Computing persistent homology with geodesic distance...
-  Layer 7: TSS=7.005, Purity=0.518, Sep=0.446, β1=0
-  Layer 8: Computing persistent homology with geodesic distance...
-  Layer 8: TSS=7.283, Purity=0.524, Sep=0.616, β1=0
-  Layer 9: Computing persistent homology with geodesic distance...
-  Layer 9: TSS=7.175, Purity=0.534, Sep=0.645, β1=0
-  Layer 10: Computing persistent homology with geodesic distance...
-  Layer 10: TSS=7.067, Purity=0.532, Sep=0.702, β1=0
-  Layer 11: Computing persistent homology with geodesic distance...
-  Layer 11: TSS=7.193, Purity=0.512, Sep=0.685, β1=0
-  Layer 12: Computing persistent homology with geodesic distance...
-  Layer 12: TSS=7.784, Purity=0.530, Sep=0.758, β1=0
-  Layer 13: Computing persistent homology with geodesic distance...
-  Layer 13: TSS=7.997, Purity=0.510, Sep=0.783, β1=0
-  Layer 14: Computing persistent homology with geodesic distance...
-  Layer 14: TSS=7.979, Purity=0.514, Sep=0.779, β1=0
-  Layer 15: Computing persistent homology with geodesic distance...
-  Layer 15: TSS=7.853, Purity=0.516, Sep=0.735, β1=0
-  Layer 16: Computing persistent homology with geodesic distance...
-  Layer 16: TSS=7.738, Purity=0.526, Sep=0.695, β1=0
-  Layer 17: Computing persistent homology with geodesic distance...
-  Layer 17: TSS=7.522, Purity=0.508, Sep=0.684, β1=0
-  Layer 18: Computing persistent homology with geodesic distance...
-  Layer 18: TSS=7.507, Purity=0.524, Sep=0.636, β1=0
-  Layer 19: Computing persistent homology with geodesic distance...
-  Layer 19: TSS=7.422, Purity=0.524, Sep=0.645, β1=0
-  Layer 20: Computing persistent homology with geodesic distance...
-  Layer 20: TSS=7.408, Purity=0.512, Sep=0.636, β1=0
-  Layer 21: Computing persistent homology with geodesic distance...
-  Layer 21: TSS=7.378, Purity=0.528, Sep=0.638, β1=0
-  Layer 22: Computing persistent homology with geodesic distance...
-  Layer 22: TSS=7.531, Purity=0.508, Sep=0.603, β1=0
-  Layer 23: Computing persistent homology with geodesic distance...
-  Layer 23: TSS=7.354, Purity=0.512, Sep=0.608, β1=0
-  Layer 24: Computing persistent homology with geodesic distance...
-  Layer 24: TSS=7.331, Purity=0.522, Sep=0.600, β1=0
-  Layer 25: Computing persistent homology with geodesic distance...
-  Layer 25: TSS=7.625, Purity=0.526, Sep=0.616, β1=0
-  Layer 26: Computing persistent homology with geodesic distance...
-  Layer 26: TSS=7.330, Purity=0.518, Sep=0.588, β1=0
-  Layer 27: Computing persistent homology with geodesic distance...
-  Layer 27: TSS=7.607, Purity=0.526, Sep=0.603, β1=0
-  Layer 28: Computing persistent homology with geodesic distance...
-  Layer 28: TSS=7.357, Purity=0.516, Sep=0.575, β1=0
-  Layer 29: Computing persistent homology with geodesic distance...
-  Layer 29: TSS=7.680, Purity=0.504, Sep=0.565, β1=0
-  Layer 30: Computing persistent homology with geodesic distance...
-  Layer 30: TSS=7.482, Purity=0.512, Sep=0.554, β1=0
-  Layer 31: Computing persistent homology with geodesic distance...
-  Layer 31: TSS=7.537, Purity=0.512, Sep=0.600, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-geodesic/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: dens_norm_euclidean
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [00:11<05:42, 11.06s/it]Computing HOLE Scores:   6%|▋         | 2/32 [00:21<05:28, 10.96s/it]Computing HOLE Scores:   9%|▉         | 3/32 [00:33<05:22, 11.13s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [00:44<05:10, 11.08s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [00:55<04:57, 11.03s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [01:06<04:49, 11.14s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [01:18<04:40, 11.24s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [01:29<04:28, 11.20s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [01:40<04:19, 11.27s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [01:52<04:09, 11.33s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [02:03<03:59, 11.41s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [02:14<03:45, 11.30s/it]Computing HOLE Scores:  41%|████      | 13/32 [02:25<03:30, 11.09s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [02:36<03:19, 11.09s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [02:47<03:10, 11.23s/it]Computing HOLE Scores:  50%|█████     | 16/32 [02:59<03:00, 11.28s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [03:10<02:49, 11.27s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [03:21<02:37, 11.23s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [03:32<02:24, 11.15s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [03:44<02:15, 11.33s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [03:55<02:05, 11.37s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [04:07<01:54, 11.44s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [04:19<01:43, 11.55s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [04:30<01:31, 11.43s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [04:42<01:20, 11.53s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [04:54<01:10, 11.69s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [05:05<00:58, 11.69s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [05:17<00:46, 11.53s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [05:28<00:34, 11.59s/it]Computing HOLE Scores:  94%|█████████▍| 30/32 [05:40<00:23, 11.67s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [05:51<00:11, 11.49s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:03<00:00, 11.43s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:03<00:00, 11.34s/it]
-  Layer 0: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 0: TSS=0.524, Purity=0.516, Sep=0.142, β1=0
-  Layer 1: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 1: TSS=0.534, Purity=0.538, Sep=0.139, β1=0
-  Layer 2: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 2: TSS=0.533, Purity=0.506, Sep=0.170, β1=0
-  Layer 3: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 3: TSS=0.555, Purity=0.528, Sep=0.207, β1=0
-  Layer 4: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 4: TSS=0.560, Purity=0.534, Sep=0.224, β1=0
-  Layer 5: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 5: TSS=0.573, Purity=0.516, Sep=0.285, β1=0
-  Layer 6: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 6: TSS=0.574, Purity=0.504, Sep=0.306, β1=0
-  Layer 7: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 7: TSS=0.632, Purity=0.514, Sep=0.457, β1=0
-  Layer 8: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 8: TSS=0.678, Purity=0.510, Sep=0.600, β1=0
-  Layer 9: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 9: TSS=0.692, Purity=0.522, Sep=0.636, β1=0
-  Layer 10: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 10: TSS=0.709, Purity=0.510, Sep=0.691, β1=0
-  Layer 11: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 11: TSS=0.706, Purity=0.516, Sep=0.671, β1=0
-  Layer 12: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 12: TSS=0.731, Purity=0.504, Sep=0.755, β1=0
-  Layer 13: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 13: TSS=0.745, Purity=0.514, Sep=0.780, β1=0
-  Layer 14: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 14: TSS=0.753, Purity=0.536, Sep=0.790, β1=0
-  Layer 15: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 15: TSS=0.726, Purity=0.520, Sep=0.728, β1=0
-  Layer 16: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 16: TSS=0.701, Purity=0.510, Sep=0.669, β1=0
-  Layer 17: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 17: TSS=0.702, Purity=0.520, Sep=0.660, β1=0
-  Layer 18: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 18: TSS=0.694, Purity=0.512, Sep=0.649, β1=0
-  Layer 19: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 19: TSS=0.685, Purity=0.512, Sep=0.626, β1=0
-  Layer 20: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 20: TSS=0.689, Purity=0.510, Sep=0.628, β1=0
-  Layer 21: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 21: TSS=0.682, Purity=0.532, Sep=0.596, β1=0
-  Layer 22: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 22: TSS=0.680, Purity=0.522, Sep=0.599, β1=0
-  Layer 23: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 23: TSS=0.666, Purity=0.510, Sep=0.579, β1=0
-  Layer 24: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 24: TSS=0.679, Purity=0.522, Sep=0.600, β1=0
-  Layer 25: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 25: TSS=0.681, Purity=0.530, Sep=0.590, β1=0
-  Layer 26: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 26: TSS=0.674, Purity=0.524, Sep=0.573, β1=0
-  Layer 27: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 27: TSS=0.679, Purity=0.516, Sep=0.594, β1=0
-  Layer 28: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 28: TSS=0.676, Purity=0.532, Sep=0.577, β1=0
-  Layer 29: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 29: TSS=0.686, Purity=0.530, Sep=0.606, β1=0
-  Layer 30: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 30: TSS=0.670, Purity=0.528, Sep=0.563, β1=0
-  Layer 31: Computing persistent homology with dens_norm_euclidean distance...
-  Layer 31: TSS=0.679, Purity=0.510, Sep=0.605, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-dens_norm_euclidean/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: dens_norm_cosine
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [00:10<05:39, 10.96s/it]Computing HOLE Scores:   6%|▋         | 2/32 [00:21<05:29, 11.00s/it]Computing HOLE Scores:   9%|▉         | 3/32 [00:33<05:27, 11.29s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [00:45<05:19, 11.41s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [00:56<05:11, 11.54s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [01:08<04:58, 11.50s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [01:19<04:46, 11.45s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [01:31<04:39, 11.65s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [01:43<04:25, 11.54s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [01:54<04:13, 11.52s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [02:06<04:04, 11.63s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [02:18<03:53, 11.66s/it]Computing HOLE Scores:  41%|████      | 13/32 [02:29<03:38, 11.50s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [02:40<03:25, 11.43s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [02:51<03:13, 11.39s/it]Computing HOLE Scores:  50%|█████     | 16/32 [03:03<03:05, 11.57s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [03:15<02:52, 11.51s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [03:27<02:42, 11.60s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [03:38<02:29, 11.52s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [03:49<02:17, 11.45s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [04:01<02:06, 11.49s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [04:12<01:55, 11.55s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [04:23<01:42, 11.37s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [04:35<01:32, 11.52s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [04:46<01:19, 11.39s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [04:57<01:07, 11.30s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [05:09<00:56, 11.30s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [05:20<00:45, 11.29s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [05:32<00:34, 11.50s/it]Computing HOLE Scores:  94%|█████████▍| 30/32 [05:44<00:23, 11.51s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [05:55<00:11, 11.45s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:07<00:00, 11.54s/it]Computing HOLE Scores: 100%|██████████| 32/32 [06:07<00:00, 11.47s/it]
-  Layer 0: Computing persistent homology with dens_norm_cosine distance...
-  Layer 0: TSS=0.233, Purity=0.518, Sep=0.147, β1=0
-  Layer 1: Computing persistent homology with dens_norm_cosine distance...
-  Layer 1: TSS=0.228, Purity=0.514, Sep=0.136, β1=0
-  Layer 2: Computing persistent homology with dens_norm_cosine distance...
-  Layer 2: TSS=0.237, Purity=0.508, Sep=0.167, β1=0
-  Layer 3: Computing persistent homology with dens_norm_cosine distance...
-  Layer 3: TSS=0.269, Purity=0.540, Sep=0.227, β1=0
-  Layer 4: Computing persistent homology with dens_norm_cosine distance...
-  Layer 4: TSS=0.251, Purity=0.506, Sep=0.209, β1=0
-  Layer 5: Computing persistent homology with dens_norm_cosine distance...
-  Layer 5: TSS=0.280, Purity=0.518, Sep=0.280, β1=0
-  Layer 6: Computing persistent homology with dens_norm_cosine distance...
-  Layer 6: TSS=0.293, Purity=0.520, Sep=0.316, β1=0
-  Layer 7: Computing persistent homology with dens_norm_cosine distance...
-  Layer 7: TSS=0.345, Purity=0.528, Sep=0.456, β1=0
-  Layer 8: Computing persistent homology with dens_norm_cosine distance...
-  Layer 8: TSS=0.398, Purity=0.524, Sep=0.610, β1=0
-  Layer 9: Computing persistent homology with dens_norm_cosine distance...
-  Layer 9: TSS=0.410, Purity=0.524, Sep=0.645, β1=0
-  Layer 10: Computing persistent homology with dens_norm_cosine distance...
-  Layer 10: TSS=0.430, Purity=0.520, Sep=0.707, β1=0
-  Layer 11: Computing persistent homology with dens_norm_cosine distance...
-  Layer 11: TSS=0.423, Purity=0.518, Sep=0.688, β1=0
-  Layer 12: Computing persistent homology with dens_norm_cosine distance...
-  Layer 12: TSS=0.443, Purity=0.514, Sep=0.749, β1=0
-  Layer 13: Computing persistent homology with dens_norm_cosine distance...
-  Layer 13: TSS=0.462, Purity=0.528, Sep=0.790, β1=0
-  Layer 14: Computing persistent homology with dens_norm_cosine distance...
-  Layer 14: TSS=0.457, Purity=0.514, Sep=0.789, β1=0
-  Layer 15: Computing persistent homology with dens_norm_cosine distance...
-  Layer 15: TSS=0.443, Purity=0.528, Sep=0.733, β1=0
-  Layer 16: Computing persistent homology with dens_norm_cosine distance...
-  Layer 16: TSS=0.424, Purity=0.520, Sep=0.689, β1=0
-  Layer 17: Computing persistent homology with dens_norm_cosine distance...
-  Layer 17: TSS=0.413, Purity=0.520, Sep=0.658, β1=0
-  Layer 18: Computing persistent homology with dens_norm_cosine distance...
-  Layer 18: TSS=0.412, Purity=0.536, Sep=0.637, β1=0
-  Layer 19: Computing persistent homology with dens_norm_cosine distance...
-  Layer 19: TSS=0.395, Purity=0.508, Sep=0.617, β1=0
-  Layer 20: Computing persistent homology with dens_norm_cosine distance...
-  Layer 20: TSS=0.398, Purity=0.514, Sep=0.622, β1=0
-  Layer 21: Computing persistent homology with dens_norm_cosine distance...
-  Layer 21: TSS=0.404, Purity=0.520, Sep=0.632, β1=0
-  Layer 22: Computing persistent homology with dens_norm_cosine distance...
-  Layer 22: TSS=0.403, Purity=0.516, Sep=0.634, β1=0
-  Layer 23: Computing persistent homology with dens_norm_cosine distance...
-  Layer 23: TSS=0.393, Purity=0.518, Sep=0.602, β1=0
-  Layer 24: Computing persistent homology with dens_norm_cosine distance...
-  Layer 24: TSS=0.388, Purity=0.506, Sep=0.601, β1=0
-  Layer 25: Computing persistent homology with dens_norm_cosine distance...
-  Layer 25: TSS=0.386, Purity=0.506, Sep=0.594, β1=0
-  Layer 26: Computing persistent homology with dens_norm_cosine distance...
-  Layer 26: TSS=0.385, Purity=0.516, Sep=0.582, β1=0
-  Layer 27: Computing persistent homology with dens_norm_cosine distance...
-  Layer 27: TSS=0.383, Purity=0.528, Sep=0.564, β1=0
-  Layer 28: Computing persistent homology with dens_norm_cosine distance...
-  Layer 28: TSS=0.397, Purity=0.522, Sep=0.609, β1=0
-  Layer 29: Computing persistent homology with dens_norm_cosine distance...
-  Layer 29: TSS=0.387, Purity=0.516, Sep=0.588, β1=0
-  Layer 30: Computing persistent homology with dens_norm_cosine distance...
-  Layer 30: TSS=0.376, Purity=0.512, Sep=0.559, β1=0
-  Layer 31: Computing persistent homology with dens_norm_cosine distance...
-  Layer 31: TSS=0.394, Purity=0.522, Sep=0.601, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-dens_norm_cosine/subscribes-to-Christianity/subscribes-to-Christianity+md/
- Metric: dens_norm_mahalanobis
---------------------------------------------------------------------------------
-Loading activations...
-Computing HOLE Scores:   0%|          | 0/32 [00:00<?, ?it/s]Computing HOLE Scores:   3%|▎         | 1/32 [15:58<8:15:23, 958.81s/it]Computing HOLE Scores:   6%|▋         | 2/32 [31:57<7:59:21, 958.71s/it]Computing HOLE Scores:   9%|▉         | 3/32 [47:56<7:43:22, 958.71s/it]Computing HOLE Scores:  12%|█▎        | 4/32 [1:03:53<7:27:09, 958.19s/it]Computing HOLE Scores:  16%|█▌        | 5/32 [1:19:50<7:10:58, 957.73s/it]Computing HOLE Scores:  19%|█▉        | 6/32 [1:35:48<6:55:03, 957.84s/it]Computing HOLE Scores:  22%|██▏       | 7/32 [1:51:46<6:39:06, 957.86s/it]Computing HOLE Scores:  25%|██▌       | 8/32 [2:07:44<6:23:12, 958.02s/it]Computing HOLE Scores:  28%|██▊       | 9/32 [2:23:42<6:07:12, 957.92s/it]Computing HOLE Scores:  31%|███▏      | 10/32 [2:39:39<5:51:09, 957.71s/it]Computing HOLE Scores:  34%|███▍      | 11/32 [2:55:36<5:35:06, 957.44s/it]Computing HOLE Scores:  38%|███▊      | 12/32 [3:11:33<5:19:05, 957.25s/it]Computing HOLE Scores:  41%|████      | 13/32 [3:27:31<5:03:12, 957.49s/it]Computing HOLE Scores:  44%|████▍     | 14/32 [3:43:29<4:47:20, 957.80s/it]Computing HOLE Scores:  47%|████▋     | 15/32 [3:59:28<4:31:24, 957.89s/it]Computing HOLE Scores:  50%|█████     | 16/32 [4:15:26<4:15:28, 958.00s/it]Computing HOLE Scores:  53%|█████▎    | 17/32 [4:31:24<3:59:30, 958.06s/it]Computing HOLE Scores:  56%|█████▋    | 18/32 [4:47:21<3:43:27, 957.67s/it]Computing HOLE Scores:  59%|█████▉    | 19/32 [5:03:18<3:27:28, 957.56s/it]Computing HOLE Scores:  62%|██████▎   | 20/32 [5:19:16<3:11:32, 957.71s/it]Computing HOLE Scores:  66%|██████▌   | 21/32 [5:35:14<2:55:35, 957.73s/it]Computing HOLE Scores:  69%|██████▉   | 22/32 [5:51:12<2:39:38, 957.82s/it]Computing HOLE Scores:  72%|███████▏  | 23/32 [6:07:09<2:23:39, 957.69s/it]Computing HOLE Scores:  75%|███████▌  | 24/32 [6:23:06<2:07:40, 957.52s/it]Computing HOLE Scores:  78%|███████▊  | 25/32 [6:39:04<1:51:41, 957.43s/it]Computing HOLE Scores:  81%|████████▏ | 26/32 [6:55:03<1:35:47, 957.88s/it]Computing HOLE Scores:  84%|████████▍ | 27/32 [7:10:59<1:19:47, 957.48s/it]Computing HOLE Scores:  88%|████████▊ | 28/32 [7:26:58<1:03:51, 958.00s/it]Computing HOLE Scores:  91%|█████████ | 29/32 [7:42:57<47:54, 958.05s/it]  Computing HOLE Scores:  94%|█████████▍| 30/32 [7:58:54<31:55, 957.80s/it]Computing HOLE Scores:  97%|█████████▋| 31/32 [8:14:52<15:57, 957.81s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:30:44<00:00, 956.13s/it]Computing HOLE Scores: 100%|██████████| 32/32 [8:30:44<00:00, 957.63s/it]
-/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:492: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
-  warnings.warn(
-/data/project/le-lab/conda_env/Adaptive_LayerSteering/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:497: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
-  warnings.warn(
-  Layer 0: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 0: TSS=0.842, Purity=0.510, Sep=0.143, β1=0
-  Layer 1: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 1: TSS=0.756, Purity=0.526, Sep=0.174, β1=0
-  Layer 2: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 2: TSS=0.689, Purity=0.512, Sep=0.149, β1=0
-  Layer 3: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 3: TSS=0.553, Purity=0.520, Sep=0.180, β1=0
-  Layer 4: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 4: TSS=0.557, Purity=0.514, Sep=0.223, β1=0
-  Layer 5: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 5: TSS=0.574, Purity=0.522, Sep=0.282, β1=0
-  Layer 6: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 6: TSS=0.561, Purity=0.536, Sep=0.332, β1=0
-  Layer 7: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 7: TSS=0.609, Purity=0.520, Sep=0.454, β1=0
-  Layer 8: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 8: TSS=0.648, Purity=0.520, Sep=0.610, β1=0
-  Layer 9: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 9: TSS=0.673, Purity=0.510, Sep=0.639, β1=0
-  Layer 10: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 10: TSS=0.688, Purity=0.534, Sep=0.707, β1=0
-  Layer 11: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 11: TSS=0.669, Purity=0.518, Sep=0.670, β1=0
-  Layer 12: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 12: TSS=0.701, Purity=0.528, Sep=0.746, β1=0
-  Layer 13: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 13: TSS=0.680, Purity=0.508, Sep=0.782, β1=0
-  Layer 14: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 14: TSS=0.704, Purity=0.538, Sep=0.797, β1=0
-  Layer 15: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 15: TSS=0.668, Purity=0.512, Sep=0.702, β1=0
-  Layer 16: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 16: TSS=0.650, Purity=0.516, Sep=0.675, β1=0
-  Layer 17: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 17: TSS=0.661, Purity=0.534, Sep=0.664, β1=0
-  Layer 18: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 18: TSS=0.626, Purity=0.512, Sep=0.634, β1=0
-  Layer 19: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 19: TSS=0.617, Purity=0.506, Sep=0.647, β1=0
-  Layer 20: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 20: TSS=0.642, Purity=0.526, Sep=0.632, β1=0
-  Layer 21: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 21: TSS=0.609, Purity=0.508, Sep=0.618, β1=0
-  Layer 22: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 22: TSS=0.609, Purity=0.512, Sep=0.609, β1=0
-  Layer 23: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 23: TSS=0.620, Purity=0.514, Sep=0.610, β1=0
-  Layer 24: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 24: TSS=0.654, Purity=0.548, Sep=0.639, β1=0
-  Layer 25: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 25: TSS=0.626, Purity=0.530, Sep=0.597, β1=0
-  Layer 26: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 26: TSS=0.593, Purity=0.520, Sep=0.597, β1=0
-  Layer 27: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 27: TSS=0.627, Purity=0.510, Sep=0.604, β1=0
-  Layer 28: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 28: TSS=0.627, Purity=0.516, Sep=0.601, β1=0
-  Layer 29: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 29: TSS=0.588, Purity=0.534, Sep=0.564, β1=0
-  Layer 30: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 30: TSS=0.577, Purity=0.510, Sep=0.565, β1=0
-  Layer 31: Computing persistent homology with dens_norm_mahalanobis distance...
-  Layer 31: TSS=0.590, Purity=0.520, Sep=0.595, β1=0
-HOLE scores saved to: ./Score_HOLE-standard-dens_norm_mahalanobis/subscribes-to-Christianity/subscribes-to-Christianity+md/
-
-================================================================================
-All metrics saved to: ./Score_HOLE-standard_ALL_METRICS/subscribes-to-Christianity/subscribes-to-Christianity+md/
-================================================================================
-All 7 HOLE metrics computed
-
-STEP 3C: Comparing LayerNavigator with All HOLE Metrics
-====================================================================================================
-
---- Metric: euclidean ---
-  Spearman Correlation: 0.754 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.538
-  Agreement: 7/10 layers
-
---- Metric: cosine ---
-  Spearman Correlation: 0.940 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.818
-  Agreement: 9/10 layers
-
---- Metric: mahalanobis ---
-  Spearman Correlation: 0.957 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.667
-  Agreement: 8/10 layers
-
---- Metric: geodesic ---
-  Spearman Correlation: 0.681 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.333
-  Agreement: 5/10 layers
-
---- Metric: dens_norm_euclidean ---
-  Spearman Correlation: 0.926 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.818
-  Agreement: 9/10 layers
-
---- Metric: dens_norm_cosine ---
-  Spearman Correlation: 0.953 (p=0.0000)
-  Top-10 Jaccard Similarity: 0.818
-  Agreement: 9/10 layers
-
---- Metric: dens_norm_mahalanobis ---
-  Spearman Correlation: 0.414 (p=0.0184)
-  Top-10 Jaccard Similarity: 0.429
-  Agreement: 6/10 layers
-All comparisons saved
-
-STEP 3D: Analyzing Metric Consensus
-====================================================================================================
-
-Layers by Metric Consensus (top-10 appearances):
-------------------------------------------------------------
-  Layer 12: Appears in top-10 of 7/7 metrics
-  Layer 13: Appears in top-10 of 7/7 metrics
-  Layer 14: Appears in top-10 of 7/7 metrics
-  Layer 15: Appears in top-10 of 7/7 metrics
-  Layer 16: Appears in top-10 of 6/7 metrics
-  Layer 10: Appears in top-10 of 5/7 metrics
-  Layer 11: Appears in top-10 of 5/7 metrics
-  Layer 17: Appears in top-10 of 5/7 metrics
-  Layer  9: Appears in top-10 of 4/7 metrics
-  Layer 18: Appears in top-10 of 4/7 metrics
-  Layer 22: Appears in top-10 of 2/7 metrics
-  Layer 31: Appears in top-10 of 2/7 metrics
-  Layer  0: Appears in top-10 of 1/7 metrics
-  Layer  1: Appears in top-10 of 1/7 metrics
-  Layer  2: Appears in top-10 of 1/7 metrics
-
->>> STEP 4: Testing Layer Selection Strategies
-====================================================================================================
-
-======================================== 1 Layer(s) ========================================
-
-[Strategy 1: LayerNavigator Only]
-Prob: 0.786422923210225
-  Layers: [14]
-  Test Prob: 0.7864 (Δ=+0.0971)
-
-[Strategy 2: Individual HOLE Metrics]
-Prob: 0.7178898111372508
-  euclidean                : Prob=0.7179 (Δ=+0.0285) | Layers=[15]
-Prob: 0.786422923210225
-  cosine                   : Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-Prob: 0.786422923210225
-  mahalanobis              : Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-Prob: 0.7625554259570656
-  geodesic                 : Prob=0.7626 (Δ=+0.0732) | Layers=[13]
-Prob: 0.786422923210225
-  dens_norm_euclidean      : Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-Prob: 0.7625554259570656
-  dens_norm_cosine         : Prob=0.7626 (Δ=+0.0732) | Layers=[13]
-Prob: 0.6896240411688335
-  dens_norm_mahalanobis    : Prob=0.6896 (Δ=+0.0003) | Layers=[0]
-
-[Strategy 3: Hybrid Strategies]
-  Best HOLE metric: cosine
-Prob: 0.786422923210225
-  Hybrid α=0.3 (LN+cosine): Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-Prob: 0.786422923210225
-  Hybrid α=0.5 (LN+cosine): Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-Prob: 0.786422923210225
-  Hybrid α=0.7 (LN+cosine): Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-
-[Strategy 4: Ensemble Across All Metrics]
-Prob: 0.786422923210225
-  Ensemble (avg of 7): Prob=0.7864 (Δ=+0.0971) | Layers=[14]
-
-[Strategy 5: Consensus-Based Selection]
-Prob: 0.7234811931555469
-  Consensus: Prob=0.7235 (Δ=+0.0341) | Layers=[12]
-
-======================================== SUMMARY ========================================
-
-BEST STRATEGY: layernav
-   Probability: 0.7864
-   Improvement: +0.0971
-   Layers: [14]
-
-Top 5 Strategies:
-  1. layernav                      : 0.7864 (Δ=+0.0971)
-  2. hole_cosine                   : 0.7864 (Δ=+0.0971)
-  3. hole_mahalanobis              : 0.7864 (Δ=+0.0971)
-  4. hole_dens_norm_euclidean      : 0.7864 (Δ=+0.0971)
-  5. hybrid_alpha0.3               : 0.7864 (Δ=+0.0971)
-
-======================================== 3 Layer(s) ========================================
-
-[Strategy 1: LayerNavigator Only]
-Prob: 0.8360790937334529
-  Layers: [14, 13, 15]
-  Test Prob: 0.8361 (Δ=+0.1467)
-
-[Strategy 2: Individual HOLE Metrics]
-Prob: 0.7886263099126687
-  euclidean                : Prob=0.7886 (Δ=+0.0993) | Layers=[15, 13, 16]
-Prob: 0.8642088195508597
-  cosine                   : Prob=0.8642 (Δ=+0.1749) | Layers=[14, 13, 12]
-Prob: 0.8642088195508597
-  mahalanobis              : Prob=0.8642 (Δ=+0.1749) | Layers=[14, 13, 12]
-Prob: 0.8360790937334529
-  geodesic                 : Prob=0.8361 (Δ=+0.1467) | Layers=[13, 14, 15]
-Prob: 0.8642088195508597
-  dens_norm_euclidean      : Prob=0.8642 (Δ=+0.1749) | Layers=[14, 13, 12]
-Prob: 0.8642088195508597
-  dens_norm_cosine         : Prob=0.8642 (Δ=+0.1749) | Layers=[13, 14, 12]
-Prob: 0.7869346695271544
-  dens_norm_mahalanobis    : Prob=0.7869 (Δ=+0.0976) | Layers=[0, 1, 14]
-
-[Strategy 3: Hybrid Strategies]
-  Best HOLE metric: cosine
-Prob: 0.8360790937334529
-  Hybrid α=0.3 (LN+cosine): Prob=0.8361 (Δ=+0.1467) | Layers=[14, 13, 15]
-Prob: 0.8360790937334529
-  Hybrid α=0.5 (LN+cosine): Prob=0.8361 (Δ=+0.1467) | Layers=[14, 13, 15]
-Prob: 0.8360790937334529
-  Hybrid α=0.7 (LN+cosine): Prob=0.8361 (Δ=+0.1467) | Layers=[14, 13, 15]
-
-[Strategy 4: Ensemble Across All Metrics]
-Prob: 0.8642088195508597
-  Ensemble (avg of 7): Prob=0.8642 (Δ=+0.1749) | Layers=[14, 13, 12]
-
-[Strategy 5: Consensus-Based Selection]
-Prob: 0.8642088195508597
-  Consensus: Prob=0.8642 (Δ=+0.1749) | Layers=[12, 13, 14]
-
-======================================== SUMMARY ========================================
-
-BEST STRATEGY: hole_cosine
-   Probability: 0.8642
-   Improvement: +0.1749
-   Layers: [14, 13, 12]
-
-Top 5 Strategies:
-  1. hole_cosine                   : 0.8642 (Δ=+0.1749)
-  2. hole_mahalanobis              : 0.8642 (Δ=+0.1749)
-  3. hole_dens_norm_euclidean      : 0.8642 (Δ=+0.1749)
-  4. hole_dens_norm_cosine         : 0.8642 (Δ=+0.1749)
-  5. ensemble_all_metrics          : 0.8642 (Δ=+0.1749)
-
-======================================== 5 Layer(s) ========================================
-
-[Strategy 1: LayerNavigator Only]
-Prob: 0.8244563206658174
-  Layers: [14, 13, 15, 12, 16]
-  Test Prob: 0.8245 (Δ=+0.1351)
-
-[Strategy 2: Individual HOLE Metrics]
-Prob: 0.7964033670099973
-  euclidean                : Prob=0.7964 (Δ=+0.1071) | Layers=[15, 13, 16, 14, 18]
-Prob: 0.8611577538416754
-  cosine                   : Prob=0.8612 (Δ=+0.1718) | Layers=[14, 13, 12, 15, 11]
-Prob: 0.8549107734172438
-  mahalanobis              : Prob=0.8549 (Δ=+0.1656) | Layers=[14, 13, 12, 15, 10]
-Prob: 0.8244563206658174
-  geodesic                 : Prob=0.8245 (Δ=+0.1351) | Layers=[13, 14, 15, 12, 16]
-Prob: 0.8549107734172438
-  dens_norm_euclidean      : Prob=0.8549 (Δ=+0.1656) | Layers=[14, 13, 12, 15, 10]
-Prob: 0.8549107734172438
-  dens_norm_cosine         : Prob=0.8549 (Δ=+0.1656) | Layers=[13, 14, 12, 15, 10]
-Prob: 0.82114495774943
-  dens_norm_mahalanobis    : Prob=0.8211 (Δ=+0.1318) | Layers=[0, 1, 14, 12, 2]
-
-[Strategy 3: Hybrid Strategies]
-  Best HOLE metric: cosine
-Prob: 0.8611577538416754
-  Hybrid α=0.3 (LN+cosine): Prob=0.8612 (Δ=+0.1718) | Layers=[14, 13, 15, 12, 11]
-Prob: 0.8244563206658174
-  Hybrid α=0.5 (LN+cosine): Prob=0.8245 (Δ=+0.1351) | Layers=[14, 13, 15, 12, 16]
-Prob: 0.8244563206658174
-  Hybrid α=0.7 (LN+cosine): Prob=0.8245 (Δ=+0.1351) | Layers=[14, 13, 15, 12, 16]
-
-[Strategy 4: Ensemble Across All Metrics]
-Prob: 0.8244563206658174
-  Ensemble (avg of 7): Prob=0.8245 (Δ=+0.1351) | Layers=[14, 13, 12, 15, 16]
-
-[Strategy 5: Consensus-Based Selection]
-Prob: 0.8244563206658174
-  Consensus: Prob=0.8245 (Δ=+0.1351) | Layers=[12, 13, 14, 15, 16]
-
-======================================== SUMMARY ========================================
-
-BEST STRATEGY: hole_cosine
-   Probability: 0.8612
-   Improvement: +0.1718
-   Layers: [14, 13, 12, 15, 11]
-
-Top 5 Strategies:
-  1. hole_cosine                   : 0.8612 (Δ=+0.1718)
-  2. hybrid_alpha0.3               : 0.8612 (Δ=+0.1718)
-  3. hole_mahalanobis              : 0.8549 (Δ=+0.1656)
-  4. hole_dens_norm_euclidean      : 0.8549 (Δ=+0.1656)
-  5. hole_dens_norm_cosine         : 0.8549 (Δ=+0.1656)
-
-====================================================================================================
-Task subscribes-to-Christianity completed
-====================================================================================================
-
-
-====================================================================================================
-ALL TASKS COMPLETED!
-====================================================================================================
