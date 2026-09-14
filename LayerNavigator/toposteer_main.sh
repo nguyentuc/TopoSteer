@@ -18,6 +18,6 @@ echo "$cmd1"
 eval $cmd1
 
 gpu=0
-cmd="CUDA_VISIBLE_DEVICES=$gpu python z8_main_v3.py"
+cmd="CUDA_VISIBLE_DEVICES=$gpu python toposteer_main.py"
 echo "$cmd"
 eval $cmd
