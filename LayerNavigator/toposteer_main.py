@@ -21,28 +21,28 @@ from tqdm import tqdm
 # comparisons -- a shortlist to re-test, not a result.
 ALL_TSS_VARIANTS = {
     'mean_persistence': [
-        'mean_persistence_H0',                  # 52% pooled, 44% under euclidean
+        'mean_persistence_H0',                
     ],
 
     'mean_persistence_diff': [
-        'mean_persistence_H0_diff',             # 38%
+        'mean_persistence_H0_diff',          
     ],
 
     'mean_persistence_diff_l2': [
-        'mean_persistence_H0_diff_l2',          # 38%
+        'mean_persistence_H0_diff_l2',   
     ],
 
     # 'h0_persistence_only' is deliberately absent: get_hole_score_euclidean.py
     # assigns it mean_pers_h0 verbatim, so it would duplicate 'mean_persistence_H0'.
     'h0_shape': [
-        'inverse_mean_H0',                      # 83% pooled, median +0.0532
-        'portion_of_persistence_dominance_h0',  # 83% pooled, median +0.0523
-        'entropy_H0',                           # 81% pooled, median +0.0214
-        'betti_curve_auc_H0',                   # 77% pooled, median +0.0384
-        'total_persistence_H0',                 # 65% pooled, 77% under geodesic
-        'max_persistence_H0',                   # 63% pooled, 81% geodesic / 83% mahalanobis
-        'inverse_h0_entropy',                   # 64% pooled, median +0.0117
-        'count_H0',                             # 64% under geodesic
+        'inverse_mean_H0',                      
+        'portion_of_persistence_dominance_h0',  
+        'entropy_H0',                           
+        'betti_curve_auc_H0',                  
+        'total_persistence_H0',               
+        'max_persistence_H0',                   
+        'inverse_h0_entropy',                  
+        'count_H0',                           
     ],
 }
 
@@ -61,13 +61,12 @@ COMBINED_METRICS = {
 # simply not being requested. Trim the list to cut runtime -- cost scales
 # linearly in len(ALL_HOLE_METRICS).
 ALL_HOLE_METRICS = [
-    'euclidean',            # 47%  -- reference baseline, worst of the seven
-    'cosine',               # 77%
-    'geodesic',             # 76%  -- builds a kNN graph + shortest paths (slow)
-    'mahalanobis',          # 61%  -- best pairing for max_persistence_H0 (83%)
-    'dens_norm_euclidean',  # 87%  -- adds a local-scale pass
-    'dens_norm_cosine',     # 79%
-    # 'dens_norm_mahalanobis',  # 40% / negative median -- left off deliberately
+    'euclidean',            
+    'cosine',               
+    'geodesic',             
+    'mahalanobis',          
+    'dens_norm_euclidean',  
+    'dens_norm_cosine',    
 ]
 
 ALL_TSS_VARIANTS['combined_metrics'] = list(COMBINED_METRICS.keys())
