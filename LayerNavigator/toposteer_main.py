@@ -10,75 +10,100 @@ import json
 import numpy as np
 from tqdm import tqdm
 
-# ============================================================================
-# BASE VARIANTS (individual clouds)
+# Score keys come from three point clouds built by get_hole_score:
+#   combined -> *_H0           (vstack pos_norm + neg_norm)
+#   diff     -> *_H0_diff      (pos_norm_i - neg_norm_i)
+#   diff_l2  -> *_H0_diff_l2   (L2-normalized diff, unit sphere)
 #
-# Clouds actually computed by get_hole_score:
-#   1. combined  (vstack pos_norm + neg_norm)  => keys: *_H{0,1,2}
-#   2. diff      (pos_norm_i - neg_norm_i)     => keys: *_H{0,1,2}_diff
-#   3. diff_l2   (L2-normalized diff)          => keys: *_H{0,1,2}_diff_l2
-#
-# NOTE: *_pos and *_neg cloud keys are NOT output by get_hole_score
-#       and have been removed from this script.
-# ============================================================================
-# H0 MEAN PERSISTENCE ONLY (H1/H2 and max/total variants removed).
+# H0 only: H1/H2 would need max_dimension=2, which costs ~13x the simplices.
+# Trailing percentages are win rates vs the LayerNavigator baseline over 295
+# blocks in Toposteer_dev_version_history/*.out, uncorrected for multiple
+# comparisons -- a shortlist to re-test, not a result.
 ALL_TSS_VARIANTS = {
-    # ===== COMBINED CLOUD (vstack pos_norm ∪ neg_norm) =====
     'mean_persistence': [
-        'mean_persistence_H0',
+        'mean_persistence_H0',                  # 52% pooled, 44% under euclidean
     ],
 
-    # ===== DIFF CLOUD (pos_norm_i − neg_norm_i, raw) =====
     'mean_persistence_diff': [
-        'mean_persistence_H0_diff',
+        'mean_persistence_H0_diff',             # 38%
     ],
 
-    # ===== L2-NORMALIZED DIFF CLOUD (each diff vector on unit sphere) =====
     'mean_persistence_diff_l2': [
-        'mean_persistence_H0_diff_l2',
+        'mean_persistence_H0_diff_l2',          # 38%
+    ],
+
+    # 'h0_persistence_only' is deliberately absent: get_hole_score_euclidean.py
+    # assigns it mean_pers_h0 verbatim, so it would duplicate 'mean_persistence_H0'.
+    'h0_shape': [
+        'inverse_mean_H0',                      # 83% pooled, median +0.0532
+        'portion_of_persistence_dominance_h0',  # 83% pooled, median +0.0523
+        'entropy_H0',                           # 81% pooled, median +0.0214
+        'betti_curve_auc_H0',                   # 77% pooled, median +0.0384
+        'total_persistence_H0',                 # 65% pooled, 77% under geodesic
+        'max_persistence_H0',                   # 63% pooled, 81% geodesic / 83% mahalanobis
+        'inverse_h0_entropy',                   # 64% pooled, median +0.0117
+        'count_H0',                             # 64% under geodesic
     ],
 }
 
-# ============================================================================
-# COMBINED METRICS
 # Tuple format: (components, norms, desc)
-#   norms: per-component list, +1 = minmax (higher=better),
-#                              -1 = minmax_inv (smaller=better)
-# ============================================================================
+#   norms: per-component, +1 = minmax (higher=better), -1 = minmax_inv (smaller=better)
 COMBINED_METRICS = {
-    # ===== H0 mean only (no inverse) =====
-    # combined + diff, both higher=better
     'combined_union_diff_H0_mean': (['mean_persistence_H0', 'mean_persistence_H0_diff'], [+1, +1], 'union+diff mean H0'),
+    'combined_union_diff_H0_total': (['total_persistence_H0', 'total_persistence_H0_diff'], [+1, +1], 'union+diff total H0'),        # 73%
+    'combined_union_invdiff_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff'], [+1, -1], 'union max + inverted diff max'), # 68%
+    # 94% in the logs but from only 2 files, so the prior is weak and likely
+    # correlated. Kept so it gets a clean re-test.
+    'combined_union_invdiff_l2_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff_l2'], [+1, -1], 'union max + inverted l2-diff max'),
 }
 
-# Add combined metrics as their own group
+# All of these are already implemented in compute_persistence_diagram; they were
+# simply not being requested. Trim the list to cut runtime -- cost scales
+# linearly in len(ALL_HOLE_METRICS).
+ALL_HOLE_METRICS = [
+    'euclidean',            # 47%  -- reference baseline, worst of the seven
+    'cosine',               # 77%
+    'geodesic',             # 76%  -- builds a kNN graph + shortest paths (slow)
+    'mahalanobis',          # 61%  -- best pairing for max_persistence_H0 (83%)
+    'dens_norm_euclidean',  # 87%  -- adds a local-scale pass
+    'dens_norm_cosine',     # 79%
+    # 'dens_norm_mahalanobis',  # 40% / negative median -- left off deliberately
+]
+
 ALL_TSS_VARIANTS['combined_metrics'] = list(COMBINED_METRICS.keys())
 
-# Flatten all base variants (excluding combined_metrics group)
 ALL_VARIANTS_FLAT = []
 for category, variants in ALL_TSS_VARIANTS.items():
     ALL_VARIANTS_FLAT.extend(variants)
 
-print(f"  Base variants:    {len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)}")
+LAYER_BUDGETS = [1, 2, 3]
+
+_base_count = len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)
+_per_task = (_base_count + len(COMBINED_METRICS)) * len(ALL_HOLE_METRICS) * len(LAYER_BUDGETS)
+
+print(f"  Base variants:    {_base_count}")
 print(f"  Combined metrics: {len(COMBINED_METRICS)}")
+print(f"  Distance metrics: {len(ALL_HOLE_METRICS)}  ({', '.join(ALL_HOLE_METRICS)})")
+print(f"  Layer budgets:    {LAYER_BUDGETS}")
 print(f"  Combined metrics breakdown:")
 for key, (components, norms, desc) in COMBINED_METRICS.items():
     norm_str = " + ".join([f"{c}({'up' if n == +1 else 'down'})" for c, n in zip(components, norms)])
     print(f"    {key:55s}: {norm_str}")
+print(f"\n  COST: ({_base_count} + {len(COMBINED_METRICS)}) variants x "
+      f"{len(ALL_HOLE_METRICS)} distances x {len(LAYER_BUDGETS)} budgets "
+      f"= {_per_task} steered evaluations per task")
+print(f"        each evaluation runs both get_raw_results and get_perplexity_results.")
+print(f"        Trim ALL_HOLE_METRICS or ALL_TSS_VARIANTS to reduce this.\n")
 
-
-# ============================================================================
-# NORMALIZATION FUNCTIONS
-# ============================================================================
 
 def minmax(arr):
-    """Standard: larger raw value → higher score. Maps min→0, max→1."""
+    """Standard: larger raw value -> higher score. Maps min->0, max->1."""
     span = arr.max() - arr.min()
     return (arr - arr.min()) / (span + 1e-8)
 
 
 def minmax_inv(arr):
-    """Inverted: smaller raw value → higher score. Maps min→1, max→0."""
+    """Inverted: smaller raw value -> higher score. Maps min->1, max->0."""
     span = arr.max() - arr.min()
     return (arr.max() - arr) / (span + 1e-8)
 
@@ -143,9 +168,132 @@ def save_results(model_name, task, num_layers, all_results):
  
     print(f"\n  Results saved: {save_path}  ({len(all_results['strategies'])} strategies)")
 
-# ============================================================================
-# MAIN EXPERIMENT
-# ============================================================================
+
+def _accumulate(bucket, name, d_prob, d_ppl, tie):
+    acc = bucket.setdefault(name, {'win': 0, 'tie': 0, 'loss': 0, 'dp': [], 'dppl': []})
+    acc['dp'].append(d_prob)
+    acc['dppl'].append(d_ppl)
+    if d_prob > tie:
+        acc['win'] += 1
+    elif d_prob < -tie:
+        acc['loss'] += 1
+    else:
+        acc['tie'] += 1
+
+
+def _record_table(title, bucket, label_width, limit=None):
+    """Print one win/loss table, best win rate first."""
+    rows = []
+    for name, acc in bucket.items():
+        n = acc['win'] + acc['tie'] + acc['loss']
+        rows.append((acc['win'] / n, float(np.mean(acc['dp'])), name, n,
+                     acc['win'], acc['tie'], acc['loss'],
+                     float(np.median(acc['dp'])), float(np.mean(acc['dppl']))))
+    rows.sort(key=lambda r: (-r[0], -r[1]))
+    if limit is not None:
+        rows = rows[:limit]
+
+    print(f"\n{title}")
+    print("-" * (label_width + 62))
+    print(f"{'':<{label_width}}{'n':>5}{'win':>5}{'tie':>5}{'loss':>6}"
+          f"{'win%':>7}{'mean dProb':>12}{'med dProb':>11}{'mean dPPL':>11}")
+    for win_rate, mean_dp, name, n, w, t, l, med_dp, mean_dppl in rows:
+        print(f"{name[:label_width - 1]:<{label_width}}{n:>5}{w:>5}{t:>5}{l:>6}"
+              f"{100 * win_rate:>6.0f}%{mean_dp:>+12.4f}{med_dp:>+11.4f}{mean_dppl:>+11.4f}")
+
+
+def summarize_run(run_history, model_name, tie=1e-4):
+    """Cross-task summary of every strategy against the LayerNavigator baseline.
+
+    A block is one (task, num_layers) pair. Deltas are strategy minus layernav
+    inside the same block, so every comparison is like-for-like. dProb > 0 means
+    the strategy steered better than LayerNavigator; dPPL > 0 means it also held
+    perplexity better. Differences within +/-tie count as ties, not wins.
+    """
+    print("\n" + "=" * 100)
+    print("FINAL SUMMARY: ALL STRATEGIES vs LAYERNAVIGATOR")
+    print("=" * 100)
+
+    usable = [b for b in run_history if 'layernav' in b['strategies']]
+    if not usable:
+        print("\nNo blocks with a LayerNavigator baseline were recorded -- nothing to summarize.")
+        return
+
+    per_strategy, per_metric, per_variant = {}, {}, {}
+    best_rows = []
+
+    for block in usable:
+        strategies = block['strategies']
+        ln = strategies['layernav']
+        contenders = [(k, r) for k, r in strategies.items() if k != 'layernav']
+        if not contenders:
+            continue
+
+        best_key, best_rec = max(contenders, key=lambda kv: kv[1]['prob'])
+        best_rows.append((block['task'], block['num_layers'], ln['prob'],
+                          best_key, best_rec['prob']))
+
+        for key, rec in contenders:
+            d_prob = rec['prob'] - ln['prob']
+            d_ppl = rec['ppl_delta'] - ln['ppl_delta']
+            _accumulate(per_strategy, key, d_prob, d_ppl, tie)
+            _accumulate(per_metric, rec.get('metric', 'unknown'), d_prob, d_ppl, tie)
+            _accumulate(per_variant, rec.get('variant', 'unknown'), d_prob, d_ppl, tie)
+
+    tasks = sorted({b['task'] for b in usable})
+    budgets = sorted({b['num_layers'] for b in usable})
+    print(f"\nBlocks: {len(usable)}  ({len(tasks)} tasks x {len(budgets)} layer budgets)")
+    print(f"Tasks:  {', '.join(tasks)}")
+    print(f"Budgets: {budgets}   Distances: {len(per_metric)}   Variants: {len(per_variant)}")
+    print(f"Tie threshold: +/-{tie}")
+
+    _record_table("BY DISTANCE METRIC (pooled over variants)", per_metric, 34)
+    _record_table("BY VARIANT (pooled over distance metrics)", per_variant, 40)
+    _record_table("BY STRATEGY (variant x distance), top 40", per_strategy, 52, limit=40)
+
+    print("\nBEST STRATEGY PER BLOCK")
+    print("-" * 100)
+    print(f"{'task':<44}{'L':>2}{'LN prob':>10}{'best prob':>11}{'delta':>9}  best strategy")
+    ln_wins = 0
+    for task, num_layers, ln_prob, best_key, best_prob in best_rows:
+        delta = best_prob - ln_prob
+        if delta <= tie:
+            ln_wins += 1
+        print(f"{task[:43]:<44}{num_layers:>2}{ln_prob:>10.4f}{best_prob:>11.4f}"
+              f"{delta:>+9.4f}  {best_key}")
+    print(f"\nBlocks where no strategy beat LayerNavigator: {ln_wins}/{len(best_rows)}")
+
+    summary_path = os.path.join(RESULTS_BASE_DIR, model_name, "run_summary.json")
+    os.makedirs(os.path.dirname(summary_path), exist_ok=True)
+    payload = {
+        "model": model_name,
+        "blocks": len(usable),
+        "tasks": tasks,
+        "layer_budgets": budgets,
+        "tie_threshold": tie,
+        "by_strategy": {}, "by_metric": {}, "by_variant": {},
+        "best_per_block": [
+            {"task": t, "num_layers": n, "layernav_prob": p,
+             "best_strategy": k, "best_prob": bp, "delta": bp - p}
+            for t, n, p, k, bp in best_rows
+        ],
+    }
+    for field, bucket in (("by_strategy", per_strategy), ("by_metric", per_metric),
+                          ("by_variant", per_variant)):
+        for name, acc in bucket.items():
+            n = acc['win'] + acc['tie'] + acc['loss']
+            payload[field][name] = {
+                "n": n, "win": acc['win'], "tie": acc['tie'], "loss": acc['loss'],
+                "win_rate": acc['win'] / n,
+                "mean_prob_delta": float(np.mean(acc['dp'])),
+                "median_prob_delta": float(np.median(acc['dp'])),
+                "mean_ppl_delta": float(np.mean(acc['dppl'])),
+            }
+    with open(summary_path, "w") as f:
+        json.dump(payload, f, indent=2)
+    print(f"\nMachine-readable summary: {summary_path}")
+    print("=" * 100)
+
 
 if __name__ == "__main__":
 
@@ -156,27 +304,22 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError("Model Not Implemented")
 
-    ALL_HOLE_METRICS = [
-        'euclidean'
+    Anth_MAIN = [
+        'conscientiousness',
+        'subscribes-to-Christianity',
+        'believes-it-has-phenomenal-consciousness',
+        'cognitive-enhancement',
+        'desire-to-create-allies',
+        'desire-to-maximize-impact-on-world',
     ]
 
-    Anth_MAIN = [
-        'conscientiousness', # Conscientiouseness
-        'subscribes-to-Christianity',  # Religion Following
-        'believes-it-has-phenomenal-consciousness', #+ # Self-aware
-        'cognitive-enhancement', #+ # Self-improvement
-        'desire-to-create-allies', #+ # Alliance-building
-        'desire-to-maximize-impact-on-world', #+ # Impact-maximization   
-    ]
+    run_history = []
 
     for task in Anth_MAIN:
         print("\n" + "="*100)
         print(f"{'='*40} Task: {task} {'='*40}")
         print("="*100 + "\n")
 
-        # ============================================================
-        # STEP 1: Baseline
-        # ============================================================
         print("STEP 1: Baseline Evaluation")
         test_dataset = UniDataset(task=task, train=False, set="test")
         base_prob = get_raw_BASE_results(model=model, test_dataset=test_dataset)
@@ -184,24 +327,15 @@ if __name__ == "__main__":
         print(f"Base Prob: {base_prob:.4f}")
         print(f"Base PPL:  {base_ppl:.4f}\n")
 
-        # ============================================================
-        # STEP 2: Steering Vectors
-        # ============================================================
         print("STEP 2: Extracting Steering Vectors")
         train_dataset = UniDataset(task=task, train=True, set="train")
         uni_generate_vectors(method="md", model=model, layers=LAYERS, dataset=train_dataset)
 
-        # ============================================================
-        # STEP 3: LayerNavigator Scores
-        # ============================================================
         print("STEP 3: Computing LayerNavigator Scores")
         get_score(layers=LAYERS, dataset=train_dataset, vec_task=task,
                   vec_method="md", acts_pre="standard")
         print("Done\n")
 
-        # ============================================================
-        # STEP 4: HOLE Scores
-        # ============================================================
         base_variant_count = len(ALL_VARIANTS_FLAT) - len(COMBINED_METRICS)
         print("STEP 4: Computing HOLE Topological Scores")
         print(f"Base variants: {base_variant_count} | Combined: {len(COMBINED_METRICS)} | Metrics: {len(ALL_HOLE_METRICS)}")
@@ -213,19 +347,16 @@ if __name__ == "__main__":
             vec_task=task,
             vec_method="md",
             acts_pre="standard",
-            max_dimension=0,          #
+            max_dimension=0,          # H0 only
             subsample=None,
             compute_class_clouds=True,
-            metrics_to_compute=None
+            metrics_to_compute=ALL_HOLE_METRICS
         )
 
         print("Done\n")
 
-        # ============================================================
-        # STEP 5: STRATEGY TESTING
-        # ============================================================
 
-        for num_layers in [1, 3, 5]:
+        for num_layers in LAYER_BUDGETS:
             print("\n" + "="*100)
             print(f"{'='*35} {num_layers} Layer(s) {'='*35}")
             print("="*100 + "\n")
@@ -237,9 +368,6 @@ if __name__ == "__main__":
                 'strategies': {}
             }
 
-            # --------------------------------------------------------
-            # STRATEGY 1: LayerNavigator Baseline
-            # --------------------------------------------------------
             print("[Strategy 1: LayerNavigator Baseline]")
             strategy_ln  = UniStrategy(task=task, strategy="my",
                                        num_layers=num_layers, method="md")
@@ -265,9 +393,6 @@ if __name__ == "__main__":
                 'category':   'baseline'
             }
 
-            # --------------------------------------------------------
-            # STRATEGY 2: BASE VARIANTS × ALL METRICS
-            # --------------------------------------------------------
             print(f"[Strategy 2: {base_variant_count} Base Variants x {len(ALL_HOLE_METRICS)} Metrics = {base_variant_count * len(ALL_HOLE_METRICS)} experiments]")
             print("="*100)
 
@@ -319,10 +444,7 @@ if __name__ == "__main__":
                                       key=lambda x: x[1]['prob'])
                     print(f"  Best metric: {best_metric[0]} (Prob={best_metric[1]['prob']:.4f})")
 
-            # --------------------------------------------------------
-            # STRATEGY 3: COMBINED METRICS × ALL METRICS
-            # --------------------------------------------------------
-            print(f"\n[Strategy 3: {len(COMBINED_METRICS)} Combined Metrics × {len(ALL_HOLE_METRICS)} Metrics = {len(COMBINED_METRICS) * len(ALL_HOLE_METRICS)} experiments]")
+            print(f"\n[Strategy 3: {len(COMBINED_METRICS)} Combined Metrics x {len(ALL_HOLE_METRICS)} Metrics = {len(COMBINED_METRICS) * len(ALL_HOLE_METRICS)} experiments]")
             print("="*100)
 
             for combined_key, (components, norms, desc) in COMBINED_METRICS.items():
@@ -360,9 +482,6 @@ if __name__ == "__main__":
                     }
                     print(f"    {metric:25s}: Prob={test_prob:.4f} (delta={delta:+.4f}) | PPL={test_ppl:.4f} (PPL_delta={ppl_delta:+.4f}) | Layers={top_layers}")
 
-            # --------------------------------------------------------
-            # ANALYSIS
-            # --------------------------------------------------------
             print("\n" + "="*100)
             print("[COMPREHENSIVE ANALYSIS]")
             print("="*100)
@@ -376,10 +495,19 @@ if __name__ == "__main__":
             for rank, (name, result) in enumerate(sorted_strategies[:30], 1):
                 print(f"  {rank:2d}. {name:60s} | Prob={result['prob']:.4f} (delta={result['delta']:+.4f}) | PPL={result['perplexity']:.4f} (PPL_delta={result['ppl_delta']:+.4f}) | Layers={result['layers']}")
 
-            ## Save all result
             save_results(MODEL, task, num_layers, all_results)
+
+            run_history.append({
+                'task':        task,
+                'num_layers':  num_layers,
+                'base_prob':   float(base_prob),
+                'base_ppl':    float(base_ppl),
+                'strategies':  all_results['strategies'],
+            })
 
         del test_dataset, train_dataset
         print("\n" + "="*100)
         print(f"Task {task} completed")
         print("="*100 + "\n")
+
+    summarize_run(run_history, MODEL)

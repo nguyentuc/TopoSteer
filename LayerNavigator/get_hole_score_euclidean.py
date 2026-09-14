@@ -129,10 +129,64 @@ def compute_persistence_diagram(
             persistence_stats[f'H{dim}_total'] = 0.0
             persistence_stats[f'H{dim}_count'] = 0
 
+    # ============================================
+    # PERSISTENCE ENTROPY (per dimension)
+    # Low entropy -> uniform, reliable topological structure -> better steering.
+    # High entropy -> mixed feature quality.
+    # ============================================
+    persistence_entropy = {}
+    for dim in range(max_dimension + 1):
+        finite_pairs = [(b, d) for b, d in persistence_by_dim[dim] if d != np.inf]
+        if len(finite_pairs) > 1:
+            persistences = np.array([d - b for b, d in finite_pairs])
+            total = np.sum(persistences)
+            if total > 1e-10:
+                probabilities = persistences / total
+                persistence_entropy[dim] = float(
+                    -np.sum(probabilities * np.log(probabilities + 1e-10))
+                )
+            else:
+                persistence_entropy[dim] = 0.0
+        else:
+            persistence_entropy[dim] = 0.0
+
+    # ============================================
+    # BETTI CURVES + AUC (per dimension)
+    # beta_i(epsilon) = number of features alive at filtration threshold epsilon.
+    # AUC summarises how structure accumulates across scales, not just at the end.
+    # ============================================
+    # Use the largest FINITE filtration value. The geodesic metric builds a
+    # mutual-kNN graph, which is often disconnected, so shortest_path returns inf
+    # for unreachable pairs -- and linspace(0, inf, n) is all nan/inf, which would
+    # silently poison betti_curve_auc.
+    filtration_list = list(simplex_tree.get_filtration())
+    finite_filtrations = [f for _, f in filtration_list if np.isfinite(f)]
+    max_filtration = max(finite_filtrations) if finite_filtrations else 1.0
+    filtration_values = np.linspace(0.0, max_filtration, num_filtration_steps)
+
+    betti_curves = {dim: [] for dim in range(max_dimension + 1)}
+    for epsilon in filtration_values:
+        for dim in range(max_dimension + 1):
+            alive_count = sum(1 for b, d in persistence_by_dim[dim]
+                              if b <= epsilon and (d > epsilon or d == np.inf))
+            betti_curves[dim].append((float(epsilon), alive_count))
+
+    betti_curve_auc = {}
+    for dim in range(max_dimension + 1):
+        if len(betti_curves[dim]) > 1:
+            epsilons = np.array([eps for eps, _ in betti_curves[dim]])
+            betti_values = np.array([beta for _, beta in betti_curves[dim]])
+            betti_curve_auc[dim] = float(np.trapz(betti_values, epsilons))
+        else:
+            betti_curve_auc[dim] = 0.0
+
     return {
         'diagram': persistence,
         'persistence_by_dim': persistence_by_dim,
         'persistence_stats': persistence_stats,
+        'persistence_entropy': persistence_entropy,
+        'betti_curves': betti_curves,
+        'betti_curve_auc': betti_curve_auc,
     }
 
 
@@ -293,6 +347,15 @@ def get_hole_score(
         inverse_mean_H1 = 1.0 / (mean_pers_h1 + 0.1)
         inverse_mean_H2 = 1.0 / (mean_pers_h2 + 0.1)
 
+        # Entropy / Betti-curve / dominance summaries of the combined cloud.
+        persistence_entropy = persistence_combined['persistence_entropy']
+        betti_curve_auc     = persistence_combined['betti_curve_auc']
+
+        entropy_h0         = persistence_entropy.get(0, 0.0)
+        inverse_h0_entropy = 1.0 / (1.0 + entropy_h0) if entropy_h0 > 0 else 1.0
+        auc_h0             = betti_curve_auc.get(0, 0.0)
+        portion_of_persistence_dominance_h0 = max_pers_h0 / (mean_pers_h0 + 0.1)
+
         # ========================================================
         # STEP 5: COMPUTE PERSISTENCE - RAW DIFF CLOUD (z-score only)
         # ========================================================
@@ -358,6 +421,15 @@ def get_hole_score(
             'h2_persistence_only':   float(h2_persistence_only),
             'mean_all_persistence':  float(mean_all_persistence),
 
+            # ===== H0 SHAPE/SPREAD SUMMARIES (combined cloud) =====
+            # Selected from Toposteer_dev_version_history logs, where these beat
+            # the LayerNavigator baseline far more often than mean-persistence alone.
+            'inverse_mean_H0':    float(inverse_mean_H0),
+            'entropy_H0':         float(entropy_h0),
+            'inverse_h0_entropy': float(inverse_h0_entropy),
+            'betti_curve_auc_H0': float(auc_h0),
+            'portion_of_persistence_dominance_h0': float(portion_of_persistence_dominance_h0),
+
             # ===== RAW DIFF CLOUD (z-score normalized) =====
             'mean_persistence_H0_diff':  float(mean_persistence_H0_diff)  if compute_class_clouds else None,
             'mean_persistence_H1_diff':  float(mean_persistence_H1_diff)  if compute_class_clouds else None,
@@ -421,14 +493,19 @@ def get_hole_score_all_metrics(
     metrics_to_compute: List[str] = None
 ):
     if metrics_to_compute is None:
+        # Win rate vs the LayerNavigator baseline, pooled over H0 statistics in
+        # Toposteer_dev_version_history logs (295 blocks, LN-collapse runs dropped):
+        #   dens_norm_euclidean 87% | dens_norm_cosine 79% | cosine 77%
+        #   geodesic 76% | dens_norm_mahalanobis 71% | mahalanobis 61%
+        #   euclidean 47%  <- kept only as the reference baseline
         all_metrics = [
             'euclidean',
-            # 'cosine',
-            # 'mahalanobis',
-            # 'geodesic',
-            # 'dens_norm_euclidean',
-            # 'dens_norm_cosine',
-            # 'dens_norm_mahalanobis'
+            'cosine',
+            'geodesic',
+            'mahalanobis',
+            'dens_norm_euclidean',
+            'dens_norm_cosine',
+            # 'dens_norm_mahalanobis'   # 40% win / negative median delta on H0
         ]
     else:
         all_metrics = metrics_to_compute
