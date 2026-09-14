@@ -56,7 +56,7 @@ class UniDataset(Dataset):
             # Default Batch_size=1, hard coded
             for i in tqdm(range(data_len),desc="Get Tokens for Train"):
                 cur_data = []
-                cur_Ans = Ans if data[i]["answer_matching_behavior"] == " Yes" else Ans[::-1]
+                cur_Ans = Ans if data[i]["answer_matching_behavior"] == " Yes" else Ans[::-1] # get and assign the key for each line of the output answer
                 cur_key = 1 if data[i]["answer_matching_behavior"] == " Yes" else -1
                 self.keys.append(cur_key)
 

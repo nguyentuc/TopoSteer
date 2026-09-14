@@ -1,10 +1,12 @@
 ###### MODEL ######
-# MODEL = "/media/volume/h100_instance2/cache/Llama-3-8B-Instruct"
-MODEL = "/data/project/le-lab/cache/Qwen2.5-32B-Instruct"
+# MODEL = "//data/project/le-lab/cache/Llama-3-8B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Qwen2.5-32B-Instruct"
 # MODEL = "/data/project/le-lab/cache/Qwen2.5-7B-Instruct"
 # MODEL = "/data/project/le-lab/cache/Qwen2.5-3B-Instruct"
-# MODEL = "/data/project/le-lab/cache/Llama-3-3B-Instruct"
+MODEL = "/data/project/le-lab/cache/Llama-3-3B-Instruct"
 
+print("Model check:", MODEL)
+RESULTS_BASE_DIR = "/data/project/le-lab/Adaptive_Layer_Steering/LayerNavigator/Final_Results/"
 if "Llama-3-8B-Instruct" in MODEL:
     LAYERS = list(range(32))
     INST_TEMPLATE = """<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{}"""
@@ -33,7 +35,6 @@ elif "Llama-3-3B-Instruct" in MODEL:
 Anth_YN_QUESTION_PROFIX = "\nAnswer \"Yes\" or \"No\"."
 INST_SYS_ANS_PREFIX = "My answer"
 INST_SYS_ANS_PREFIX_alt1 = INST_SYS_ANS_PREFIX+":"
-
 
 ###### DATASET ######
 

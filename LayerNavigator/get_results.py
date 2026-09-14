@@ -347,7 +347,7 @@ def get_raw_results(
     last_logits = torch.stack(last_logits,dim=0)
     last_logits = torch.softmax(last_logits,dim=-1)
     last_logits = last_logits[:,[QUICK_TOKEN_ID_DICT[" Yes"],QUICK_TOKEN_ID_DICT[" No"]]]
-    keys = test_dataset.keys
+    keys = test_dataset.keys #get the key and compute the prob of align with this key
     total = 0
     assert len(keys) == len(last_logits)
     for i in range(len(keys)):
