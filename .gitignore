@@ -17,6 +17,7 @@ Vectors*/
 Visualizations/
 Analysis/
 *.out
+*.json
 
 # Images
 *.png
