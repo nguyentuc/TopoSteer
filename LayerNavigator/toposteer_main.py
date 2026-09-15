@@ -35,14 +35,14 @@ ALL_TSS_VARIANTS = {
     # 'h0_persistence_only' is deliberately absent: get_hole_score_euclidean.py
     # assigns it mean_pers_h0 verbatim, so it would duplicate 'mean_persistence_H0'.
     'h0_shape': [
-        'inverse_mean_H0',                      
-        'portion_of_persistence_dominance_h0',  
+        # 'inverse_mean_H0',                      
+        # 'portion_of_persistence_dominance_h0',  
         'entropy_H0',                           
-        'betti_curve_auc_H0',                  
+        # 'betti_curve_auc_H0',                  
         'total_persistence_H0',               
-        'max_persistence_H0',                   
-        'inverse_h0_entropy',                  
-        'count_H0',                           
+        # 'max_persistence_H0',                   
+        # 'inverse_h0_entropy',                  
+        # 'count_H0',                           
     ],
 }
 
@@ -51,10 +51,10 @@ ALL_TSS_VARIANTS = {
 COMBINED_METRICS = {
     'combined_union_diff_H0_mean': (['mean_persistence_H0', 'mean_persistence_H0_diff'], [+1, +1], 'union+diff mean H0'),
     'combined_union_diff_H0_total': (['total_persistence_H0', 'total_persistence_H0_diff'], [+1, +1], 'union+diff total H0'),        # 73%
-    'combined_union_invdiff_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff'], [+1, -1], 'union max + inverted diff max'), # 68%
+    # 'combined_union_invdiff_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff'], [+1, -1], 'union max + inverted diff max'), # 68%
     # 94% in the logs but from only 2 files, so the prior is weak and likely
     # correlated. Kept so it gets a clean re-test.
-    'combined_union_invdiff_l2_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff_l2'], [+1, -1], 'union max + inverted l2-diff max'),
+    # 'combined_union_invdiff_l2_H0_max': (['max_persistence_H0', 'max_persistence_H0_diff_l2'], [+1, -1], 'union max + inverted l2-diff max'),
 }
 
 # All of these are already implemented in compute_persistence_diagram; they were
@@ -62,11 +62,8 @@ COMBINED_METRICS = {
 # linearly in len(ALL_HOLE_METRICS).
 ALL_HOLE_METRICS = [
     'euclidean',            
-    'cosine',               
-    'geodesic',             
-    'mahalanobis',          
-    'dens_norm_euclidean',  
-    'dens_norm_cosine',    
+#     'cosine',               
+#     'geodesic',                    
 ]
 
 ALL_TSS_VARIANTS['combined_metrics'] = list(COMBINED_METRICS.keys())

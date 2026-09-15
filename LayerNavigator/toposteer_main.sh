@@ -4,7 +4,7 @@
 #SBATCH --mem=100GB
 #SBATCH --time=336:00:00
 #SBATCH --partition=general
-#SBATCH --output=toposteer_main_llama8B-%j.out
+#SBATCH --output=toposteer_main_llama8B_euclidean-%j.out
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=tucnguye@iu.edu
 
