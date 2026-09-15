@@ -37,7 +37,7 @@ ALL_TSS_VARIANTS = {
     'h0_shape': [
         # 'inverse_mean_H0',                      
         # 'portion_of_persistence_dominance_h0',  
-        'entropy_H0',                           
+        # 'entropy_H0',                           
         # 'betti_curve_auc_H0',                  
         'total_persistence_H0',               
         # 'max_persistence_H0',                   
