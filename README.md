@@ -28,7 +28,12 @@ huggingface-cli download Qwen/Qwen2.5-32B-Instruct --local-dir /data/project/le-
 huggingface-cli download Qwen/Qwen2.5-3B-Instruct --local-dir /data/project/le-lab/cache/Qwen2.5-3B-Instruct --local-dir-use-symlinks False
 huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/project/le-lab/cache/Llama-3-3B-Instruct --local-dir-use-symlinks False
 ```
-2. **Run the main script**
+2. **Run the script for the LayerNavigator:**
+   ```bash
+   python main.py
+   ```
+
+2. **Run the script for the TopoSteer:**
    ```bash
    python main.py
    ```
