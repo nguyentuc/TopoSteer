@@ -30,12 +30,12 @@ huggingface-cli download meta-llama/Llama-3.2-3B-Instruct --local-dir /data/proj
 ```
 2. **Run the script for the LayerNavigator:**
    ```bash
-   python main.py
+   sbatch main.sh
    ```
 
 2. **Run the script for the TopoSteer:**
    ```bash
-   python main.py
+   sbatch toposteer_main.sh
    ```
 
 ---
