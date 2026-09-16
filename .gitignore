@@ -18,6 +18,7 @@ Visualizations/
 Analysis/
 Toposteer_dev_version_history
 *.json
+*.out
 
 # Images
 *.png

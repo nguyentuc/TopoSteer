@@ -1,5 +1,5 @@
 ###### MODEL ######
-# MODEL = "//data/project/le-lab/cache/Llama-3-8B-Instruct"
+# MODEL = "/data/project/le-lab/cache/Llama-3-8B-Instruct"
 # MODEL = "/data/project/le-lab/cache/Qwen2.5-32B-Instruct"
 MODEL = "/data/project/le-lab/cache/Qwen2.5-7B-Instruct"
 # MODEL = "/data/project/le-lab/cache/Qwen2.5-3B-Instruct"
